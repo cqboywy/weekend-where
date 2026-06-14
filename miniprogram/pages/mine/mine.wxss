@@ -1,0 +1,17 @@
+.mine-page { min-height: 100vh; }
+.mine-header { padding: 60rpx 32rpx 40rpx; background: linear-gradient(135deg, #F8F9FA 0%, #FFEDE5 100%); display: flex; flex-direction: column; align-items: center; }
+.avatar { width: 120rpx; height: 120rpx; background: var(--color-white); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 64rpx; box-shadow: var(--shadow-float); margin-bottom: 20rpx; }
+.nickname { font-size: 36rpx; font-weight: 600; color: var(--color-text); }
+.bio { font-size: 26rpx; color: var(--color-text-light); margin-top: 8rpx; }
+.stats-section { margin: -20rpx 32rpx 16rpx; padding: 32rpx; position: relative; z-index: 2; }
+.stats-row { display: flex; align-items: center; }
+.stat-item { flex: 1; text-align: center; }
+.stat-divider { width: 1rpx; height: 48rpx; background: var(--color-border); }
+.stat-num { font-size: 48rpx; font-weight: 600; color: var(--color-primary); }
+.stat-label { font-size: 24rpx; color: var(--color-text-light); margin-top: 4rpx; }
+.menu-section { margin: 16rpx 32rpx; }
+.menu-item { display: flex; align-items: center; padding: 28rpx 0; border-bottom: 1rpx solid var(--color-border); }
+.menu-item:last-child { border-bottom: none; }
+.menu-icon { font-size: 36rpx; width: 56rpx; }
+.menu-text { flex: 1; font-size: 28rpx; color: var(--color-text); }
+.menu-arrow { font-size: 36rpx; color: #ADB5BD; font-weight: 300; }

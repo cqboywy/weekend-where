@@ -1,0 +1,189 @@
+const { addCollectionItem } = require('../../utils/cloud.js');
+const { CATEGORIES, PLATFORMS } = require('../../utils/constants.js');
+
+Page({
+  data: {
+    formData: {
+      originalUrl: '', title: '', platform: '', category: '',
+      locationName: '', locationAddress: '',
+      latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
+    },
+    isParsing: false,
+    parseError: '',
+    categories: CATEGORIES,
+    platforms: PLATFORMS,
+    tagInput: '',
+    showCategoryPicker: false,
+    showPlatformPicker: false,
+    showMapPicker: false,
+    marker: null,
+    submitting: false,
+  },
+
+  onLoad(options) {
+    if (options.url) {
+      this.setData({ 'formData.originalUrl': decodeURIComponent(options.url) });
+      this.parseLink(decodeURIComponent(options.url));
+    }
+  },
+
+  onShow() {
+    this.checkClipboard();
+  },
+
+  async checkClipboard() {
+    try {
+      const res = await wx.getClipboardData();
+      const content = res.data || '';
+      const urlMatch = content.match(/https?:\/\/[^\s]+/);
+      if (urlMatch && !this.data.formData.originalUrl) {
+        wx.showModal({
+          title: '检测到链接',
+          content: '剪贴板中有链接，是否添加收藏？',
+          success: (modalRes) => {
+            if (modalRes.confirm) {
+              this.setData({ 'formData.originalUrl': urlMatch[0] });
+              this.parseLink(urlMatch[0]);
+            }
+          }
+        });
+      }
+    } catch (err) { /* clipboard permission denied, skip silently */ }
+  },
+
+  async parseLink(url) {
+    if (!url) return;
+    this.setData({ isParsing: true, parseError: '' });
+    try {
+      const res = await wx.cloud.callFunction({
+        name: 'parseLink',
+        data: { url }
+      });
+      if (res.result && res.result.success) {
+        const data = res.result.data;
+        this.setData({
+          'formData.title': data.title || '',
+          'formData.platform': data.platform || '',
+          'formData.coverImage': data.coverImage || '',
+          isParsing: false,
+        });
+        wx.showToast({ title: '解析成功', icon: 'success' });
+      } else {
+        this.setData({ parseError: '链接解析失败，请检查链接是否正确', isParsing: false });
+      }
+    } catch (err) {
+      console.error('链接解析失败:', err);
+      this.setData({ parseError: '网络错误，请重试', isParsing: false });
+    }
+  },
+
+  onUrlInput(e) { this.setData({ 'formData.originalUrl': e.detail.value }); },
+  onParseTap() {
+    const url = this.data.formData.originalUrl.trim();
+    if (!url) { wx.showToast({ title: '请先输入链接', icon: 'none' }); return; }
+    this.parseLink(url);
+  },
+  onTitleInput(e) { this.setData({ 'formData.title': e.detail.value }); },
+  onSelectCategory(e) {
+    this.setData({ 'formData.category': e.currentTarget.dataset.category, showCategoryPicker: false });
+  },
+  onSelectPlatform(e) {
+    this.setData({ 'formData.platform': e.currentTarget.dataset.platform, showPlatformPicker: false });
+  },
+  onChooseLocation() {
+    const that = this;
+    wx.chooseLocation({
+      success(res) {
+        that.setData({
+          'formData.locationName': res.name || '',
+          'formData.locationAddress': res.address || '',
+          'formData.latitude': res.latitude,
+          'formData.longitude': res.longitude,
+        });
+      },
+      fail(err) {
+        if (err.errMsg.indexOf('auth deny') > -1) {
+          wx.showToast({ title: '请授权位置权限', icon: 'none' });
+        }
+      }
+    });
+  },
+  onTagInput(e) { this.setData({ tagInput: e.detail.value }); },
+  onAddTag() {
+    const tag = this.data.tagInput.trim();
+    if (!tag) return;
+    if (this.data.formData.tags.includes(tag)) {
+      wx.showToast({ title: '标签已存在', icon: 'none' }); return;
+    }
+    if (this.data.formData.tags.length >= 5) {
+      wx.showToast({ title: '最多添加5个标签', icon: 'none' }); return;
+    }
+    this.setData({
+      'formData.tags': [...this.data.formData.tags, tag],
+      tagInput: '',
+    });
+  },
+  onRemoveTag(e) {
+    const index = e.currentTarget.dataset.index;
+    const tags = [...this.data.formData.tags];
+    tags.splice(index, 1);
+    this.setData({ 'formData.tags': tags });
+  },
+  onRate(e) { this.setData({ 'formData.rating': e.currentTarget.dataset.rate }); },
+  onNoteInput(e) { this.setData({ 'formData.note': e.detail.value }); },
+
+  async onSubmit() {
+    const { formData } = this.data;
+    if (!formData.title.trim()) { wx.showToast({ title: '请输入地点名称', icon: 'none' }); return; }
+    if (!formData.category) { wx.showToast({ title: '请选择分类', icon: 'none' }); return; }
+
+    this.setData({ submitting: true });
+    const platformInfo = PLATFORMS.find(p => p.key === formData.platform) || PLATFORMS.find(p => p.key === 'other');
+
+    const result = await addCollectionItem({
+      title: formData.title.trim(),
+      platform: formData.platform || 'other',
+      platformLabel: platformInfo.label,
+      originalUrl: formData.originalUrl,
+      category: formData.category,
+      tags: formData.tags,
+      location: {
+        name: formData.locationName,
+        address: formData.locationAddress,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
+      },
+      note: formData.note,
+      rating: formData.rating,
+      status: 'want_to_go',
+    });
+
+    this.setData({ submitting: false });
+    if (result.success) {
+      wx.vibrateShort({ type: 'light' });
+      wx.showToast({ title: '⭐ 已加入收藏', icon: 'none', duration: 1200 });
+      setTimeout(() => { wx.switchTab({ url: '/pages/index/index' }); }, 1200);
+    } else {
+      wx.showToast({ title: '保存失败，请重试', icon: 'none' });
+    }
+  },
+
+  onReset() {
+    wx.showModal({
+      title: '确认清空',
+      content: '确定要清空已填写的内容吗？',
+      success: (res) => {
+        if (res.confirm) {
+          this.setData({
+            formData: {
+              originalUrl: '', title: '', platform: '', category: '',
+              locationName: '', locationAddress: '',
+              latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
+            },
+            parseError: '',
+          });
+        }
+      }
+    });
+  },
+});

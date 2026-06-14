@@ -1,0 +1,50 @@
+<view wx:if="{{!loading && item}}" class="page detail-page">
+  <view class="detail-cover">
+    <image src="{{item.coverImage || '/images/default-cover.png'}}" mode="aspectFill" class="cover-image"/>
+    <view class="cover-overlay">
+      <view class="cover-platform" style="background: {{platformInfo.color || '#999'}};">{{platformInfo.label || '其他'}}</view>
+      <view class="cover-status">{{statusLabel}}</view>
+    </view>
+  </view>
+
+  <view class="detail-section card">
+    <view class="detail-title">{{item.title}}</view>
+    <view class="detail-meta">
+      <view class="category-badge tag tag-primary">{{categoryInfo.label || '未分类'}}</view>
+      <view wx:if="{{item.rating}}" class="detail-rating">
+        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" style="color: {{index < item.rating ? '#FFD166' : '#E9ECEF'}}; font-size: 32rpx;">★</text>
+      </view>
+    </view>
+    <view wx:if="{{item.tags && item.tags.length > 0}}" class="detail-tags">
+      <view wx:for="{{item.tags}}" wx:key="*this" class="tag tag-accent">{{item}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{item.location && item.location.name}}" class="detail-section card">
+    <view class="section-title">📍 位置</view>
+    <view class="location-name">{{item.location.name}}</view>
+    <view wx:if="{{item.location.address}}" class="location-addr">{{item.location.address}}</view>
+    <view class="location-map" bindtap="onNavigate"><view class="map-placeholder">🗺️ 点击导航到此处</view></view>
+  </view>
+
+  <view wx:if="{{item.note}}" class="detail-section card">
+    <view class="section-title">📝 备注</view>
+    <view class="note-content">{{item.note}}</view>
+  </view>
+
+  <view wx:if="{{item.originalUrl}}" class="detail-section card">
+    <view class="section-title">🔗 来源</view>
+    <view class="link-row" bindtap="onOpenOriginal">
+      <view class="link-url ellipsis">{{item.originalUrl}}</view>
+      <view class="link-arrow">→</view>
+    </view>
+  </view>
+
+  <view class="detail-actions safe-area-bottom">
+    <button class="action-btn" bindtap="onToggleStatus">{{item.status === 'want_to_go' ? '✅ 标记去过' : '📋 标记想去'}}</button>
+    <button class="action-btn primary" bindtap="onNavigate">🧭 导航</button>
+    <button class="action-btn" open-type="share">📤 分享</button>
+  </view>
+</view>
+
+<view wx:elif="{{loading}}"><skeleton loading="{{true}}" count="{{1}}"/></view>

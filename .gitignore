@@ -1,0 +1,12 @@
+# IDE personal config
+project.private.config.json
+
+# Superpowers brainstorming cache
+.superpowers/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Node modules (cloud functions)
+cloudfunctions/*/node_modules/

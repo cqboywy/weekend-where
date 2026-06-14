@@ -1,0 +1,40 @@
+<view class="page index-page">
+  <view class="hero-section">
+    <view class="greeting">{{greeting}}</view>
+    <view class="current-date">{{currentDate}}</view>
+    <view class="hero-subtitle">去哪吃？去哪玩？看看收藏就有灵感 ✨</view>
+  </view>
+
+  <view class="quick-actions card">
+    <view class="quick-action" bindtap="onGoAdd">
+      <view class="quick-icon">⭐</view><view class="quick-label">添加收藏</view>
+    </view>
+    <view class="quick-action" bindtap="onGoMap">
+      <view class="quick-icon">🗺️</view><view class="quick-label">地图浏览</view>
+    </view>
+    <view class="quick-action" bindtap="onGoList">
+      <view class="quick-icon">🔍</view><view class="quick-label">搜索查找</view>
+    </view>
+  </view>
+
+  <view wx:if="{{stats}}" class="stats-section card">
+    <view class="stats-title">📊 我的收藏统计</view>
+    <view class="stats-grid">
+      <view class="stat-item"><view class="stat-num">{{stats.total}}</view><view class="stat-label">总收藏</view></view>
+      <view class="stat-item"><view class="stat-num">{{stats.wantToGo}}</view><view class="stat-label">想去</view></view>
+      <view class="stat-item"><view class="stat-num">{{stats.visited}}</view><view class="stat-label">去过</view></view>
+    </view>
+  </view>
+
+  <view class="recent-section">
+    <view class="recent-header">
+      <view class="recent-title">🕐 最近收藏</view>
+      <view class="recent-more" bindtap="onGoList">查看全部 ></view>
+    </view>
+    <view wx:if="{{loading}}"><skeleton loading="{{true}}" count="{{2}}"/></view>
+    <view wx:elif="{{recentItems.length === 0}}"><empty-state bind:action="onGoAdd"/></view>
+    <view wx:else>
+      <collection-card wx:for="{{recentItems}}" wx:key="_id" item="{{item}}" bind:tap="onViewDetail"/>
+    </view>
+  </view>
+</view>

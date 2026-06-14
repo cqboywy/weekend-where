@@ -1,0 +1,161 @@
+const db = wx.cloud.database();
+const _ = db.command;
+
+function collection(name) {
+  return db.collection(name);
+}
+
+// Resolves to the current user's openid, waiting for the login cloud function
+// if necessary. This prevents silent failures when wx.cloud.init() hasn't
+// finished its internal async initialisation (Bug 2 fix).
+async function ensureOpenId() {
+  const app = getApp();
+  if (app.globalData.openid) {
+    return app.globalData.openid;
+  }
+  if (app.getOpenIdPromise) {
+    return app.getOpenIdPromise;
+  }
+  // Fallback: if neither is ready, re-trigger and wait
+  const p = app.getOpenId();
+  app.getOpenIdPromise = p;
+  return p;
+}
+
+async function addCollectionItem(data) {
+  try {
+    const userId = await ensureOpenId();
+    const res = await collection('collection_items').add({
+      data: {
+        ...data,
+        userId,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      }
+    });
+    return { success: true, id: res._id };
+  } catch (err) {
+    console.error('添加收藏失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+async function getCollections({ category, keyword, status, skip = 0, limit = 20 } = {}) {
+  try {
+    const userId = await ensureOpenId();
+    // Build all conditions into a single array and use _.and() to avoid the
+    // CloudBase SDK bug where chained .where() calls replace previous conditions.
+    const conditions = [{ userId }];
+
+    if (category) {
+      conditions.push({ category });
+    }
+    if (status) {
+      conditions.push({ status });
+    }
+    if (keyword) {
+      conditions.push(
+        _.or([
+          { title: db.RegExp({ regexp: keyword, options: 'i' }) },
+          { note: db.RegExp({ regexp: keyword, options: 'i' }) },
+          { 'location.name': db.RegExp({ regexp: keyword, options: 'i' }) },
+        ])
+      );
+    }
+
+    const res = await collection('collection_items')
+      .where(_.and(conditions))
+      .orderBy('createdAt', 'desc')
+      .skip(skip)
+      .limit(limit)
+      .get();
+
+    return { success: true, data: res.data, hasMore: res.data.length === limit };
+  } catch (err) {
+    console.error('获取收藏列表失败:', err);
+    return { success: false, error: err, data: [] };
+  }
+}
+
+async function getAllCollections() {
+  try {
+    const userId = await ensureOpenId();
+    const maxLimit = 200;
+    const res = await collection('collection_items')
+      .where({ userId })
+      .field({ title: true, 'location.latitude': true, 'location.longitude': true, category: true, coverImage: true })
+      .limit(maxLimit)
+      .get();
+    return { success: true, data: res.data, hasMore: res.data.length === maxLimit };
+  } catch (err) {
+    console.error('获取全部收藏失败:', err);
+    return { success: false, error: err, data: [], hasMore: false };
+  }
+}
+
+async function getCollectionDetail(id) {
+  try {
+    const res = await collection('collection_items').doc(id).get();
+    return { success: true, data: res.data };
+  } catch (err) {
+    console.error('获取收藏详情失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+async function updateCollectionItem(id, data) {
+  try {
+    await collection('collection_items').doc(id).update({
+      data: { ...data, updatedAt: new Date().toISOString() }
+    });
+    return { success: true };
+  } catch (err) {
+    console.error('更新收藏失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+async function deleteCollectionItem(id) {
+  try {
+    await collection('collection_items').doc(id).remove();
+    return { success: true };
+  } catch (err) {
+    console.error('删除收藏失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+async function getCollectionStats() {
+  try {
+    const userId = await ensureOpenId();
+    const coll = collection('collection_items');
+    const totalRes = await coll.where({ userId }).count();
+    const wantRes = await coll.where({ userId, status: 'want_to_go' }).count();
+    const visitedRes = await coll.where({ userId, status: 'visited' }).count();
+    const categoryRes = await coll.where({ userId }).field({ category: true }).limit(200).get();
+    const categoryCount = {};
+    categoryRes.data.forEach(item => {
+      const cat = item.category || '未分类';
+      categoryCount[cat] = (categoryCount[cat] || 0) + 1;
+    });
+    return {
+      success: true,
+      data: {
+        total: totalRes.total,
+        wantToGo: wantRes.total,
+        visited: visitedRes.total,
+        byCategory: categoryCount,
+      }
+    };
+  } catch (err) {
+    console.error('获取统计失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+module.exports = {
+  db, _, collection,
+  addCollectionItem, getCollections, getAllCollections,
+  getCollectionDetail, updateCollectionItem, deleteCollectionItem,
+  getCollectionStats,
+};

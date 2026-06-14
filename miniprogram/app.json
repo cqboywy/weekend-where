@@ -1,0 +1,61 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/map/map",
+    "pages/add/add",
+    "pages/list/list",
+    "pages/detail/detail",
+    "pages/mine/mine"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F8F9FA",
+    "navigationBarTitleText": "周末去哪儿",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#F8F9FA"
+  },
+  "tabBar": {
+    "color": "#ADB5BD",
+    "selectedColor": "#FF6B35",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/tab-home.png",
+        "selectedIconPath": "images/tab-home-active.png"
+      },
+      {
+        "pagePath": "pages/map/map",
+        "text": "地图",
+        "iconPath": "images/tab-map.png",
+        "selectedIconPath": "images/tab-map-active.png"
+      },
+      {
+        "pagePath": "pages/add/add",
+        "text": "添加",
+        "iconPath": "images/tab-add.png",
+        "selectedIconPath": "images/tab-add-active.png"
+      },
+      {
+        "pagePath": "pages/list/list",
+        "text": "列表",
+        "iconPath": "images/tab-list.png",
+        "selectedIconPath": "images/tab-list-active.png"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "text": "我的",
+        "iconPath": "images/tab-mine.png",
+        "selectedIconPath": "images/tab-mine-active.png"
+      }
+    ]
+  },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于地图展示附近收藏"
+    }
+  },
+  "sitemapLocation": "sitemap.json"
+}

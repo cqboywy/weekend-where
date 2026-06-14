@@ -1,0 +1,37 @@
+<view class="collection-card card" bindtap="onTap" bindlongpress="onLongPress">
+  <view class="card-cover">
+    <image
+      src="{{item.coverImage || '/images/default-cover.png'}}"
+      mode="aspectFill"
+      class="cover-image"
+      lazy-load="{{true}}"
+    />
+    <view class="platform-badge" style="background: {{platformInfo.color}};">
+      {{platformInfo.label}}
+    </view>
+    <view wx:if="{{showStatus && item.status === 'visited'}}" class="status-badge">
+      ✅ 去过
+    </view>
+  </view>
+
+  <view class="card-body">
+    <view class="card-title ellipsis">{{item.title || '未命名地点'}}</view>
+
+    <view class="card-meta">
+      <view class="category-tag tag tag-primary">{{categoryInfo.label}}</view>
+      <view wx:if="{{item.rating}}" class="rating">
+        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this"
+              style="color: {{index < item.rating ? '#FFD166' : '#E9ECEF'}};">★</text>
+      </view>
+    </view>
+
+    <view wx:if="{{item.location && item.location.name}}" class="card-location ellipsis">
+      📍 {{item.location.name}}
+    </view>
+
+    <view class="card-footer">
+      <text class="card-date">{{formattedDate}}</text>
+      <view wx:if="{{item.note}}" class="card-note ellipsis">{{item.note}}</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,4 @@
+{
+  "usingComponents": { "skeleton": "/components/skeleton/index" },
+  "navigationBarTitleText": "收藏详情"
+}

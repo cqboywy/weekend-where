@@ -1,0 +1,9 @@
+{
+  "usingComponents": {
+    "collection-card": "/components/collection-card/index",
+    "skeleton": "/components/skeleton/index",
+    "empty-state": "/components/empty-state/index"
+  },
+  "navigationBarTitleText": "收藏列表",
+  "enablePullDownRefresh": true
+}

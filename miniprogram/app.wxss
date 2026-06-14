@@ -1,0 +1,103 @@
+page {
+  --color-bg: #F8F9FA;
+  --color-primary: #FF6B35;
+  --color-accent: #2EC4B6;
+  --color-accent-pink: #EF476F;
+  --color-yellow: #FFD166;
+  --color-text: #212529;
+  --color-text-light: #6C757D;
+  --color-white: #FFFFFF;
+  --color-border: #E9ECEF;
+  --radius-lg: 16rpx;
+  --radius-md: 10rpx;
+  --radius-sm: 6rpx;
+  --shadow-card: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  --shadow-float: 0 4rpx 20rpx rgba(0, 0, 0, 0.10);
+
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  /* Modern Chinese-first font stack: PingFang for iOS, HarmonyOS for new Android, Microsoft YaHei fallback */
+  font-family: "PingFang SC", "SF Pro Text", -apple-system, "HarmonyOS Sans SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+  font-size: 28rpx;
+  line-height: 1.6;
+  /* Slightly more open letter-spacing for Chinese readability */
+  letter-spacing: 0.5rpx;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.page {
+  min-height: 100vh;
+  background: var(--color-bg);
+}
+
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-top {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ellipsis-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+.tag {
+  display: inline-block;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+.tag-primary {
+  background: rgba(255, 107, 53, 0.12);
+  color: var(--color-primary);
+}
+
+.tag-accent {
+  background: rgba(46, 196, 182, 0.12);
+  color: var(--color-accent);
+}
+
+.tag-pink {
+  background: rgba(239, 71, 111, 0.12);
+  color: var(--color-accent-pink);
+}
+
+.tag-yellow {
+  background: rgba(255, 209, 102, 0.15);
+  color: #E6A800;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+image {
+  background: #E9ECEF;
+}

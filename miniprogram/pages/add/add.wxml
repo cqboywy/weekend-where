@@ -1,0 +1,80 @@
+<view class="page add-page">
+  <view class="page-header">
+    <view class="header-title">添加收藏</view>
+    <view class="header-desc">收藏一个好吃或好玩的地方</view>
+  </view>
+
+  <view class="section card">
+    <view class="section-title">🔗 粘贴链接（自动识别）</view>
+    <view class="url-input-row">
+      <input class="url-input" placeholder="粘贴小红书/抖音/B站/大众点评链接..." value="{{formData.originalUrl}}" bindinput="onUrlInput" confirm-type="done"/>
+      <button class="parse-btn {{isParsing ? 'loading' : ''}}" bindtap="onParseTap" disabled="{{isParsing}}" size="mini">{{isParsing ? '解析中...' : '解析'}}</button>
+    </view>
+    <view wx:if="{{parseError}}" class="parse-error">{{parseError}}</view>
+  </view>
+
+  <view class="section card">
+    <view class="section-title">📝 基本信息</view>
+    <view class="form-item">
+      <view class="form-label">名称 <text class="required">*</text></view>
+      <input class="form-input" placeholder="输入地点名称" value="{{formData.title}}" bindinput="onTitleInput"/>
+    </view>
+    <view class="form-item">
+      <view class="form-label">来源平台</view>
+      <view class="chip-row">
+        <block wx:for="{{platforms}}" wx:key="key">
+          <view class="chip {{formData.platform === item.key ? 'chip-active' : ''}}" data-platform="{{item.key}}" bindtap="onSelectPlatform" style="{{formData.platform === item.key ? 'background:' + item.color + ';color:#fff;' : ''}}">{{item.label}}</view>
+        </block>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">分类 <text class="required">*</text></view>
+      <view class="chip-row chip-row-wrap">
+        <block wx:for="{{categories}}" wx:key="key">
+          <view class="chip {{formData.category === item.key ? 'chip-active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
+        </block>
+      </view>
+    </view>
+    <view class="form-item">
+      <view class="form-label">评分</view>
+      <view class="rating-row">
+        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" class="rating-star {{index < formData.rating ? 'active' : ''}}" data-rate="{{index + 1}}" bindtap="onRate">★</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-title">📍 位置信息</view>
+    <view class="form-item">
+      <view class="location-picker" bindtap="onChooseLocation">
+        <view wx:if="{{!formData.locationName}}" class="location-placeholder">🗺️ 点击选择地点位置</view>
+        <view wx:else class="location-selected">
+          <view class="location-name">📍 {{formData.locationName}}</view>
+          <view class="location-addr">{{formData.locationAddress}}</view>
+          <view class="location-change">点击更换</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-title">🏷️ 自定义标签</view>
+    <view class="tag-input-row">
+      <input class="form-input tag-input" placeholder="添加标签（如：朋友聚会、约会）" value="{{tagInput}}" bindinput="onTagInput" bindconfirm="onAddTag"/>
+      <button class="tag-add-btn" bindtap="onAddTag" size="mini">添加</button>
+    </view>
+    <view wx:if="{{formData.tags.length > 0}}" class="tag-list">
+      <view wx:for="{{formData.tags}}" wx:key="*this" class="tag-item">{{item}}<text class="tag-remove" data-index="{{index}}" bindtap="onRemoveTag">✕</text></view>
+    </view>
+  </view>
+
+  <view class="section card">
+    <view class="section-title">📝 备注</view>
+    <textarea class="note-input" placeholder="记录一些想说的话（人均消费、推荐菜、备注等）" value="{{formData.note}}" bindinput="onNoteInput" maxlength="200" auto-height/>
+  </view>
+
+  <view class="bottom-actions safe-area-bottom">
+    <button class="reset-btn" bindtap="onReset">清空</button>
+    <button class="submit-btn {{submitting ? 'loading' : ''}}" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">{{submitting ? '保存中...' : '⭐ 加入收藏'}}</button>
+  </view>
+</view>
