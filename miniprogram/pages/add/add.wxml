@@ -5,7 +5,7 @@
   </view>
 
   <view class="section card">
-    <view class="section-title">🔗 粘贴链接（自动识别）</view>
+    <view class="section-label">粘贴链接</view>
     <view class="url-input-row">
       <input class="url-input" placeholder="粘贴小红书/抖音/B站/大众点评链接..." value="{{formData.originalUrl}}" bindinput="onUrlInput" confirm-type="done"/>
       <button class="parse-btn {{isParsing ? 'loading' : ''}}" bindtap="onParseTap" disabled="{{isParsing}}" size="mini">{{isParsing ? '解析中...' : '解析'}}</button>
@@ -14,7 +14,7 @@
   </view>
 
   <view class="section card">
-    <view class="section-title">📝 基本信息</view>
+    <view class="section-label">基本信息</view>
     <view class="form-item">
       <view class="form-label">名称 <text class="required">*</text></view>
       <input class="form-input" placeholder="输入地点名称" value="{{formData.title}}" bindinput="onTitleInput"/>
@@ -44,7 +44,7 @@
   </view>
 
   <view class="section card">
-    <view class="section-title">📍 位置信息</view>
+    <view class="section-label">位置信息</view>
     <view class="form-item">
       <view class="location-picker" bindtap="onChooseLocation">
         <view wx:if="{{!formData.locationName}}" class="location-placeholder">🗺️ 点击选择地点位置</view>
@@ -58,7 +58,7 @@
   </view>
 
   <view class="section card">
-    <view class="section-title">🏷️ 自定义标签</view>
+    <view class="section-label">自定义标签</view>
     <view class="tag-input-row">
       <input class="form-input tag-input" placeholder="添加标签（如：朋友聚会、约会）" value="{{tagInput}}" bindinput="onTagInput" bindconfirm="onAddTag"/>
       <button class="tag-add-btn" bindtap="onAddTag" size="mini">添加</button>
@@ -69,7 +69,7 @@
   </view>
 
   <view class="section card">
-    <view class="section-title">📝 备注</view>
+    <view class="section-label">备注</view>
     <textarea class="note-input" placeholder="记录一些想说的话（人均消费、推荐菜、备注等）" value="{{formData.note}}" bindinput="onNoteInput" maxlength="200" auto-height/>
   </view>
 

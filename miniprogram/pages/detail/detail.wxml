@@ -1,10 +1,9 @@
 <view wx:if="{{!loading && item}}" class="page detail-page">
   <view class="detail-cover">
     <image src="{{item.coverImage || '/images/default-cover.png'}}" mode="aspectFill" class="cover-image"/>
-    <view class="cover-overlay">
-      <view class="cover-platform" style="background: {{platformInfo.color || '#999'}};">{{platformInfo.label || '其他'}}</view>
-      <view class="cover-status">{{statusLabel}}</view>
-    </view>
+    <view class="cover-gradient"></view>
+    <view class="cover-platform" style="background: {{platformInfo.color || '#999'}};">{{platformInfo.label || '其他'}}</view>
+    <view class="cover-status">{{statusLabel}}</view>
   </view>
 
   <view class="detail-section card">
@@ -12,28 +11,28 @@
     <view class="detail-meta">
       <view class="category-badge tag tag-primary">{{categoryInfo.label || '未分类'}}</view>
       <view wx:if="{{item.rating}}" class="detail-rating">
-        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" style="color: {{index < item.rating ? '#FFD166' : '#E9ECEF'}}; font-size: 32rpx;">★</text>
+        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" style="color: {{index < item.rating ? '#F59E0B' : '#E5E7EB'}}; font-size: 32rpx;">★</text>
       </view>
     </view>
     <view wx:if="{{item.tags && item.tags.length > 0}}" class="detail-tags">
-      <view wx:for="{{item.tags}}" wx:key="*this" class="tag tag-accent">{{item}}</view>
+      <view wx:for="{{item.tags}}" wx:key="*this" class="tag tag-success">{{item}}</view>
     </view>
   </view>
 
   <view wx:if="{{item.location && item.location.name}}" class="detail-section card">
-    <view class="section-title">📍 位置</view>
+    <view class="section-label">位置</view>
     <view class="location-name">{{item.location.name}}</view>
     <view wx:if="{{item.location.address}}" class="location-addr">{{item.location.address}}</view>
-    <view class="location-map" bindtap="onNavigate"><view class="map-placeholder">🗺️ 点击导航到此处</view></view>
+    <view class="location-nav-btn" bindtap="onNavigate">🗺️ 点击导航到此处</view>
   </view>
 
   <view wx:if="{{item.note}}" class="detail-section card">
-    <view class="section-title">📝 备注</view>
+    <view class="section-label">备注</view>
     <view class="note-content">{{item.note}}</view>
   </view>
 
   <view wx:if="{{item.originalUrl}}" class="detail-section card">
-    <view class="section-title">🔗 来源</view>
+    <view class="section-label">来源</view>
     <view class="link-row" bindtap="onOpenOriginal">
       <view class="link-url ellipsis">{{item.originalUrl}}</view>
       <view class="link-arrow">→</view>

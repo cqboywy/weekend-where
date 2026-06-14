@@ -1,52 +1,93 @@
-page {
-  --color-bg: #F8F9FA;
-  --color-primary: #FF6B35;
-  --color-accent: #2EC4B6;
-  --color-accent-pink: #EF476F;
-  --color-yellow: #FFD166;
-  --color-text: #212529;
-  --color-text-light: #6C757D;
-  --color-white: #FFFFFF;
-  --color-border: #E9ECEF;
-  --radius-lg: 16rpx;
-  --radius-md: 10rpx;
-  --radius-sm: 6rpx;
-  --shadow-card: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
-  --shadow-float: 0 4rpx 20rpx rgba(0, 0, 0, 0.10);
+/* =============================================
+   周末去哪儿 — Design System v3 "Cobalt"
+   DESIGN_VARIANCE: 7 | MOTION: 4 | DENSITY: 3
+   ============================================= */
 
+page {
+  /* Color Tokens */
+  --color-bg: #FFFFFF;
+  --color-surface: #F8F9FB;
+  --color-primary: #1A56DB;
+  --color-primary-hover: #1E40AF;
+  --color-primary-light: #EFF4FF;
+  --color-text: #111827;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-border: #E5E7EB;
+  --color-white: #FFFFFF;
+  --color-danger: #DC2626;
+  --color-success: #16A34A;
+
+  /* Radius */
+  --radius-sm: 8rpx;
+  --radius-md: 12rpx;
+  --radius-lg: 20rpx;
+  --radius-xl: 28rpx;
+  --radius-full: 9999rpx;
+
+  /* Shadows — blue-tinted, not pure black */
+  --shadow-sm: 0 1rpx 3rpx rgba(26, 86, 219, 0.04);
+  --shadow-card: 0 2rpx 8rpx rgba(26, 86, 219, 0.06), 0 1rpx 2rpx rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 8rpx 24rpx rgba(26, 86, 219, 0.08), 0 2rpx 4rpx rgba(0, 0, 0, 0.04);
+  --shadow-float: 0 16rpx 40rpx rgba(26, 86, 219, 0.10), 0 4rpx 8rpx rgba(0, 0, 0, 0.04);
+
+  /* Type Scale */
+  --text-xs: 20rpx;
+  --text-sm: 24rpx;
+  --text-base: 28rpx;
+  --text-md: 32rpx;
+  --text-lg: 36rpx;
+  --text-xl: 48rpx;
+  --text-2xl: 64rpx;
+  --text-3xl: 80rpx;
+
+  /* Leading */
+  --leading-tight: 1.2;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.7;
+
+  /* Tracking */
+  --tracking-tight: -1rpx;
+  --tracking-normal: 0;
+  --tracking-wide: 0.5rpx;
+
+  /* Base */
   background-color: var(--color-bg);
   color: var(--color-text);
-  /* Modern Chinese-first font stack: PingFang for iOS, HarmonyOS for new Android, Microsoft YaHei fallback */
-  font-family: "PingFang SC", "SF Pro Text", -apple-system, "HarmonyOS Sans SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
-  font-size: 28rpx;
-  line-height: 1.6;
-  /* Slightly more open letter-spacing for Chinese readability */
-  letter-spacing: 0.5rpx;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ---- Layout ---- */
 .page {
   min-height: 100vh;
   background: var(--color-bg);
 }
 
+.container {
+  padding-left: 32rpx;
+  padding-right: 32rpx;
+}
+
+/* ---- Safe Areas ---- */
 .safe-area-bottom {
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
 }
-
 .safe-area-top {
   padding-top: constant(safe-area-inset-top);
   padding-top: env(safe-area-inset-top);
 }
 
+/* ---- Text Utilities ---- */
 .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .ellipsis-2 {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -54,50 +95,94 @@ page {
   overflow: hidden;
 }
 
+/* ---- Cards ---- */
 .card {
   background: var(--color-white);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  overflow: hidden;
+}
+.card-elevated {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-elevated);
 }
 
+/* ---- Tags ---- */
 .tag {
-  display: inline-block;
-  padding: 4rpx 16rpx;
-  border-radius: 20rpx;
-  font-size: 22rpx;
-  line-height: 1.6;
+  display: inline-flex;
+  align-items: center;
+  padding: 4rpx 14rpx;
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
   font-weight: 500;
+  line-height: 1.6;
 }
-
 .tag-primary {
-  background: rgba(255, 107, 53, 0.12);
+  background: var(--color-primary-light);
   color: var(--color-primary);
 }
-
-.tag-accent {
-  background: rgba(46, 196, 182, 0.12);
-  color: var(--color-accent);
+.tag-success {
+  background: #F0FDF4;
+  color: var(--color-success);
 }
 
-.tag-pink {
-  background: rgba(239, 71, 111, 0.12);
-  color: var(--color-accent-pink);
+/* ---- Buttons (base) ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: var(--text-base);
+  transition: all 0.2s ease;
+  border: none;
+}
+.btn:active {
+  transform: scale(0.97);
+  opacity: 0.9;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  box-shadow: 0 4rpx 12rpx rgba(26, 86, 219, 0.3);
+}
+.btn-ghost {
+  background: var(--color-surface);
+  color: var(--color-text);
 }
 
-.tag-yellow {
-  background: rgba(255, 209, 102, 0.15);
-  color: #E6A800;
+/* ---- Separator ---- */
+.separator {
+  height: 1rpx;
+  background: var(--color-border);
 }
 
+/* ---- Animations ---- */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20rpx); }
+  from { opacity: 0; transform: translateY(12rpx); }
   to { opacity: 1; transform: translateY(0); }
 }
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
 .fade-in {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.35s ease-out;
+}
+.fade-in-up {
+  animation: fadeInUp 0.45s ease-out;
 }
 
+/* ---- Images ---- */
 image {
-  background: #E9ECEF;
+  background: var(--color-surface);
+}
+
+/* ---- Smooth page entry ---- */
+.page {
+  animation: fadeIn 0.3s ease-out;
 }

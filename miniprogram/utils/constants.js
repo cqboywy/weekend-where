@@ -32,15 +32,17 @@ const STATUS = [
 ];
 
 const COLORS = {
-  bg: '#F8F9FA',
-  primary: '#FF6B35',
-  accent: '#2EC4B6',
-  accentPink: '#EF476F',
-  yellow: '#FFD166',
-  text: '#212529',
-  textLight: '#6C757D',
+  bg: '#FFFFFF',
+  surface: '#F8F9FB',
+  primary: '#1A56DB',
+  primaryLight: '#EFF4FF',
+  text: '#111827',
+  textSecondary: '#6B7280',
+  textTertiary: '#9CA3AF',
+  border: '#E5E7EB',
   white: '#FFFFFF',
-  border: '#E9ECEF',
+  danger: '#DC2626',
+  success: '#16A34A',
 };
 
 module.exports = { CATEGORIES, PLATFORMS, STATUS, COLORS };

@@ -38,7 +38,7 @@ Page({
       title: item.title,
       iconPath: '/images/marker-food.png',
       width: 36, height: 36,
-      callout: { content: item.title, color: '#212529', fontSize: 13, borderRadius: 8, bgColor: '#FFFFFF', padding: 8, display: 'BYCLICK' },
+      callout: { content: item.title, color: '#111827', fontSize: 13, borderRadius: 8, bgColor: '#FFFFFF', padding: 8, display: 'BYCLICK' },
     }));
     this.setData({ markers });
   },

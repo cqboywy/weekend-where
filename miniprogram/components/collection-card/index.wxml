@@ -1,4 +1,4 @@
-<view class="collection-card card" bindtap="onTap" bindlongpress="onLongPress">
+<view class="collection-card" bindtap="onTap" bindlongpress="onLongPress">
   <view class="card-cover">
     <image
       src="{{item.coverImage || '/images/default-cover.png'}}"
@@ -21,7 +21,7 @@
       <view class="category-tag tag tag-primary">{{categoryInfo.label}}</view>
       <view wx:if="{{item.rating}}" class="rating">
         <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this"
-              style="color: {{index < item.rating ? '#FFD166' : '#E9ECEF'}};">★</text>
+              style="color: {{index < item.rating ? '#F59E0B' : '#E5E7EB'}};">★</text>
       </view>
     </view>
 

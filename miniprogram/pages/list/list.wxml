@@ -1,16 +1,17 @@
 <view class="page list-page">
-  <view class="search-bar">
-    <view wx:if="{{showSearch}}" class="search-input-row">
-      <input class="search-input" placeholder="搜索收藏..." value="{{searchValue}}" bindinput="onSearchInput" bindconfirm="onSearchConfirm" focus="{{true}}" confirm-type="search"/>
-      <view class="search-cancel" bindtap="onToggleSearch">取消</view>
-    </view>
-    <view wx:else class="search-header">
-      <view class="search-title">我的收藏</view>
-      <view class="search-icon" bindtap="onToggleSearch">🔍</view>
+  <view class="list-header">
+    <view class="list-title-row">
+      <view class="list-title">我的收藏</view>
+      <view class="list-search-btn" bindtap="onToggleSearch">🔍</view>
     </view>
   </view>
 
-  <scroll-view class="category-bar" scroll-x enable-flex>
+  <view wx:if="{{showSearch}}" class="search-row">
+    <input class="search-input" placeholder="搜索收藏..." value="{{searchValue}}" bindinput="onSearchInput" bindconfirm="onSearchConfirm" focus="{{true}}" confirm-type="search"/>
+    <view class="search-cancel" bindtap="onToggleSearch">取消</view>
+  </view>
+
+  <scroll-view class="category-scroll" scroll-x enable-flex>
     <view wx:for="{{categories}}" wx:key="key" class="filter-chip {{activeCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
   </scroll-view>
 
