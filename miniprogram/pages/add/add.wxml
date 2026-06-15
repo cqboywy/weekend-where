@@ -8,7 +8,7 @@
     <view class="section-label">粘贴链接</view>
     <view class="url-input-row">
       <input class="url-input" placeholder="粘贴小红书/抖音/B站/大众点评链接..." value="{{formData.originalUrl}}" bindinput="onUrlInput" confirm-type="done"/>
-      <button class="parse-btn {{isParsing ? 'loading' : ''}}" bindtap="onParseTap" disabled="{{isParsing}}" size="mini">{{isParsing ? '解析中...' : '解析'}}</button>
+      <button class="parse-btn {{isParsing ? 'loading' : ''}}" bindtap="onParseTap" disabled="{{isParsing}}">{{isParsing ? '解析中...' : '解析'}}</button>
     </view>
     <view wx:if="{{parseError}}" class="parse-error">{{parseError}}</view>
   </view>
@@ -61,7 +61,7 @@
     <view class="section-label">自定义标签</view>
     <view class="tag-input-row">
       <input class="form-input tag-input" placeholder="添加标签（如：朋友聚会、约会）" value="{{tagInput}}" bindinput="onTagInput" bindconfirm="onAddTag"/>
-      <button class="tag-add-btn" bindtap="onAddTag" size="mini">添加</button>
+      <button class="tag-add-btn" bindtap="onAddTag">添加</button>
     </view>
     <view wx:if="{{formData.tags.length > 0}}" class="tag-list">
       <view wx:for="{{formData.tags}}" wx:key="*this" class="tag-item">{{item}}<text class="tag-remove" data-index="{{index}}" bindtap="onRemoveTag">✕</text></view>

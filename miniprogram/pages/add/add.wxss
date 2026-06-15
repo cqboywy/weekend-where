@@ -18,9 +18,9 @@
 .parse-btn {
   white-space: nowrap; background: var(--color-primary); color: #fff;
   border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 600;
-  padding: 18rpx 28rpx; letter-spacing: var(--tracking-wide); text-transform: uppercase;
+  padding: 0 28rpx; height: 80rpx; letter-spacing: var(--tracking-wide); text-transform: uppercase;
   display: inline-flex; align-items: center; justify-content: center;
-  line-height: 1; transition: opacity 0.3s ease;
+  line-height: 80rpx; transition: opacity 0.3s ease;
 }
 .parse-btn:active { opacity: 0.8; }
 
@@ -69,7 +69,7 @@
 /* Tags */
 .tag-input-row { display: flex; gap: 10rpx; margin-bottom: 16rpx; align-items: center; }
 .tag-input { flex: 1; }
-.tag-add-btn { background: var(--color-primary); color: #fff; border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 600; letter-spacing: var(--tracking-wide); text-transform: uppercase; display: inline-flex; align-items: center; height: 80rpx; padding: 0 28rpx; line-height: 1; }
+.tag-add-btn { background: var(--color-primary); color: #fff; border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 600; letter-spacing: var(--tracking-wide); text-transform: uppercase; display: inline-flex; align-items: center; justify-content: center; height: 80rpx; padding: 0 28rpx; line-height: 80rpx; }
 .tag-list { display: flex; flex-wrap: wrap; gap: 10rpx; }
 .tag-item {
   display: inline-flex; align-items: center;
