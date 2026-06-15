@@ -1,4 +1,4 @@
-const { addCollectionItem } = require('../../utils/cloud.js');
+const { addCollectionItem, updateCollectionItem } = require('../../utils/cloud.js');
 const { CATEGORIES, PLATFORMS } = require('../../utils/constants.js');
 
 Page({
@@ -18,6 +18,8 @@ Page({
     showMapPicker: false,
     marker: null,
     submitting: false,
+    isEditing: false,
+    editId: '',
   },
 
   onLoad(options) {
@@ -25,10 +27,34 @@ Page({
       this.setData({ 'formData.originalUrl': decodeURIComponent(options.url) });
       this.parseLink(decodeURIComponent(options.url));
     }
+
+    // Edit mode: pre-fill form with existing data
+    if (options.edit === '1' && options.id) {
+      wx.setNavigationBarTitle({ title: '编辑收藏' });
+      this.setData({
+        isEditing: true,
+        editId: options.id,
+        formData: {
+          originalUrl: options.url ? decodeURIComponent(options.url) : '',
+          title: options.title ? decodeURIComponent(options.title) : '',
+          platform: options.platform || '',
+          category: options.category || '',
+          locationName: options.locName ? decodeURIComponent(options.locName) : '',
+          locationAddress: options.locAddr ? decodeURIComponent(options.locAddr) : '',
+          latitude: parseFloat(options.lat) || 0,
+          longitude: parseFloat(options.lng) || 0,
+          note: options.note ? decodeURIComponent(options.note) : '',
+          rating: parseInt(options.rating) || 0,
+          tags: options.tags ? decodeURIComponent(options.tags).split(',') : [],
+        },
+      });
+    }
   },
 
   onShow() {
-    this.checkClipboard();
+    if (!this.data.isEditing) {
+      this.checkClipboard();
+    }
   },
 
   async checkClipboard() {
@@ -62,9 +88,8 @@ Page({
       if (res.result && res.result.success) {
         const data = res.result.data;
         this.setData({
-          'formData.title': data.title || '',
-          'formData.platform': data.platform || '',
-          'formData.coverImage': data.coverImage || '',
+          'formData.title': data.title || this.data.formData.title,
+          'formData.platform': data.platform || this.data.formData.platform,
           isParsing: false,
         });
         wx.showToast({ title: '解析成功', icon: 'success' });
@@ -129,18 +154,21 @@ Page({
     tags.splice(index, 1);
     this.setData({ 'formData.tags': tags });
   },
-  onRate(e) { this.setData({ 'formData.rating': e.currentTarget.dataset.rate }); },
+  onRate(e) {
+    const rate = parseInt(e.currentTarget.dataset.rate) || 0;
+    this.setData({ 'formData.rating': rate });
+  },
   onNoteInput(e) { this.setData({ 'formData.note': e.detail.value }); },
 
   async onSubmit() {
-    const { formData } = this.data;
+    const { formData, isEditing, editId } = this.data;
     if (!formData.title.trim()) { wx.showToast({ title: '请输入地点名称', icon: 'none' }); return; }
     if (!formData.category) { wx.showToast({ title: '请选择分类', icon: 'none' }); return; }
 
     this.setData({ submitting: true });
     const platformInfo = PLATFORMS.find(p => p.key === formData.platform) || PLATFORMS.find(p => p.key === 'other');
 
-    const result = await addCollectionItem({
+    const payload = {
       title: formData.title.trim(),
       platform: formData.platform || 'other',
       platformLabel: platformInfo.label,
@@ -155,14 +183,34 @@ Page({
       },
       note: formData.note,
       rating: formData.rating,
-      status: 'want_to_go',
-    });
+    };
+
+    let result;
+    if (isEditing) {
+      result = await updateCollectionItem(editId, payload);
+    } else {
+      payload.status = 'want_to_go';
+      result = await addCollectionItem(payload);
+    }
 
     this.setData({ submitting: false });
     if (result.success) {
       wx.vibrateShort({ type: 'light' });
-      wx.showToast({ title: '⭐ 已加入收藏', icon: 'none', duration: 1200 });
-      setTimeout(() => { wx.switchTab({ url: '/pages/index/index' }); }, 1200);
+      wx.showToast({ title: isEditing ? '已更新收藏' : '已加入收藏', icon: 'success', duration: 1500 });
+      if (isEditing) {
+        setTimeout(() => { wx.navigateBack(); }, 800);
+      } else {
+        // Auto-clear form for next addition
+        this.setData({
+          formData: {
+            originalUrl: '', title: '', platform: '', category: '',
+            locationName: '', locationAddress: '',
+            latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
+          },
+          parseError: '',
+          tagInput: '',
+        });
+      }
     } else {
       wx.showToast({ title: '保存失败，请重试', icon: 'none' });
     }
@@ -181,6 +229,7 @@ Page({
               latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
             },
             parseError: '',
+            tagInput: '',
           });
         }
       }

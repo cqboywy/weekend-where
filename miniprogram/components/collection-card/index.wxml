@@ -4,7 +4,7 @@
     <!-- Cover -->
     <view class="card-cover">
       <image
-        src="{{item.coverImage || '/images/default-cover.png'}}"
+        src="{{displayCover}}"
         mode="aspectFill"
         class="cover-image"
         lazy-load="{{true}}"
@@ -30,7 +30,7 @@
           <lucide-icon name="{{categoryInfo.icon || 'tag'}}" size="24" />
           <text>{{categoryInfo.label}}</text>
         </view>
-        <view wx:if="{{item.rating}}" class="rating">
+        <view wx:if="{{item.rating > 0}}" class="rating">
           <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this"
                 class="rating-star {{index < item.rating ? 'active' : ''}}">★</text>
         </view>

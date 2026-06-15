@@ -1,8 +1,8 @@
 const { getCollectionDetail, updateCollectionItem, deleteCollectionItem } = require('../../utils/cloud.js');
-const { CATEGORIES, PLATFORMS, STATUS } = require('../../utils/constants.js');
+const { CATEGORIES, PLATFORMS, STATUS, CATEGORY_COVERS } = require('../../utils/constants.js');
 
 Page({
-  data: { item: null, loading: true, categoryInfo: null, platformInfo: null, statusLabel: '' },
+  data: { item: null, loading: true, categoryInfo: null, platformInfo: null, statusLabel: '', displayCover: '' },
 
   onLoad(options) {
     if (options.id) { this.loadDetail(options.id); }
@@ -16,7 +16,8 @@ Page({
       const categoryInfo = CATEGORIES.find(c => c.key === item.category);
       const platformInfo = PLATFORMS.find(p => p.key === item.platform);
       const statusLabel = STATUS.find(s => s.key === item.status)?.label || '';
-      this.setData({ item, categoryInfo, platformInfo, statusLabel, loading: false });
+      const displayCover = item.coverImage || (CATEGORY_COVERS[item.category] || CATEGORY_COVERS['other']);
+      this.setData({ item, categoryInfo, platformInfo, statusLabel, displayCover, loading: false });
     } else {
       wx.showToast({ title: '加载失败', icon: 'none' });
       this.setData({ loading: false });
@@ -37,6 +38,32 @@ Page({
     const { location } = this.data.item;
     if (!location || !location.latitude) { wx.showToast({ title: '未设置位置信息', icon: 'none' }); return; }
     wx.openLocation({ latitude: location.latitude, longitude: location.longitude, name: location.name || this.data.item.title, address: location.address || '', scale: 16 });
+  },
+
+  onEdit() {
+    const item = this.data.item;
+    const params = [
+      `id=${item._id}`,
+      `title=${encodeURIComponent(item.title || '')}`,
+      `category=${item.category || ''}`,
+      `platform=${item.platform || ''}`,
+      `rating=${item.rating || 0}`,
+      `note=${encodeURIComponent(item.note || '')}`,
+      `status=${item.status || 'want_to_go'}`,
+    ];
+    if (item.location && item.location.name) {
+      params.push(`locName=${encodeURIComponent(item.location.name)}`);
+      params.push(`locAddr=${encodeURIComponent(item.location.address || '')}`);
+      params.push(`lat=${item.location.latitude || 0}`);
+      params.push(`lng=${item.location.longitude || 0}`);
+    }
+    if (item.tags && item.tags.length > 0) {
+      params.push(`tags=${encodeURIComponent(item.tags.join(','))}`);
+    }
+    if (item.originalUrl) {
+      params.push(`url=${encodeURIComponent(item.originalUrl)}`);
+    }
+    wx.navigateTo({ url: `/pages/add/add?edit=1&${params.join('&')}` });
   },
 
   onOpenOriginal() {

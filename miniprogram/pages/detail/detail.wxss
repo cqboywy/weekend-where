@@ -57,16 +57,16 @@
 
 /* Bottom actions */
 .detail-actions {
-  position: fixed; bottom: 0; left: 0; right: 0; display: flex; gap: 12rpx;
-  padding: 16rpx 24rpx; background: rgba(254,249,243,0.95);
+  position: fixed; bottom: 0; left: 0; right: 0; display: flex; gap: 10rpx;
+  padding: 16rpx 20rpx; background: rgba(254,249,243,0.95);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-top: 1rpx solid var(--color-border); z-index: 100;
 }
 .action-btn {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8rpx;
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6rpx;
   background: var(--color-white); color: var(--color-text);
-  border-radius: var(--radius-full); font-size: var(--text-sm);
-  padding: 24rpx 16rpx; border: 1rpx solid var(--color-border); font-weight: 600;
+  border-radius: var(--radius-full); font-size: 22rpx;
+  padding: 22rpx 10rpx; border: 1rpx solid var(--color-border); font-weight: 600;
 }
 .action-btn.primary {
   background: var(--color-primary); color: #fff;

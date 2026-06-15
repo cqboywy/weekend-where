@@ -1,7 +1,7 @@
 <view class="page add-page">
   <view class="page-header">
-    <view class="header-title">添加收藏</view>
-    <view class="header-desc">收藏一个好吃或好玩的地方</view>
+    <view class="header-title">{{isEditing ? '编辑收藏' : '添加收藏'}}</view>
+    <view class="header-desc">{{isEditing ? '修改收藏信息' : '收藏一个好吃或好玩的地方'}}</view>
   </view>
 
   <view class="section card">
@@ -75,6 +75,6 @@
 
   <view class="bottom-actions safe-area-bottom">
     <button class="reset-btn" bindtap="onReset">清空</button>
-    <button class="submit-btn {{submitting ? 'loading' : ''}}" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">{{submitting ? '保存中...' : '⭐ 加入收藏'}}</button>
+    <button class="submit-btn {{submitting ? 'loading' : ''}}" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">{{submitting ? '保存中...' : (isEditing ? '保存修改' : '加入收藏')}}</button>
   </view>
 </view>

@@ -1,4 +1,4 @@
-const { PLATFORMS, CATEGORIES } = require('../../utils/constants.js');
+const { PLATFORMS, CATEGORIES, CATEGORY_COVERS } = require('../../utils/constants.js');
 
 Component({
   properties: {
@@ -29,12 +29,14 @@ Component({
     categoryInfo: {},
     formattedDate: '',
     staggerClass: 'stagger-1',
+    displayCover: '',
   },
 
   methods: {
     processItem(item) {
       const platformInfo = PLATFORMS.find(p => p.key === item.platform) || PLATFORMS.find(p => p.key === 'other');
       const categoryInfo = CATEGORIES.find(c => c.key === item.category) || CATEGORIES.find(c => c.key === 'other');
+      const displayCover = item.coverImage || (CATEGORY_COVERS[item.category] || CATEGORY_COVERS['other']);
       const date = new Date(item.createdAt);
       const now = new Date();
       const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
@@ -44,7 +46,7 @@ Component({
       else if (diffDays < 7) formattedDate = `${diffDays}天前`;
       else formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
 
-      this.setData({ platformInfo, categoryInfo, formattedDate });
+      this.setData({ platformInfo, categoryInfo, formattedDate, displayCover });
     },
 
     onTap() {

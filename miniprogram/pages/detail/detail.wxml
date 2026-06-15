@@ -1,7 +1,7 @@
 <view wx:if="{{!loading && item}}" class="page detail-page">
   <!-- Cover -->
   <view class="detail-cover">
-    <image src="{{item.coverImage || '/images/default-cover.png'}}" mode="aspectFill" class="cover-image"/>
+    <image src="{{displayCover}}" mode="aspectFill" class="cover-image"/>
     <view class="cover-gradient"></view>
     <view class="cover-platform" style="background: {{platformInfo.color || '#999'}};">{{platformInfo.label || '其他'}}</view>
     <view class="cover-status">{{statusLabel}}</view>
@@ -53,6 +53,7 @@
   </view>
 
   <view class="detail-actions safe-area-bottom">
+    <button class="action-btn pressable" bindtap="onEdit"><lucide-icon name="tag" size="28" color="#E8876A" /> 编辑</button>
     <button class="action-btn pressable" bindtap="onToggleStatus"><lucide-icon name="check" size="28" color="#E8876A" /> {{item.status === 'want_to_go' ? '去过' : '想去'}}</button>
     <button class="action-btn primary pressable" bindtap="onNavigate"><lucide-icon name="navigation" size="28" color="#fff" /> 导航</button>
     <button class="action-btn pressable" open-type="share"><lucide-icon name="share" size="28" color="#3D2B1F" /> 分享</button>

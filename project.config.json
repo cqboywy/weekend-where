@@ -42,7 +42,7 @@
   },
   "appid": "wx363c26d6368f33ca",
   "projectname": "weekend-where",
-  "libVersion": "3.3.4",
+  "libVersion": "3.16.1",
   "cloudfunctionTemplateRoot": "cloudfunctionTemplate/",
   "condition": {},
   "compileType": "miniprogram",
