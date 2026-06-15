@@ -8,6 +8,21 @@ App({
         traceUser: true,
       });
     }
+
+    // Load Botanical Design System fonts
+    wx.loadFontFace({
+      family: 'Playfair Display',
+      source: 'url("https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKd3vXDXbtXK-F2qC0s.woff2")',
+      success: () => console.log('Playfair Display loaded'),
+      fail: () => console.log('Playfair Display failed, using fallback')
+    });
+    wx.loadFontFace({
+      family: 'Source Sans 3',
+      source: 'url("https://fonts.gstatic.com/s/sourcesans3/v15/nwpBtKy2OAdR1K-IwhWudF-R9QMylBJLYyJg.woff2")',
+      success: () => console.log('Source Sans 3 loaded'),
+      fail: () => console.log('Source Sans 3 failed, using fallback')
+    });
+
     this.getOpenIdPromise = this.getOpenId();
   },
 

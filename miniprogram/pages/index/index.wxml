@@ -1,51 +1,47 @@
 <view class="page index-page">
   <!-- Hero -->
   <view class="hero">
-    <view class="hero-eyebrow">WEEKEND WHERE</view>
+    <view class="hero-tag">周末去哪儿</view>
     <view class="hero-title">{{greeting}}</view>
-    <view class="hero-date">{{currentDate}}</view>
+    <view class="hero-sub">{{currentDate}}</view>
   </view>
 
-  <!-- Primary CTA Card -->
+  <!-- Primary CTA (Terracotta accent pop) -->
   <view class="cta-card card-elevated" bindtap="onGoAdd">
-    <view class="cta-icon">
-      <view class="cta-icon-circle">+</view>
-    </view>
+    <view class="cta-icon">+</view>
     <view class="cta-body">
       <view class="cta-title">添加新收藏</view>
-      <view class="cta-desc">粘贴链接，自动识别地点信息</view>
+      <view class="cta-sub">粘贴链接，自动识别并整理</view>
     </view>
     <view class="cta-arrow">→</view>
   </view>
 
   <!-- Quick Nav -->
-  <view class="quick-nav">
-    <view class="quick-nav-item" bindtap="onGoMap">
-      <view class="quick-nav-icon">📍</view>
-      <view class="quick-nav-label">地图</view>
+  <view class="quick-row">
+    <view class="quick-item card" bindtap="onGoMap">
+      <view class="quick-label">地图浏览</view>
     </view>
-    <view class="quick-nav-item" bindtap="onGoList">
-      <view class="quick-nav-icon">📋</view>
-      <view class="quick-nav-label">列表</view>
+    <view class="quick-item card" bindtap="onGoList">
+      <view class="quick-label">全部收藏</view>
     </view>
   </view>
 
   <!-- Stats -->
-  <view wx:if="{{stats}}" class="stats">
-    <view class="stats-header">
-      <view class="stats-title">收藏统计</view>
+  <view wx:if="{{stats}}" class="stats-section">
+    <view class="section-head">
+      <view class="section-title">收藏统计</view>
     </view>
     <view class="stats-grid">
-      <view class="stat-card card">
-        <view class="stat-value">{{stats.total}}</view>
+      <view class="stat-cell card">
+        <view class="stat-num">{{stats.total}}</view>
         <view class="stat-label">总收藏</view>
       </view>
-      <view class="stat-card card">
-        <view class="stat-value">{{stats.wantToGo}}</view>
+      <view class="stat-cell card">
+        <view class="stat-num">{{stats.wantToGo}}</view>
         <view class="stat-label">想去</view>
       </view>
-      <view class="stat-card card">
-        <view class="stat-value">{{stats.visited}}</view>
+      <view class="stat-cell card">
+        <view class="stat-num">{{stats.visited}}</view>
         <view class="stat-label">去过</view>
       </view>
     </view>
@@ -53,9 +49,9 @@
 
   <!-- Recent -->
   <view class="recent-section">
-    <view class="section-header">
+    <view class="section-head">
       <view class="section-title">最近收藏</view>
-      <view class="section-link" bindtap="onGoList">全部</view>
+      <view class="section-link" bindtap="onGoList">全部 →</view>
     </view>
     <view wx:if="{{loading}}"><skeleton loading="{{true}}" count="{{2}}"/></view>
     <view wx:elif="{{recentItems.length === 0}}"><empty-state bind:action="onGoAdd"/></view>

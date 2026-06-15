@@ -1,78 +1,73 @@
 /* =============================================
-   周末去哪儿 — Design System v3 "Cobalt"
-   DESIGN_VARIANCE: 7 | MOTION: 4 | DENSITY: 3
+   周末去哪儿 — Botanical / Organic Serif v4
    ============================================= */
 
 page {
-  /* Color Tokens */
-  --color-bg: #FFFFFF;
-  --color-surface: #F8F9FB;
-  --color-primary: #1A56DB;
-  --color-primary-hover: #1E40AF;
-  --color-primary-light: #EFF4FF;
-  --color-text: #111827;
-  --color-text-secondary: #6B7280;
-  --color-text-tertiary: #9CA3AF;
-  --color-border: #E5E7EB;
+  /* —— Color Tokens —— */
+  --color-bg: #F9F8F4;
+  --color-text: #2D3A31;
+  --color-primary: #8C9A84;
+  --color-surface: #DCCFC2;
+  --color-border: #E6E2DA;
+  --color-accent: #C27B66;
   --color-white: #FFFFFF;
-  --color-danger: #DC2626;
-  --color-success: #16A34A;
 
-  /* Radius */
-  --radius-sm: 8rpx;
-  --radius-md: 12rpx;
-  --radius-lg: 20rpx;
-  --radius-xl: 28rpx;
+  /* —— Radius —— */
+  --radius-sm: 12rpx;
+  --radius-md: 20rpx;
+  --radius-lg: 32rpx;
+  --radius-xl: 48rpx;
   --radius-full: 9999rpx;
+  --radius-arch: 200rpx;
 
-  /* Shadows — blue-tinted, not pure black */
-  --shadow-sm: 0 1rpx 3rpx rgba(26, 86, 219, 0.04);
-  --shadow-card: 0 2rpx 8rpx rgba(26, 86, 219, 0.06), 0 1rpx 2rpx rgba(0, 0, 0, 0.04);
-  --shadow-elevated: 0 8rpx 24rpx rgba(26, 86, 219, 0.08), 0 2rpx 4rpx rgba(0, 0, 0, 0.04);
-  --shadow-float: 0 16rpx 40rpx rgba(26, 86, 219, 0.10), 0 4rpx 8rpx rgba(0, 0, 0, 0.04);
+  /* —— Shadows (forest-green tinted, very soft) —— */
+  --shadow-card: 0 4rpx 6rpx -1rpx rgba(45, 58, 49, 0.04);
+  --shadow-elevated: 0 10rpx 15rpx -3rpx rgba(45, 58, 49, 0.05);
+  --shadow-float: 0 20rpx 40rpx -10rpx rgba(45, 58, 49, 0.05);
 
-  /* Type Scale */
+  /* —— Type Scale —— */
   --text-xs: 20rpx;
   --text-sm: 24rpx;
   --text-base: 28rpx;
   --text-md: 32rpx;
-  --text-lg: 36rpx;
+  --text-lg: 38rpx;
   --text-xl: 48rpx;
   --text-2xl: 64rpx;
   --text-3xl: 80rpx;
 
-  /* Leading */
-  --leading-tight: 1.2;
+  /* —— Leading & Tracking —— */
+  --leading-tight: 1.15;
   --leading-normal: 1.5;
-  --leading-relaxed: 1.7;
-
-  /* Tracking */
-  --tracking-tight: -1rpx;
+  --leading-relaxed: 1.75;
+  --tracking-tight: -0.5rpx;
   --tracking-normal: 0;
-  --tracking-wide: 0.5rpx;
+  --tracking-wide: 1rpx;
+  --tracking-widest: 2rpx;
 
-  /* Base */
+  /* —— Fonts —— */
+  --font-heading: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body: "Source Sans 3", "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif;
+
+  /* —— Base —— */
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", sans-serif;
+  font-family: var(--font-body);
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+
+  /* —— TEXTURE (soul of the design) —— */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
+  background-repeat: repeat;
 }
 
-/* ---- Layout ---- */
+/* —— Layout —— */
 .page {
   min-height: 100vh;
   background: var(--color-bg);
 }
 
-.container {
-  padding-left: 32rpx;
-  padding-right: 32rpx;
-}
-
-/* ---- Safe Areas ---- */
+/* —— Safe Areas —— */
 .safe-area-bottom {
   padding-bottom: constant(safe-area-inset-bottom);
   padding-bottom: env(safe-area-inset-bottom);
@@ -82,24 +77,19 @@ page {
   padding-top: env(safe-area-inset-top);
 }
 
-/* ---- Text Utilities ---- */
-.ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.ellipsis-2 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
+/* —— Text Utilities —— */
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ellipsis-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 
-/* ---- Cards ---- */
+/* —— Card Base —— */
 .card {
   background: var(--color-white);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
+}
+.card-surface {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
 }
 .card-elevated {
   background: var(--color-white);
@@ -107,82 +97,61 @@ page {
   box-shadow: var(--shadow-elevated);
 }
 
-/* ---- Tags ---- */
+/* —— Tags —— */
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: 4rpx 14rpx;
+  padding: 6rpx 18rpx;
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
   font-weight: 500;
-  line-height: 1.6;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
 }
 .tag-primary {
-  background: var(--color-primary-light);
+  background: rgba(140, 154, 132, 0.15);
   color: var(--color-primary);
 }
-.tag-success {
-  background: #F0FDF4;
-  color: var(--color-success);
+.tag-accent {
+  background: rgba(194, 123, 102, 0.12);
+  color: var(--color-accent);
 }
 
-/* ---- Buttons (base) ---- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-full);
-  font-weight: 600;
-  font-size: var(--text-base);
-  transition: all 0.2s ease;
-  border: none;
-}
-.btn:active {
-  transform: scale(0.97);
-  opacity: 0.9;
-}
-.btn-primary {
-  background: var(--color-primary);
-  color: #FFFFFF;
-  box-shadow: 0 4rpx 12rpx rgba(26, 86, 219, 0.3);
-}
-.btn-ghost {
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
-/* ---- Separator ---- */
+/* —— Separator —— */
 .separator {
   height: 1rpx;
   background: var(--color-border);
 }
 
-/* ---- Animations ---- */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(12rpx); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(24rpx); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
-}
-.fade-in {
-  animation: fadeIn 0.35s ease-out;
-}
-.fade-in-up {
-  animation: fadeInUp 0.45s ease-out;
-}
-
-/* ---- Images ---- */
+/* —— Image default bg —— */
 image {
   background: var(--color-surface);
 }
 
-/* ---- Smooth page entry ---- */
+/* —— Animations —— */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(32rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes floatIn {
+  from { opacity: 0; transform: translateY(48rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .page {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.5s ease-out;
+}
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out both;
+}
+.float-in {
+  animation: floatIn 0.7s ease-out both;
 }

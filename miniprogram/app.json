@@ -9,14 +9,14 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#FFFFFF",
+    "navigationBarBackgroundColor": "#F9F8F4",
     "navigationBarTitleText": "周末去哪儿",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#FFFFFF"
+    "backgroundColor": "#F9F8F4"
   },
   "tabBar": {
-    "color": "#9CA3AF",
-    "selectedColor": "#1A56DB",
+    "color": "#B5AEA5",
+    "selectedColor": "#8C9A84",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "list": [
