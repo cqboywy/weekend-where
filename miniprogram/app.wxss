@@ -1,29 +1,36 @@
 /* =============================================
-   周末去哪儿 — Botanical / Organic Serif v4
+   周末去哪儿 — Peach & Honey v5
+   UI-UX-Pro-Max · Warm Pet-Grooming Inspired
    ============================================= */
 
 page {
   /* —— Color Tokens —— */
-  --color-bg: #F9F8F4;
-  --color-text: #2D3A31;
-  --color-primary: #8C9A84;
-  --color-surface: #DCCFC2;
-  --color-border: #E6E2DA;
-  --color-accent: #C27B66;
+  --color-bg: #FEF9F3;
+  --color-text: #3D2B1F;
+  --color-primary: #E8876A;
+  --color-primary-soft: #FFF0E8;
+  --color-surface: #FFF3EB;
+  --color-border: #F2E2D5;
+  --color-accent: #F0A050;
+  --color-accent-soft: #FFF6ED;
   --color-white: #FFFFFF;
+  --color-success: #7CB889;
+  --color-danger: #D4735E;
+  --color-muted: #B8A89A;
 
   /* —— Radius —— */
-  --radius-sm: 12rpx;
-  --radius-md: 20rpx;
-  --radius-lg: 32rpx;
+  --radius-sm: 16rpx;
+  --radius-md: 24rpx;
+  --radius-lg: 36rpx;
   --radius-xl: 48rpx;
   --radius-full: 9999rpx;
-  --radius-arch: 200rpx;
+  --radius-arch: 240rpx;
 
-  /* —— Shadows (forest-green tinted, very soft) —— */
-  --shadow-card: 0 4rpx 6rpx -1rpx rgba(45, 58, 49, 0.04);
-  --shadow-elevated: 0 10rpx 15rpx -3rpx rgba(45, 58, 49, 0.05);
-  --shadow-float: 0 20rpx 40rpx -10rpx rgba(45, 58, 49, 0.05);
+  /* —— Shadows (warm-tinted, soft) —— */
+  --shadow-card: 0 4rpx 16rpx rgba(61, 43, 31, 0.06);
+  --shadow-elevated: 0 8rpx 32rpx rgba(61, 43, 31, 0.08);
+  --shadow-float: 0 16rpx 48rpx rgba(61, 43, 31, 0.10);
+  --shadow-button: 0 4rpx 16rpx rgba(232, 135, 106, 0.30);
 
   /* —— Type Scale —— */
   --text-xs: 20rpx;
@@ -55,10 +62,6 @@ page {
   font-size: var(--text-base);
   line-height: var(--leading-normal);
   -webkit-font-smoothing: antialiased;
-
-  /* —— TEXTURE (soul of the design) —— */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.015'/%3E%3C/svg%3E");
-  background-repeat: repeat;
 }
 
 /* —— Layout —— */
@@ -104,16 +107,15 @@ page {
   padding: 6rpx 18rpx;
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: var(--tracking-wide);
-  text-transform: uppercase;
 }
 .tag-primary {
-  background: rgba(140, 154, 132, 0.15);
+  background: var(--color-primary-soft);
   color: var(--color-primary);
 }
 .tag-accent {
-  background: rgba(194, 123, 102, 0.12);
+  background: var(--color-accent-soft);
   color: var(--color-accent);
 }
 
@@ -138,20 +140,43 @@ image {
   to { opacity: 1; }
 }
 @keyframes scaleIn {
-  from { opacity: 0; transform: scale(0.96); }
+  from { opacity: 0; transform: scale(0.92); }
   to { opacity: 1; transform: scale(1); }
 }
 @keyframes floatIn {
-  from { opacity: 0; transform: translateY(48rpx); }
+  from { opacity: 0; transform: translateY(64rpx); }
   to { opacity: 1; transform: translateY(0); }
+}
+@keyframes popIn {
+  0% { opacity: 0; transform: scale(0.8); }
+  60% { transform: scale(1.04); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40rpx); }
+  to { opacity: 1; transform: translateX(0); }
 }
 
 .page {
-  animation: fadeIn 0.5s ease-out;
+  animation: fadeIn 0.4s ease-out;
 }
 .fade-in-up {
-  animation: fadeInUp 0.6s ease-out both;
+  animation: fadeInUp 0.5s cubic-bezier(0.32, 0.72, 0, 1) both;
 }
 .float-in {
-  animation: floatIn 0.7s ease-out both;
+  animation: floatIn 0.6s cubic-bezier(0.32, 0.72, 0, 1) both;
 }
+.pop-in {
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* —— Staggered entry delays —— */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.10s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.20s; }
+.stagger-5 { animation-delay: 0.25s; }
+
+/* —— Press feedback —— */
+.pressable { transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease; }
+.pressable:active { transform: scale(0.97); }

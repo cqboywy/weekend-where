@@ -1,27 +1,33 @@
 <view class="page index-page">
   <!-- Hero -->
   <view class="hero">
-    <view class="hero-tag">周末去哪儿</view>
+    <view class="hero-badge">WEEKEND · WHERE</view>
     <view class="hero-title">{{greeting}}</view>
     <view class="hero-sub">{{currentDate}}</view>
   </view>
 
-  <!-- Primary CTA (Terracotta accent pop) -->
-  <view class="cta-card card-elevated" bindtap="onGoAdd">
-    <view class="cta-icon"><lucide-icon name="plus" size="36" /></view>
+  <!-- Primary CTA — warm coral card -->
+  <view class="cta-card card-elevated pressable" bindtap="onGoAdd">
+    <view class="cta-icon-wrap">
+      <lucide-icon name="plus" size="40" color="#fff" />
+    </view>
     <view class="cta-body">
       <view class="cta-title">添加新收藏</view>
       <view class="cta-sub">粘贴链接，自动识别并整理</view>
     </view>
-    <view class="cta-arrow"><lucide-icon name="arrow-right" size="32" /></view>
+    <view class="cta-arrow">
+      <lucide-icon name="arrow-right" size="32" color="rgba(255,255,255,0.7)" />
+    </view>
   </view>
 
   <!-- Quick Nav -->
   <view class="quick-row">
-    <view class="quick-item card" bindtap="onGoMap">
+    <view class="quick-item card pressable" bindtap="onGoMap">
+      <lucide-icon name="map-pin" size="36" color="#E8876A" />
       <view class="quick-label">地图浏览</view>
     </view>
-    <view class="quick-item card" bindtap="onGoList">
+    <view class="quick-item card pressable" bindtap="onGoList">
+      <lucide-icon name="layout-grid" size="36" color="#E8876A" />
       <view class="quick-label">全部收藏</view>
     </view>
   </view>
@@ -56,7 +62,7 @@
     <view wx:if="{{loading}}"><skeleton loading="{{true}}" count="{{2}}"/></view>
     <view wx:elif="{{recentItems.length === 0}}"><empty-state bind:action="onGoAdd"/></view>
     <view wx:else>
-      <collection-card wx:for="{{recentItems}}" wx:key="_id" item="{{item}}" bind:tap="onViewDetail"/>
+      <collection-card wx:for="{{recentItems}}" wx:key="_id" item="{{item}}" index="{{index}}" showStatus="{{true}}" bind:tap="onViewDetail"/>
     </view>
   </view>
 </view>

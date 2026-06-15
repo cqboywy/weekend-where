@@ -3,21 +3,25 @@
 
   <view class="map-filter-bar">
     <scroll-view class="map-filter-scroll" scroll-x enable-flex>
-      <view wx:for="{{categories}}" wx:key="key" wx:if="{{index < 8}}" class="map-chip {{selectedCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.icon}} {{item.label}}</view>
+      <view wx:for="{{categories}}" wx:key="key" wx:if="{{index < 8}}" class="map-chip pressable {{selectedCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
     </scroll-view>
   </view>
 
-  <view class="locate-btn" bindtap="onMoveToCurrent"><text class="locate-icon">📍</text></view>
+  <view class="locate-btn pressable" bindtap="onMoveToCurrent">
+    <lucide-icon name="navigation" size="36" color="#E8876A" />
+  </view>
 
   <view wx:if="{{showDetailCard}}" class="map-detail-card safe-area-bottom">
     <view class="map-detail-header">
       <image src="{{selectedItem.coverImage || '/images/default-cover.png'}}" class="map-detail-cover" mode="aspectFill"/>
-      <view class="map-detail-close" bindtap="onCloseCard">✕</view>
+      <view class="map-detail-close pressable" bindtap="onCloseCard">
+        <lucide-icon name="x" size="28" color="#fff" />
+      </view>
     </view>
     <view class="map-detail-body">
       <view class="map-detail-title">{{selectedItem.title}}</view>
       <view class="map-detail-cat">{{selectedItem.category}}</view>
     </view>
-    <view class="map-detail-action" bindtap="onViewDetail">查看详情 →</view>
+    <view class="map-detail-action pressable" bindtap="onViewDetail">查看详情 →</view>
   </view>
 </view>

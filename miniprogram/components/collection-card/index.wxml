@@ -1,37 +1,49 @@
-<view class="collection-card" bindtap="onTap" bindlongpress="onLongPress">
-  <view class="card-cover">
-    <image
-      src="{{item.coverImage || '/images/default-cover.png'}}"
-      mode="aspectFill"
-      class="cover-image"
-      lazy-load="{{true}}"
-    />
-    <view class="platform-badge" style="background: {{platformInfo.color}};">
-      {{platformInfo.label}}
-    </view>
-    <view wx:if="{{showStatus && item.status === 'visited'}}" class="status-badge">
-      去过
-    </view>
-  </view>
-
-  <view class="card-body">
-    <view class="card-title ellipsis">{{item.title || '未命名地点'}}</view>
-
-    <view class="card-meta">
-      <view class="category-tag tag tag-primary">{{categoryInfo.label}}</view>
-      <view wx:if="{{item.rating}}" class="rating">
-        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this"
-              style="color: {{index < item.rating ? '#C27B66' : '#E6E2DA'}};">★</text>
+<view class="collection-card pressable fade-in-up" style="animation-delay: {{index * 0.06}}s" bindtap="onTap" bindlongpress="onLongPress">
+  <!-- Outer shell — warm tinted card -->
+  <view class="card-shell">
+    <!-- Cover -->
+    <view class="card-cover">
+      <image
+        src="{{item.coverImage || '/images/default-cover.png'}}"
+        mode="aspectFill"
+        class="cover-image"
+        lazy-load="{{true}}"
+      />
+      <!-- Gradient overlay -->
+      <view class="cover-overlay"></view>
+      <!-- Platform badge -->
+      <view class="platform-badge" style="background: {{platformInfo.color}};">
+        {{platformInfo.label}}
+      </view>
+      <!-- Status badge -->
+      <view wx:if="{{showStatus && item.status === 'visited'}}" class="status-badge">
+        <lucide-icon name="check" size="20" color="#fff" /> 去过
       </view>
     </view>
 
-    <view wx:if="{{item.location && item.location.name}}" class="card-location ellipsis">
-      📍 {{item.location.name}}
-    </view>
+    <!-- Card body -->
+    <view class="card-body">
+      <view class="card-title ellipsis">{{item.title || '未命名地点'}}</view>
 
-    <view class="card-footer">
-      <text class="card-date">{{formattedDate}}</text>
-      <view wx:if="{{item.note}}" class="card-note ellipsis">{{item.note}}</view>
+      <view class="card-meta">
+        <view class="category-tag tag tag-primary">
+          <lucide-icon name="{{categoryInfo.icon || 'tag'}}" size="24" />
+          <text>{{categoryInfo.label}}</text>
+        </view>
+        <view wx:if="{{item.rating}}" class="rating">
+          <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this"
+                class="rating-star {{index < item.rating ? 'active' : ''}}">★</text>
+        </view>
+      </view>
+
+      <view wx:if="{{item.location && item.location.name}}" class="card-location ellipsis">
+        <lucide-icon name="map-pin" size="24" /> {{item.location.name}}
+      </view>
+
+      <view class="card-footer">
+        <text class="card-date">{{formattedDate}}</text>
+        <view wx:if="{{item.note}}" class="card-note ellipsis">{{item.note}}</view>
+      </view>
     </view>
   </view>
 </view>

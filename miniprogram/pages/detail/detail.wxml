@@ -1,4 +1,5 @@
 <view wx:if="{{!loading && item}}" class="page detail-page">
+  <!-- Cover -->
   <view class="detail-cover">
     <image src="{{item.coverImage || '/images/default-cover.png'}}" mode="aspectFill" class="cover-image"/>
     <view class="cover-gradient"></view>
@@ -6,33 +7,45 @@
     <view class="cover-status">{{statusLabel}}</view>
   </view>
 
-  <view class="detail-section card">
+  <!-- Info section -->
+  <view class="detail-section card-elevated">
     <view class="detail-title">{{item.title}}</view>
     <view class="detail-meta">
-      <view class="category-badge tag tag-primary">{{categoryInfo.label || '未分类'}}</view>
+      <view class="category-badge tag tag-primary">
+        <lucide-icon name="{{categoryInfo.icon || 'tag'}}" size="24" />
+        {{categoryInfo.label || '未分类'}}
+      </view>
       <view wx:if="{{item.rating}}" class="detail-rating">
-        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" style="color: {{index < item.rating ? '#C27B66' : '#E6E2DA'}}; font-size: 32rpx;">★</text>
+        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" style="color: {{index < item.rating ? '#F0A050' : '#F2E2D5'}}; font-size: 32rpx;">★</text>
       </view>
     </view>
     <view wx:if="{{item.tags && item.tags.length > 0}}" class="detail-tags">
-      <view wx:for="{{item.tags}}" wx:key="*this" class="tag tag-success">{{item}}</view>
+      <view wx:for="{{item.tags}}" wx:key="*this" class="tag tag-accent">{{item}}</view>
     </view>
   </view>
 
   <view wx:if="{{item.location && item.location.name}}" class="detail-section card">
-    <view class="section-label">位置</view>
+    <view class="section-label">
+      <lucide-icon name="map-pin" size="24" color="#E8876A" /> 位置
+    </view>
     <view class="location-name">{{item.location.name}}</view>
     <view wx:if="{{item.location.address}}" class="location-addr">{{item.location.address}}</view>
-    <view class="location-nav-btn" bindtap="onNavigate"><lucide-icon name="navigation" size="32" /> 点击导航到此处</view>
+    <view class="location-nav-btn pressable" bindtap="onNavigate">
+      <lucide-icon name="navigation" size="32" color="#E8876A" /> 点击导航到此处
+    </view>
   </view>
 
   <view wx:if="{{item.note}}" class="detail-section card">
-    <view class="section-label">备注</view>
+    <view class="section-label">
+      <lucide-icon name="info" size="24" color="#E8876A" /> 备注
+    </view>
     <view class="note-content">{{item.note}}</view>
   </view>
 
   <view wx:if="{{item.originalUrl}}" class="detail-section card">
-    <view class="section-label">来源</view>
+    <view class="section-label">
+      <lucide-icon name="share" size="24" color="#E8876A" /> 来源
+    </view>
     <view class="link-row" bindtap="onOpenOriginal">
       <view class="link-url ellipsis">{{item.originalUrl}}</view>
       <view class="link-arrow">→</view>
@@ -40,9 +53,9 @@
   </view>
 
   <view class="detail-actions safe-area-bottom">
-    <button class="action-btn" bindtap="onToggleStatus"><lucide-icon name="check" size="28" /> {{item.status === 'want_to_go' ? '去过' : '想去'}}</button>
-    <button class="action-btn primary" bindtap="onNavigate"><lucide-icon name="navigation" size="28" /> 导航</button>
-    <button class="action-btn" open-type="share"><lucide-icon name="share" size="28" /> 分享</button>
+    <button class="action-btn pressable" bindtap="onToggleStatus"><lucide-icon name="check" size="28" color="#E8876A" /> {{item.status === 'want_to_go' ? '去过' : '想去'}}</button>
+    <button class="action-btn primary pressable" bindtap="onNavigate"><lucide-icon name="navigation" size="28" color="#fff" /> 导航</button>
+    <button class="action-btn pressable" open-type="share"><lucide-icon name="share" size="28" color="#3D2B1F" /> 分享</button>
   </view>
 </view>
 

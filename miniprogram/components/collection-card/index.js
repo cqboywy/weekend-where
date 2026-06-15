@@ -14,6 +14,13 @@ Component({
     showStatus: {
       type: Boolean,
       value: true,
+    },
+    index: {
+      type: Number,
+      value: 0,
+      observer: function (newVal) {
+        this.setData({ staggerClass: 'stagger-' + (Math.min(newVal, 4) + 1) });
+      }
     }
   },
 
@@ -21,6 +28,7 @@ Component({
     platformInfo: {},
     categoryInfo: {},
     formattedDate: '',
+    staggerClass: 'stagger-1',
   },
 
   methods: {

@@ -9,39 +9,38 @@
 }
 .map-chip {
   display: inline-block; padding: 10rpx 22rpx; border-radius: var(--radius-full);
-  font-size: var(--text-sm); color: var(--color-primary); margin-right: 8rpx;
-  font-weight: 500; transition: all 0.3s ease; line-height: 1.4;
+  font-size: var(--text-sm); color: var(--color-muted); margin-right: 8rpx;
+  font-weight: 500; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); line-height: 1.4;
 }
-.map-chip:active { transform: scale(0.95); }
-.map-chip.active { background: var(--color-primary); color: #fff; font-weight: 600; }
+.map-chip.active {
+  background: var(--color-primary); color: #fff; font-weight: 600;
+  box-shadow: var(--shadow-button);
+}
 
 .locate-btn {
   position: absolute; right: 24rpx; bottom: 280rpx;
-  width: 80rpx; height: 80rpx; background: var(--color-white);
+  width: 88rpx; height: 88rpx; background: var(--color-white);
   border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  box-shadow: var(--shadow-elevated); z-index: 10;
-  transition: transform 0.5s ease;
+  box-shadow: var(--shadow-float); z-index: 10;
 }
-.locate-btn:active { transform: scale(0.92); }
-.locate-icon { font-size: 40rpx; }
 
 .map-detail-card {
   position: absolute; bottom: 16rpx; left: 16rpx; right: 16rpx;
   background: var(--color-white); border-radius: var(--radius-xl);
   box-shadow: var(--shadow-float); z-index: 20;
+  animation: fadeInUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .map-detail-header { position: relative; }
 .map-detail-cover { width: 100%; height: 240rpx; border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
 .map-detail-close {
   position: absolute; top: 16rpx; right: 16rpx; width: 52rpx; height: 52rpx;
-  background: rgba(45,58,49,0.5); color: #fff; border-radius: 50%;
+  background: rgba(61,43,31,0.45); border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 24rpx; font-weight: 300;
 }
 .map-detail-body { padding: 28rpx; }
 .map-detail-title { font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 700; line-height: var(--leading-tight); }
-.map-detail-cat { font-size: var(--text-sm); color: var(--color-primary); margin-top: 8rpx; }
+.map-detail-cat { font-size: var(--text-sm); color: var(--color-muted); margin-top: 8rpx; }
 .map-detail-action {
-  padding: 20rpx 28rpx; border-top: 1rpx solid var(--color-border);
-  text-align: center; font-size: var(--text-base); color: var(--color-accent); font-weight: 700;
+  padding: 22rpx 28rpx; border-top: 1rpx solid var(--color-border);
+  text-align: center; font-size: var(--text-base); color: var(--color-primary); font-weight: 700;
 }

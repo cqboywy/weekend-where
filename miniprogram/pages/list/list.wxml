@@ -2,7 +2,7 @@
   <view class="list-header">
     <view class="list-title-row">
       <view class="list-title">我的收藏</view>
-      <view class="list-search-btn" bindtap="onToggleSearch"><lucide-icon name="search" size="40" /></view>
+      <view class="list-search-btn pressable" bindtap="onToggleSearch"><lucide-icon name="search" size="40" color="#E8876A" /></view>
     </view>
   </view>
 
@@ -12,7 +12,7 @@
   </view>
 
   <scroll-view class="category-scroll" scroll-x enable-flex>
-    <view wx:for="{{categories}}" wx:key="key" class="filter-chip {{activeCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
+    <view wx:for="{{categories}}" wx:key="key" class="filter-chip pressable {{activeCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
   </scroll-view>
 
   <view wx:if="{{!loading && items.length === 0}}" class="list-body">
@@ -20,7 +20,7 @@
   </view>
 
   <view wx:else class="list-body">
-    <collection-card wx:for="{{items}}" wx:key="_id" item="{{item}}" bind:tap="onCardTap" bind:longpress="onCardLongPress"/>
+    <collection-card wx:for="{{items}}" wx:key="_id" item="{{item}}" index="{{index}}" bind:tap="onCardTap" bind:longpress="onCardLongPress"/>
     <view wx:if="{{loading}}" class="loading-more"><skeleton loading="{{true}}" count="{{2}}"/></view>
     <view wx:elif="{{!hasMore && items.length > 0}}" class="no-more">— 已经到底了 —</view>
   </view>
