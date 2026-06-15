@@ -42,7 +42,8 @@ Page({
   },
   onGoMap() { wx.switchTab({ url: '/pages/map/map' }); },
   onViewDetail(e) {
-    const item = e.detail.item;
+    const item = e.detail && e.detail.item;
+    if (!item || !item._id) return;
     wx.navigateTo({ url: `/pages/detail/detail?id=${item._id}` });
   },
 });

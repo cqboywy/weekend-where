@@ -15,8 +15,8 @@
         <lucide-icon name="tag" size="24" />
         {{categoryInfo.label || '未分类'}}
       </view>
-      <view wx:if="{{item.rating && item.rating > 0}}" class="detail-rating">
-        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" style="color: {{index < item.rating ? '#F0A050' : '#F2E2D5'}}; font-size: 32rpx;">★</text>
+      <view wx:if="{{item.rating > 0}}" class="detail-rating">
+        <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this" class="star {{index < item.rating ? 'star-on' : 'star-off'}}">★</text>
       </view>
     </view>
     <view wx:if="{{item.tags && item.tags.length > 0}}" class="detail-tags">

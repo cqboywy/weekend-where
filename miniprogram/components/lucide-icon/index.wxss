@@ -5,6 +5,7 @@
   justify-content: center;
   flex-shrink: 0;
 }
-image {
+/* image rendered as block via host flex context */
+.lucide-img {
   display: block;
 }

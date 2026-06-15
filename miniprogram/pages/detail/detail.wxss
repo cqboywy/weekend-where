@@ -26,7 +26,10 @@
 }
 .detail-meta { display: flex; align-items: center; gap: 12rpx; margin-bottom: 16rpx; flex-wrap: wrap; }
 .detail-tags { display: flex; flex-wrap: wrap; gap: 10rpx; }
-.detail-rating { display: flex; gap: 2rpx; }
+.detail-rating { display: flex; gap: 4rpx; }
+.star { font-size: 36rpx; line-height: 1; }
+.star-on { color: #F0A050; }
+.star-off { color: #E8E0D5; }
 
 .category-badge {
   display: inline-flex; align-items: center; gap: 6rpx;
