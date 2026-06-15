@@ -21,7 +21,7 @@
     </view>
     <view class="form-item">
       <view class="form-label">来源平台</view>
-      <view class="chip-row">
+      <view class="chip-row chip-row-scroll">
         <block wx:for="{{platforms}}" wx:key="key">
           <view class="chip {{formData.platform === item.key ? 'chip-active' : ''}}" data-platform="{{item.key}}" bindtap="onSelectPlatform" style="{{formData.platform === item.key ? 'background:' + item.color + ';color:#fff;' : ''}}">{{item.label}}</view>
         </block>

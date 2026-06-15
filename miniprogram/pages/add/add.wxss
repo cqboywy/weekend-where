@@ -14,12 +14,13 @@
 
 /* URL */
 .url-input-row { display: flex; gap: 12rpx; }
-.url-input { flex: 1; background: var(--color-surface); border-radius: var(--radius-full); padding: 18rpx 28rpx; font-size: var(--text-base); }
+.url-input { flex: 1; background: var(--color-surface); border-radius: var(--radius-full); padding: 18rpx 28rpx; font-size: var(--text-base); line-height: 1.5; height: 80rpx; box-sizing: border-box; }
 .parse-btn {
   white-space: nowrap; background: var(--color-primary); color: #fff;
   border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 600;
-  padding: 14rpx 28rpx; letter-spacing: var(--tracking-wide); text-transform: uppercase;
-  transition: opacity 0.3s ease;
+  padding: 18rpx 28rpx; letter-spacing: var(--tracking-wide); text-transform: uppercase;
+  display: inline-flex; align-items: center; justify-content: center;
+  line-height: 1; transition: opacity 0.3s ease;
 }
 .parse-btn:active { opacity: 0.8; }
 
@@ -29,12 +30,14 @@
 .form-label .required { color: var(--color-accent); }
 .form-input {
   background: var(--color-surface); border-radius: var(--radius-full);
-  padding: 20rpx 28rpx; font-size: var(--text-base); width: 100%;
-  box-sizing: border-box; line-height: 1.4;
+  padding: 18rpx 28rpx; font-size: var(--text-base); width: 100%;
+  box-sizing: border-box; line-height: 1.5; height: 80rpx;
 }
 
 /* Chips */
 .chip-row { display: flex; gap: 10rpx; flex-wrap: wrap; }
+.chip-row-scroll { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.chip-row-wrap { flex-wrap: wrap; justify-content: center; }
 .chip {
   padding: 12rpx 24rpx; border-radius: var(--radius-full);
   font-size: var(--text-sm); background: var(--color-white); color: var(--color-primary);
@@ -66,7 +69,7 @@
 /* Tags */
 .tag-input-row { display: flex; gap: 10rpx; margin-bottom: 16rpx; align-items: center; }
 .tag-input { flex: 1; }
-.tag-add-btn { background: var(--color-primary); color: #fff; border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 600; letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+.tag-add-btn { background: var(--color-primary); color: #fff; border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 600; letter-spacing: var(--tracking-wide); text-transform: uppercase; display: inline-flex; align-items: center; height: 80rpx; padding: 0 28rpx; line-height: 1; }
 .tag-list { display: flex; flex-wrap: wrap; gap: 10rpx; }
 .tag-item {
   display: inline-flex; align-items: center;

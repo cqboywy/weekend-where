@@ -1,1 +1,10 @@
 /* Lucide icon — rendered via SVG data URI */
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+image {
+  display: block;
+}
