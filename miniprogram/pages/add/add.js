@@ -66,6 +66,17 @@ Page({
   },
 
   onShow() {
+    // Check for edit mode triggered from detail page via globalData bridge
+    const app = getApp();
+    if (app.globalData.editItemId) {
+      const editId = app.globalData.editItemId;
+      app.globalData.editItemId = null; // consume once
+      wx.setNavigationBarTitle({ title: '编辑收藏' });
+      this.setData({ isEditing: true, editId });
+      this.loadEditData(editId);
+      return;
+    }
+
     if (!this.data.isEditing) {
       this.checkClipboard();
     }

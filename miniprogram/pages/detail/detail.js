@@ -13,6 +13,8 @@ Page({
     const result = await getCollectionDetail(id);
     if (result.success && result.data) {
       const item = result.data;
+      console.log('=== Detail item loaded ===', JSON.stringify(item));
+      console.log('rating value:', item.rating, 'type:', typeof item.rating);
       const categoryInfo = CATEGORIES.find(c => c.key === item.category);
       const platformInfo = PLATFORMS.find(p => p.key === item.platform);
       const statusLabel = STATUS.find(s => s.key === item.status)?.label || '';
@@ -41,7 +43,9 @@ Page({
   },
 
   onEdit() {
-    wx.navigateTo({ url: `/pages/add/add?edit=1&id=${this.data.item._id}` });
+    const app = getApp();
+    app.globalData.editItemId = this.data.item._id;
+    wx.switchTab({ url: '/pages/add/add' });
   },
 
   onOpenOriginal() {
