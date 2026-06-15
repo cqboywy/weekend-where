@@ -40,6 +40,15 @@ Page({
     wx.switchTab({ url: '/pages/list/list' });
     if (category) { getApp().globalData.listFilter = category; }
   },
+  onTapStat(e) {
+    const status = e.currentTarget.dataset.status;
+    if (status) {
+      getApp().globalData.statusFilter = status;
+    } else {
+      delete getApp().globalData.statusFilter;
+    }
+    wx.switchTab({ url: '/pages/list/list' });
+  },
   onGoMap() { wx.switchTab({ url: '/pages/map/map' }); },
   onViewDetail(e) {
     const item = e.detail && e.detail.item;

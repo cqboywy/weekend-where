@@ -1,25 +1,44 @@
 const { getCollections, deleteCollectionItem, updateCollectionItem } = require('../../utils/cloud.js');
-const { CATEGORIES } = require('../../utils/constants.js');
+const { CATEGORIES, STATUS } = require('../../utils/constants.js');
 
 Page({
   data: {
     items: [], loading: true, hasMore: true, skip: 0, refreshTriggered: false,
     categories: [{ key: '', label: '全部' }, ...CATEGORIES],
-    activeCategory: '', keyword: '', showSearch: false, searchValue: '',
+    activeCategory: '', activeStatus: '', keyword: '', showSearch: false, searchValue: '',
     sortBy: 'time', showSortMenu: false,
     actionItem: null, showActionSheet: false,
   },
 
-  onLoad() { this.loadData(true); },
+  onLoad() {
+    // Check for status filter preset from home page stats tap
+    const app = getApp();
+    if (app.globalData.statusFilter) {
+      this.setData({ activeStatus: app.globalData.statusFilter });
+      delete app.globalData.statusFilter;
+    }
+    this.loadData(true);
+  },
+
+  onShow() {
+    // Re-check on each show in case user navigates back
+    const app = getApp();
+    if (app.globalData.statusFilter && app.globalData.statusFilter !== this.data.activeStatus) {
+      this.setData({ activeStatus: app.globalData.statusFilter });
+      delete app.globalData.statusFilter;
+      this.loadData(true);
+    }
+  },
 
   async loadData(refresh = false) {
     if (refresh) { this.setData({ skip: 0, hasMore: true, items: [], loading: true }); }
     else if (!this.data.hasMore || this.data.loading) { return; }
 
     this.setData({ loading: true });
-    const { activeCategory, keyword, skip } = this.data;
+    const { activeCategory, activeStatus, keyword, skip } = this.data;
     const result = await getCollections({
       category: activeCategory || undefined,
+      status: activeStatus || undefined,
       keyword: keyword || undefined,
       skip: refresh ? 0 : skip, limit: 20,
     });
@@ -93,6 +112,11 @@ Page({
   },
 
   onCloseAction() { this.setData({ showActionSheet: false }); },
+
+  onClearStatus() {
+    this.setData({ activeStatus: '' });
+    this.loadData(true);
+  },
 
   onGoAdd() { wx.switchTab({ url: '/pages/add/add' }); },
 });

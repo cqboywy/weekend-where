@@ -5,6 +5,8 @@
 .list-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16rpx; }
 .list-title { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 700; }
 .list-search-btn { padding: 8rpx; }
+.status-filter-hint { display: flex; align-items: center; gap: 16rpx; margin-top: 8rpx; font-size: var(--text-sm); color: var(--color-primary); }
+.clear-filter { color: var(--color-muted); border-bottom: 1rpx solid var(--color-muted); }
 
 /* Search */
 .search-row { display: flex; align-items: center; gap: 12rpx; padding: 0 24rpx 16rpx; animation: fadeInUp 0.3s ease-out; }
