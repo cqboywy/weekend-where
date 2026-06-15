@@ -10,7 +10,7 @@
       {{platformInfo.label}}
     </view>
     <view wx:if="{{showStatus && item.status === 'visited'}}" class="status-badge">
-      ✅ 去过
+      去过
     </view>
   </view>
 

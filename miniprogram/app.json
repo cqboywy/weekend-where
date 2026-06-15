@@ -7,6 +7,9 @@
     "pages/detail/detail",
     "pages/mine/mine"
   ],
+  "usingComponents": {
+    "lucide-icon": "/components/lucide-icon/index"
+  },
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#F9F8F4",

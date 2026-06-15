@@ -2,7 +2,7 @@
   <view class="list-header">
     <view class="list-title-row">
       <view class="list-title">我的收藏</view>
-      <view class="list-search-btn" bindtap="onToggleSearch">🔍</view>
+      <view class="list-search-btn" bindtap="onToggleSearch"><lucide-icon name="search" size="40" /></view>
     </view>
   </view>
 
@@ -16,7 +16,7 @@
   </scroll-view>
 
   <view wx:if="{{!loading && items.length === 0}}" class="list-body">
-    <empty-state icon="📭" title="还没有收藏" description="{{activeCategory ? '该分类下暂无收藏' : '去添加你的第一个好吃好玩的地方吧'}}" bind:action="onGoAdd"/>
+    <empty-state title="还没有收藏" description="{{activeCategory ? '该分类下暂无收藏' : '去添加你的第一个好吃好玩的地方吧'}}" bind:action="onGoAdd"/>
   </view>
 
   <view wx:else class="list-body">
@@ -27,9 +27,9 @@
 
   <view wx:if="{{showActionSheet}}" class="action-overlay" bindtap="onCloseAction">
     <view class="action-sheet" catchtap="">
-      <view class="action-item" data-action="toggleStatus" bindtap="onAction">{{actionItem.status === 'want_to_go' ? '✅ 标记为去过' : '📋 标记为想去'}}</view>
-      <view class="action-item" data-action="share" bindtap="onAction">📤 分享给好友</view>
-      <view class="action-item action-danger" data-action="delete" bindtap="onAction">🗑️ 删除收藏</view>
+      <view class="action-item" data-action="toggleStatus" bindtap="onAction">{{actionItem.status === 'want_to_go' ? '标记为去过' : '标记为想去'}}</view>
+      <view class="action-item" data-action="share" bindtap="onAction">分享给好友</view>
+      <view class="action-item action-danger" data-action="delete" bindtap="onAction">删除收藏</view>
       <view class="action-cancel" bindtap="onCloseAction">取消</view>
     </view>
   </view>

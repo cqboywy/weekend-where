@@ -23,7 +23,7 @@
     <view class="section-label">位置</view>
     <view class="location-name">{{item.location.name}}</view>
     <view wx:if="{{item.location.address}}" class="location-addr">{{item.location.address}}</view>
-    <view class="location-nav-btn" bindtap="onNavigate">🗺️ 点击导航到此处</view>
+    <view class="location-nav-btn" bindtap="onNavigate"><lucide-icon name="navigation" size="32" /> 点击导航到此处</view>
   </view>
 
   <view wx:if="{{item.note}}" class="detail-section card">
@@ -40,9 +40,9 @@
   </view>
 
   <view class="detail-actions safe-area-bottom">
-    <button class="action-btn" bindtap="onToggleStatus">{{item.status === 'want_to_go' ? '✅ 标记去过' : '📋 标记想去'}}</button>
-    <button class="action-btn primary" bindtap="onNavigate">🧭 导航</button>
-    <button class="action-btn" open-type="share">📤 分享</button>
+    <button class="action-btn" bindtap="onToggleStatus"><lucide-icon name="check" size="28" /> {{item.status === 'want_to_go' ? '去过' : '想去'}}</button>
+    <button class="action-btn primary" bindtap="onNavigate"><lucide-icon name="navigation" size="28" /> 导航</button>
+    <button class="action-btn" open-type="share"><lucide-icon name="share" size="28" /> 分享</button>
   </view>
 </view>
 

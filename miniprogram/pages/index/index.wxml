@@ -8,12 +8,12 @@
 
   <!-- Primary CTA (Terracotta accent pop) -->
   <view class="cta-card card-elevated" bindtap="onGoAdd">
-    <view class="cta-icon">+</view>
+    <view class="cta-icon"><lucide-icon name="plus" size="36" /></view>
     <view class="cta-body">
       <view class="cta-title">添加新收藏</view>
       <view class="cta-sub">粘贴链接，自动识别并整理</view>
     </view>
-    <view class="cta-arrow">→</view>
+    <view class="cta-arrow"><lucide-icon name="arrow-right" size="32" /></view>
   </view>
 
   <!-- Quick Nav -->

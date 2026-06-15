@@ -47,7 +47,7 @@
     <view class="section-label">位置信息</view>
     <view class="form-item">
       <view class="location-picker" bindtap="onChooseLocation">
-        <view wx:if="{{!formData.locationName}}" class="location-placeholder">🗺️ 点击选择地点位置</view>
+        <view wx:if="{{!formData.locationName}}" class="location-placeholder">点击选择地点位置</view>
         <view wx:else class="location-selected">
           <view class="location-name">📍 {{formData.locationName}}</view>
           <view class="location-addr">{{formData.locationAddress}}</view>

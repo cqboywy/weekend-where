@@ -57,9 +57,10 @@
   border-top: 1rpx solid var(--color-border); z-index: 100;
 }
 .action-btn {
-  flex: 1; background: var(--color-white); color: var(--color-text);
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8rpx;
+  background: var(--color-white); color: var(--color-text);
   border-radius: var(--radius-full); font-size: var(--text-sm);
-  line-height: 80rpx; border: 1rpx solid var(--color-border); font-weight: 500;
+  padding: 24rpx 16rpx; border: 1rpx solid var(--color-border); font-weight: 500;
   transition: all 0.3s ease;
 }
 .action-btn:active { transform: scale(0.97); }

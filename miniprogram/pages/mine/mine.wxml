@@ -1,6 +1,6 @@
 <view class="page mine-page">
   <view class="mine-header">
-    <view class="avatar">🍜</view>
+    <view class="avatar"><lucide-icon name="user" size="56" /></view>
     <view class="nickname">美食探险家</view>
     <view class="bio">收藏 {{stats ? stats.total : '...'}} 个好吃好玩的地方</view>
   </view>
@@ -16,9 +16,9 @@
   </view>
 
   <view class="menu-section card">
-    <view class="menu-item" bindtap="onManageCategories"><view class="menu-icon">🏷️</view><view class="menu-text">分类管理</view><view class="menu-arrow">›</view></view>
-    <view class="menu-item" bindtap="onExport"><view class="menu-icon">📦</view><view class="menu-text">导出收藏</view><view class="menu-arrow">›</view></view>
-    <view class="menu-item" bindtap="onFeedback"><view class="menu-icon">💬</view><view class="menu-text">意见反馈</view><view class="menu-arrow">›</view></view>
-    <view class="menu-item" bindtap="onAbout"><view class="menu-icon">ℹ️</view><view class="menu-text">关于</view><view class="menu-arrow">›</view></view>
+    <view class="menu-item" bindtap="onManageCategories"><view class="menu-icon"><lucide-icon name="tag" size="36" /></view><view class="menu-text">分类管理</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="28" /></view></view>
+    <view class="menu-item" bindtap="onExport"><view class="menu-icon"><lucide-icon name="download" size="36" /></view><view class="menu-text">导出收藏</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="28" /></view></view>
+    <view class="menu-item" bindtap="onFeedback"><view class="menu-icon"><lucide-icon name="message-circle" size="36" /></view><view class="menu-text">意见反馈</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="28" /></view></view>
+    <view class="menu-item" bindtap="onAbout"><view class="menu-icon"><lucide-icon name="info" size="36" /></view><view class="menu-text">关于</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="28" /></view></view>
   </view>
 </view>

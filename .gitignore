@@ -8,5 +8,6 @@ project.private.config.json
 .DS_Store
 Thumbs.db
 
-# Node modules (cloud functions)
+# Node modules
 cloudfunctions/*/node_modules/
+node_modules/
