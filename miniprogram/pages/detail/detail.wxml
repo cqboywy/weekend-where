@@ -46,7 +46,13 @@
     </view>
   </view>
 
-  <!-- Bottom actions — using view instead of button for reliable tap -->
+  <!-- Delete -->
+  <view class="delete-section" bindtap="onDelete">
+    <lucide-icon name="x" size="32" color="#D4735E" />
+    <text>删除这个收藏</text>
+  </view>
+
+  <!-- Bottom actions -->
   <view class="detail-actions safe-area-bottom">
     <view class="action-btn pressable" bindtap="onEdit"><lucide-icon name="tag" size="28" color="#E8876A" /> 编辑</view>
     <view class="action-btn pressable" bindtap="onToggleStatus"><lucide-icon name="check" size="28" color="#E8876A" /> {{item.status === 'want_to_go' ? '去过' : '想去'}}</view>

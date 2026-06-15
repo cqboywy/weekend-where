@@ -58,6 +58,15 @@
 .link-url { font-size: var(--text-sm); color: var(--color-primary); flex: 1; }
 .link-arrow { font-size: 28rpx; color: var(--color-accent); margin-left: 12rpx; }
 
+/* Delete */
+.delete-section {
+  display: flex; align-items: center; justify-content: center; gap: 10rpx;
+  margin: 28rpx 24rpx 8rpx; padding: 28rpx;
+  border-radius: var(--radius-lg); background: var(--color-white);
+  border: 1rpx solid var(--color-border);
+}
+.delete-section text { font-size: var(--text-base); color: #D4735E; font-weight: 500; }
+
 /* Bottom actions */
 .detail-actions {
   position: fixed; bottom: 0; left: 0; right: 0; display: flex; gap: 10rpx;
