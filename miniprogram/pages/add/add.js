@@ -1,4 +1,4 @@
-const { addCollectionItem, updateCollectionItem } = require('../../utils/cloud.js');
+const { addCollectionItem, updateCollectionItem, getCollectionDetail } = require('../../utils/cloud.js');
 const { CATEGORIES, PLATFORMS } = require('../../utils/constants.js');
 
 Page({
@@ -28,26 +28,40 @@ Page({
       this.parseLink(decodeURIComponent(options.url));
     }
 
-    // Edit mode: pre-fill form with existing data
+    // Edit mode: load existing data from DB
     if (options.edit === '1' && options.id) {
       wx.setNavigationBarTitle({ title: '编辑收藏' });
-      this.setData({
-        isEditing: true,
-        editId: options.id,
-        formData: {
-          originalUrl: options.url ? decodeURIComponent(options.url) : '',
-          title: options.title ? decodeURIComponent(options.title) : '',
-          platform: options.platform || '',
-          category: options.category || '',
-          locationName: options.locName ? decodeURIComponent(options.locName) : '',
-          locationAddress: options.locAddr ? decodeURIComponent(options.locAddr) : '',
-          latitude: parseFloat(options.lat) || 0,
-          longitude: parseFloat(options.lng) || 0,
-          note: options.note ? decodeURIComponent(options.note) : '',
-          rating: parseInt(options.rating) || 0,
-          tags: options.tags ? decodeURIComponent(options.tags).split(',') : [],
-        },
-      });
+      this.setData({ isEditing: true, editId: options.id });
+      this.loadEditData(options.id);
+    }
+  },
+
+  async loadEditData(id) {
+    try {
+      const result = await getCollectionDetail(id);
+      if (result.success && result.data) {
+        const item = result.data;
+        this.setData({
+          formData: {
+            originalUrl: item.originalUrl || '',
+            title: item.title || '',
+            platform: item.platform || '',
+            category: item.category || '',
+            locationName: (item.location && item.location.name) || '',
+            locationAddress: (item.location && item.location.address) || '',
+            latitude: (item.location && item.location.latitude) || 0,
+            longitude: (item.location && item.location.longitude) || 0,
+            note: item.note || '',
+            rating: item.rating || 0,
+            tags: item.tags || [],
+          },
+        });
+      } else {
+        wx.showToast({ title: '加载数据失败', icon: 'none' });
+      }
+    } catch (err) {
+      console.error('加载编辑数据失败:', err);
+      wx.showToast({ title: '加载数据失败', icon: 'none' });
     }
   },
 

@@ -41,29 +41,7 @@ Page({
   },
 
   onEdit() {
-    const item = this.data.item;
-    const params = [
-      `id=${item._id}`,
-      `title=${encodeURIComponent(item.title || '')}`,
-      `category=${item.category || ''}`,
-      `platform=${item.platform || ''}`,
-      `rating=${item.rating || 0}`,
-      `note=${encodeURIComponent(item.note || '')}`,
-      `status=${item.status || 'want_to_go'}`,
-    ];
-    if (item.location && item.location.name) {
-      params.push(`locName=${encodeURIComponent(item.location.name)}`);
-      params.push(`locAddr=${encodeURIComponent(item.location.address || '')}`);
-      params.push(`lat=${item.location.latitude || 0}`);
-      params.push(`lng=${item.location.longitude || 0}`);
-    }
-    if (item.tags && item.tags.length > 0) {
-      params.push(`tags=${encodeURIComponent(item.tags.join(','))}`);
-    }
-    if (item.originalUrl) {
-      params.push(`url=${encodeURIComponent(item.originalUrl)}`);
-    }
-    wx.navigateTo({ url: `/pages/add/add?edit=1&${params.join('&')}` });
+    wx.navigateTo({ url: `/pages/add/add?edit=1&id=${this.data.item._id}` });
   },
 
   onOpenOriginal() {
