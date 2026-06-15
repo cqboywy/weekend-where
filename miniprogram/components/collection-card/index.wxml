@@ -31,7 +31,7 @@
           <text>{{categoryInfo.label}}</text>
         </view>
         <view wx:if="{{item.rating > 0}}" class="rating">
-          <text wx:for="{{[1,2,3,4,5]}}" wx:key="*this"
+          <text wx:for="{{[1,2,3,4,5]}}" wx:for-item="s" wx:key="*this"
                 class="rating-star {{index < item.rating ? 'active' : ''}}">★</text>
         </view>
       </view>
