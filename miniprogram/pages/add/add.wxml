@@ -14,10 +14,27 @@
   </view>
 
   <view class="section card">
+    <view class="section-label">封面图片</view>
+    <view class="cover-picker" bindtap="onChooseCover">
+      <image wx:if="{{coverImageTemp || formData.coverImage}}"
+             src="{{coverImageTemp || formData.coverImage}}"
+             mode="aspectFill" class="cover-preview" />
+      <view wx:else class="cover-placeholder">
+        <lucide-icon name="plus-circle" size="44" color="#C4B5A8" />
+        <text class="cover-hint">点击添加封面图片（可选）</text>
+      </view>
+    </view>
+    <view wx:if="{{coverImageTemp || formData.coverImage}}" class="cover-actions">
+      <text class="cover-retake" catchtap="onChooseCover">重新选择</text>
+      <text class="cover-remove" catchtap="onRemoveCover">移除</text>
+    </view>
+  </view>
+
+  <view class="section card">
     <view class="section-label">基本信息</view>
     <view class="form-item">
       <view class="form-label">名称 <text class="required">*</text></view>
-      <input class="form-input" placeholder="输入地点名称" value="{{formData.title}}" bindinput="onTitleInput"/>
+      <input class="form-input" placeholder="输入名称" value="{{formData.title}}" bindinput="onTitleInput"/>
     </view>
     <view class="form-item">
       <view class="form-label">来源平台</view>
@@ -75,6 +92,6 @@
 
   <view class="bottom-actions safe-area-bottom">
     <button class="reset-btn" bindtap="onReset">清空</button>
-    <button class="submit-btn {{submitting ? 'loading' : ''}}" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">{{submitting ? '保存中...' : (isEditing ? '保存修改' : '加入收藏')}}</button>
+    <button class="submit-btn {{submitting ? 'loading' : ''}}" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">{{isUploading ? '上传中...' : (submitting ? '保存中...' : (isEditing ? '保存修改' : '加入收藏'))}}</button>
   </view>
 </view>

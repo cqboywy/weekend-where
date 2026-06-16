@@ -267,6 +267,23 @@ async function getCategoryItemCount(categoryKey) {
   }
 }
 
+/**
+ * Upload a cover image to CloudBase cloud storage.
+ * @param {string} filePath - local temp file path from wx.chooseImage
+ * @returns {Promise<{success: boolean, fileID?: string, error?: any}>}
+ */
+async function uploadImage(filePath) {
+  try {
+    const openId = await ensureOpenId();
+    const cloudPath = `cover-images/${openId}_${Date.now()}.jpg`;
+    const res = await wx.cloud.uploadFile({ cloudPath, filePath });
+    return { success: true, fileID: res.fileID };
+  } catch (err) {
+    console.error('封面上传失败:', err);
+    return { success: false, error: err };
+  }
+}
+
 module.exports = {
   db, _, collection,
   addCollectionItem, getCollections, getAllCollections,
@@ -274,4 +291,5 @@ module.exports = {
   getCollectionStats,
   getCategories, addCategory, updateCategory, deleteCategory,
   seedDefaultCategories, getCategoryItemCount,
+  uploadImage,
 };

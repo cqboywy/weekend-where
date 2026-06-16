@@ -1,7 +1,7 @@
 <view class="page mine-page">
   <view class="mine-header">
     <view class="avatar"><lucide-icon name="user" size="56" color="#E8876A" /></view>
-    <view class="nickname">美食探险家</view>
+    <view class="nickname">周末去哪儿</view>
     <view class="bio">收藏 {{stats ? stats.total : '...'}} 个好吃好玩的地方</view>
   </view>
 

@@ -1,4 +1,4 @@
-const { addCollectionItem, updateCollectionItem, getCollectionDetail } = require('../../utils/cloud.js');
+const { addCollectionItem, updateCollectionItem, getCollectionDetail, uploadImage } = require('../../utils/cloud.js');
 const { CATEGORIES, PLATFORMS } = require('../../utils/constants.js');
 
 Page({
@@ -7,9 +7,12 @@ Page({
       originalUrl: '', title: '', platform: '', category: '',
       locationName: '', locationAddress: '',
       latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
+      coverImage: '',
     },
+    coverImageTemp: '',
     isParsing: false,
     parseError: '',
+    isUploading: false,
     categories: CATEGORIES,
     platforms: PLATFORMS,
     tagInput: '',
@@ -54,6 +57,7 @@ Page({
             note: item.note || '',
             rating: item.rating || 0,
             tags: item.tags || [],
+            coverImage: item.coverImage || '',
           },
         });
       } else {
@@ -130,6 +134,7 @@ Page({
         this.setData({
           'formData.title': title,
           'formData.platform': data.platform || this.data.formData.platform,
+          'formData.coverImage': data.coverImage || this.data.formData.coverImage,
           isParsing: false,
         });
         wx.showToast({ title: title ? '解析成功' : '仅识别平台，请手动填写标题', icon: 'success' });
@@ -176,6 +181,28 @@ Page({
 
     this.parseLink(url, shareHint);
   },
+
+  onChooseCover() {
+    wx.showActionSheet({
+      itemList: ['从相册选择', '拍照'],
+      success: (res) => {
+        const sourceType = res.tapIndex === 0 ? ['album'] : ['camera'];
+        wx.chooseImage({
+          count: 1,
+          sizeType: ['compressed'],
+          sourceType,
+          success: (chooseRes) => {
+            this.setData({ coverImageTemp: chooseRes.tempFilePaths[0] });
+          },
+        });
+      },
+    });
+  },
+
+  onRemoveCover() {
+    this.setData({ coverImageTemp: '', 'formData.coverImage': '' });
+  },
+
   onTitleInput(e) { this.setData({ 'formData.title': e.detail.value }); },
   onSelectCategory(e) {
     this.setData({ 'formData.category': e.currentTarget.dataset.category, showCategoryPicker: false });
@@ -229,11 +256,26 @@ Page({
   onNoteInput(e) { this.setData({ 'formData.note': e.detail.value }); },
 
   async onSubmit() {
-    const { formData, isEditing, editId } = this.data;
+    const { formData, isEditing, editId, coverImageTemp } = this.data;
     if (!formData.title.trim()) { wx.showToast({ title: '请输入地点名称', icon: 'none' }); return; }
     if (!formData.category) { wx.showToast({ title: '请选择分类', icon: 'none' }); return; }
 
-    this.setData({ submitting: true });
+    this.setData({ submitting: true, isUploading: false });
+
+    // Upload cover image if user picked a new one
+    let coverImage = formData.coverImage; // existing URL/fileID
+    if (coverImageTemp) {
+      this.setData({ isUploading: true });
+      const uploadRes = await uploadImage(coverImageTemp);
+      if (uploadRes.success) {
+        coverImage = uploadRes.fileID;
+      } else {
+        this.setData({ submitting: false, isUploading: false });
+        wx.showToast({ title: '封面上传失败，请重试', icon: 'none' });
+        return;
+      }
+    }
+
     const platformInfo = PLATFORMS.find(p => p.key === formData.platform) || PLATFORMS.find(p => p.key === 'other');
 
     const payload = {
@@ -251,6 +293,7 @@ Page({
       },
       note: formData.note,
       rating: formData.rating,
+      coverImage,
     };
 
     let result;
@@ -278,7 +321,9 @@ Page({
             originalUrl: '', title: '', platform: '', category: '',
             locationName: '', locationAddress: '',
             latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
+            coverImage: '',
           },
+          coverImageTemp: '',
           parseError: '',
           tagInput: '',
         });
@@ -302,7 +347,9 @@ Page({
               originalUrl: '', title: '', platform: '', category: '',
               locationName: '', locationAddress: '',
               latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
+              coverImage: '',
             },
+            coverImageTemp: '',
             parseError: '',
             tagInput: '',
             isEditing: false,
