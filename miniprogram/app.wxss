@@ -126,9 +126,7 @@ page {
 }
 
 /* —— Image default bg —— */
-image {
-  background: var(--color-surface);
-}
+/* removed — was bleeding under lucide-icon components */
 
 /* —— Animations —— */
 @keyframes fadeInUp {
