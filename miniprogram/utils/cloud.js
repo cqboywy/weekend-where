@@ -153,9 +153,125 @@ async function getCollectionStats() {
   }
 }
 
+// ============================================================
+// Category CRUD — operates on the 'categories' collection
+// ============================================================
+
+async function getCategories() {
+  try {
+    const userId = await ensureOpenId();
+    const res = await collection('categories')
+      .where({ userId })
+      .orderBy('order', 'asc')
+      .limit(100)
+      .get();
+    return { success: true, data: res.data };
+  } catch (err) {
+    console.error('获取分类列表失败:', err);
+    return { success: false, error: err, data: [] };
+  }
+}
+
+async function addCategory(data) {
+  try {
+    const userId = await ensureOpenId();
+    const now = new Date().toISOString();
+    const res = await collection('categories').add({
+      data: {
+        ...data,
+        userId,
+        createdAt: now,
+        updatedAt: now,
+      }
+    });
+    return { success: true, id: res._id };
+  } catch (err) {
+    console.error('添加分类失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+async function updateCategory(id, data) {
+  try {
+    await collection('categories').doc(id).update({
+      data: { ...data, updatedAt: new Date().toISOString() }
+    });
+    return { success: true };
+  } catch (err) {
+    console.error('更新分类失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+async function deleteCategory(id) {
+  try {
+    await collection('categories').doc(id).remove();
+    return { success: true };
+  } catch (err) {
+    console.error('删除分类失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+/**
+ * Seed default categories for a new user.  Safe to call repeatedly —
+ * it only inserts when the user has zero categories.
+ * @param {Array} defaults - array of { key, label, icon, color } objects
+ */
+async function seedDefaultCategories(defaults) {
+  try {
+    const userId = await ensureOpenId();
+    const existing = await collection('categories').where({ userId }).count();
+    if (existing.total > 0) return { success: true, seeded: false };
+
+    const now = new Date().toISOString();
+    const docs = defaults.map((cat, i) => ({
+      key: cat.key,
+      label: cat.label,
+      icon: cat.icon || 'tag',
+      color: cat.color || '#B5A595',
+      isDefault: true,
+      order: i,
+      userId,
+      createdAt: now,
+      updatedAt: now,
+    }));
+
+    // Insert each category individually (CloudBase SDK doesn't support batch add)
+    for (const doc of docs) {
+      await collection('categories').add({ data: doc });
+    }
+
+    return { success: true, seeded: true, count: docs.length };
+  } catch (err) {
+    console.error('种子分类失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+/**
+ * Count how many collection_items use a given category key.
+ * @param {string} categoryKey
+ * @returns {Promise<{success: boolean, count: number}>}
+ */
+async function getCategoryItemCount(categoryKey) {
+  try {
+    const userId = await ensureOpenId();
+    const res = await collection('collection_items')
+      .where({ userId, category: categoryKey })
+      .count();
+    return { success: true, count: res.total };
+  } catch (err) {
+    console.error('查询分类使用数失败:', err);
+    return { success: false, count: 0, error: err };
+  }
+}
+
 module.exports = {
   db, _, collection,
   addCollectionItem, getCollections, getAllCollections,
   getCollectionDetail, updateCollectionItem, deleteCollectionItem,
   getCollectionStats,
+  getCategories, addCategory, updateCategory, deleteCategory,
+  seedDefaultCategories, getCategoryItemCount,
 };

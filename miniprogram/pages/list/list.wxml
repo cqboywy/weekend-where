@@ -30,11 +30,11 @@
   </view>
 
   <view wx:if="{{showActionSheet}}" class="action-overlay" bindtap="onCloseAction">
-    <view class="action-sheet" catchtap="">
-      <view class="action-item" data-action="toggleStatus" bindtap="onAction">{{actionItem.status === 'want_to_go' ? '标记为去过' : '标记为想去'}}</view>
-      <view class="action-item" data-action="share" bindtap="onAction">分享给好友</view>
-      <view class="action-item action-danger" data-action="delete" bindtap="onAction">删除收藏</view>
-      <view class="action-cancel" bindtap="onCloseAction">取消</view>
+    <view class="action-sheet" catchtap="noop">
+      <view class="action-item" data-action="toggleStatus" catchtap="onAction">{{actionItem.status === 'want_to_go' ? '标记为去过' : '标记为想去'}}</view>
+      <view class="action-item" data-action="share" catchtap="onAction">分享给好友</view>
+      <view class="action-item action-danger" data-action="delete" catchtap="onAction">删除收藏</view>
+      <view class="action-cancel" catchtap="onCloseAction">取消</view>
     </view>
   </view>
 </view>

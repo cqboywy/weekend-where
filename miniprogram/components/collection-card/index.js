@@ -1,4 +1,4 @@
-const { PLATFORMS, CATEGORIES, CATEGORY_COVERS } = require('../../utils/constants.js');
+const { PLATFORMS, CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
 
 Component({
   properties: {
@@ -35,8 +35,14 @@ Component({
   methods: {
     processItem(item) {
       const platformInfo = PLATFORMS.find(p => p.key === item.platform) || PLATFORMS.find(p => p.key === 'other');
-      const categoryInfo = CATEGORIES.find(c => c.key === item.category) || CATEGORIES.find(c => c.key === 'other');
-      const displayCover = item.coverImage || (CATEGORY_COVERS[item.category] || CATEGORY_COVERS['other']);
+      // Use dynamic categories from globalData, fallback to hardcoded CATEGORIES
+      const app = getApp();
+      const cats = (app.globalData.categories && app.globalData.categories.length > 0)
+        ? app.globalData.categories
+        : CATEGORIES;
+      const categoryInfo = cats.find(c => c.key === item.category) || cats.find(c => c.key === 'other') || { key: 'other', label: '其他', color: '#B5A595' };
+      const categoryColor = categoryInfo.color || '#B5A595';
+      const displayCover = item.coverImage || generateCategoryCover(categoryColor);
       const date = new Date(item.createdAt);
       const now = new Date();
       const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));

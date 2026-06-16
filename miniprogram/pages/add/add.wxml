@@ -7,7 +7,7 @@
   <view class="section card">
     <view class="section-label">粘贴链接</view>
     <view class="url-input-row">
-      <input class="url-input" placeholder="粘贴小红书/抖音/B站/大众点评链接..." value="{{formData.originalUrl}}" bindinput="onUrlInput" confirm-type="done"/>
+      <input class="url-input" placeholder="粘贴链接或抖音/小红书分享文字..." value="{{formData.originalUrl}}" bindinput="onUrlInput" confirm-type="done"/>
       <button class="parse-btn {{isParsing ? 'loading' : ''}}" bindtap="onParseTap" disabled="{{isParsing}}">{{isParsing ? '解析中...' : '解析'}}</button>
     </view>
     <view wx:if="{{parseError}}" class="parse-error">{{parseError}}</view>

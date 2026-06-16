@@ -66,20 +66,33 @@ Page({
   },
 
   onShow() {
-    // Check for edit mode triggered from detail page via globalData bridge
+    // Refresh categories from globalData (fallback to constants)
     const app = getApp();
+    const cats = (app.globalData.categories && app.globalData.categories.length > 0)
+      ? app.globalData.categories
+      : CATEGORIES;
+    this.setData({ categories: cats });
+
+    // Check for edit mode triggered from detail page via globalData bridge
     if (app.globalData.editItemId) {
       const editId = app.globalData.editItemId;
-      app.globalData.editItemId = null; // consume once
-      wx.setNavigationBarTitle({ title: '编辑收藏' });
-      this.setData({ isEditing: true, editId });
-      this.loadEditData(editId);
+      // Don't consume editItemId here — onShow may fire multiple times
+      // (WeChat tab lifecycle). Only clear it after save or explicit reset.
+      if (this.data.editId !== editId) {
+        wx.setNavigationBarTitle({ title: '编辑收藏' });
+        this.setData({ isEditing: true, editId });
+        this.loadEditData(editId);
+      }
       return;
     }
 
-    if (!this.data.isEditing) {
-      this.checkClipboard();
+    // Reset edit state when entering without editItemId
+    if (this.data.isEditing) {
+      wx.setNavigationBarTitle({ title: '添加收藏' });
+      this.setData({ isEditing: false, editId: '' });
     }
+
+    this.checkClipboard();
   },
 
   async checkClipboard() {
@@ -102,7 +115,7 @@ Page({
     } catch (err) { /* clipboard permission denied, skip silently */ }
   },
 
-  async parseLink(url) {
+  async parseLink(url, shareHint = '') {
     if (!url) return;
     this.setData({ isParsing: true, parseError: '' });
     try {
@@ -112,26 +125,56 @@ Page({
       });
       if (res.result && res.result.success) {
         const data = res.result.data;
+        // Use OG title if available, fallback to share text hint
+        const title = data.title || shareHint || this.data.formData.title;
         this.setData({
-          'formData.title': data.title || this.data.formData.title,
+          'formData.title': title,
           'formData.platform': data.platform || this.data.formData.platform,
           isParsing: false,
         });
-        wx.showToast({ title: '解析成功', icon: 'success' });
+        wx.showToast({ title: title ? '解析成功' : '仅识别平台，请手动填写标题', icon: 'success' });
       } else {
-        this.setData({ parseError: '链接解析失败，请检查链接是否正确', isParsing: false });
+        // Cloud function failed, use share hint as fallback
+        if (shareHint) {
+          this.setData({
+            'formData.title': shareHint,
+            isParsing: false,
+          });
+          wx.showToast({ title: '已从分享文字提取标题', icon: 'success' });
+        } else {
+          this.setData({ parseError: '链接解析失败，请检查链接是否正确', isParsing: false });
+        }
       }
     } catch (err) {
       console.error('链接解析失败:', err);
-      this.setData({ parseError: '网络错误，请重试', isParsing: false });
+      if (shareHint) {
+        this.setData({ 'formData.title': shareHint, isParsing: false });
+        wx.showToast({ title: '已从分享文字提取标题', icon: 'success' });
+      } else {
+        this.setData({ parseError: '网络错误，请重试', isParsing: false });
+      }
     }
   },
 
   onUrlInput(e) { this.setData({ 'formData.originalUrl': e.detail.value }); },
   onParseTap() {
-    const url = this.data.formData.originalUrl.trim();
-    if (!url) { wx.showToast({ title: '请先输入链接', icon: 'none' }); return; }
-    this.parseLink(url);
+    const raw = this.data.formData.originalUrl.trim();
+    if (!raw) { wx.showToast({ title: '请先粘贴链接或分享文字', icon: 'none' }); return; }
+
+    // Extract URL from share text (e.g. Douyin share format)
+    const urlMatch = raw.match(/https?:\/\/[^\s]+/);
+    const url = urlMatch ? urlMatch[0] : raw;
+    if (!url.startsWith('http')) {
+      wx.showToast({ title: '未检测到有效链接', icon: 'none' });
+      return;
+    }
+
+    // Extract title hints from share text (e.g. 看看【作者】描述...)
+    let shareHint = '';
+    const authorMatch = raw.match(/看看【(.+?)的作品】/);
+    if (authorMatch) shareHint = authorMatch[1];
+
+    this.parseLink(url, shareHint);
   },
   onTitleInput(e) { this.setData({ 'formData.title': e.detail.value }); },
   onSelectCategory(e) {
@@ -223,7 +266,11 @@ Page({
       wx.vibrateShort({ type: 'light' });
       wx.showToast({ title: isEditing ? '已更新收藏' : '已加入收藏', icon: 'success', duration: 1500 });
       if (isEditing) {
-        setTimeout(() => { wx.navigateBack(); }, 800);
+        // Consume editItemId now that save is complete
+        getApp().globalData.editItemId = null;
+        wx.setNavigationBarTitle({ title: '添加收藏' });
+        this.setData({ isEditing: false, editId: '' });
+        setTimeout(() => { wx.switchTab({ url: '/pages/list/list' }); }, 800);
       } else {
         // Auto-clear form for next addition
         this.setData({
@@ -247,6 +294,9 @@ Page({
       content: '确定要清空已填写的内容吗？',
       success: (res) => {
         if (res.confirm) {
+          // Also clear any pending edit mode
+          getApp().globalData.editItemId = null;
+          wx.setNavigationBarTitle({ title: '添加收藏' });
           this.setData({
             formData: {
               originalUrl: '', title: '', platform: '', category: '',
@@ -255,6 +305,8 @@ Page({
             },
             parseError: '',
             tagInput: '',
+            isEditing: false,
+            editId: '',
           });
         }
       }

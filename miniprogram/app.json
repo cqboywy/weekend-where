@@ -5,6 +5,7 @@
     "pages/add/add",
     "pages/list/list",
     "pages/detail/detail",
+    "pages/category-manage/category-manage",
     "pages/mine/mine"
   ],
   "usingComponents": {

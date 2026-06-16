@@ -1,20 +1,28 @@
 const CATEGORIES = [
-  { key: 'hotpot', label: '火锅', icon: 'tag' },
-  { key: 'barbecue', label: '烧烤', icon: 'tag' },
-  { key: 'chinese', label: '中餐', icon: 'tag' },
-  { key: 'japanese', label: '日料', icon: 'tag' },
-  { key: 'korean', label: '韩餐', icon: 'tag' },
-  { key: 'western', label: '西餐', icon: 'tag' },
-  { key: 'cafe', label: '咖啡', icon: 'tag' },
-  { key: 'dessert', label: '甜品', icon: 'tag' },
-  { key: 'street', label: '小吃', icon: 'tag' },
-  { key: 'bar', label: '酒吧', icon: 'tag' },
-  { key: 'park', label: '公园', icon: 'tag' },
-  { key: 'museum', label: '博物馆', icon: 'tag' },
-  { key: 'shopping', label: '逛街', icon: 'tag' },
-  { key: 'sports', label: '运动', icon: 'tag' },
-  { key: 'entertainment', label: '娱乐', icon: 'tag' },
-  { key: 'other', label: '其他', icon: 'tag' },
+  { key: 'hotpot', label: '火锅', icon: 'tag', color: '#E8533F' },
+  { key: 'barbecue', label: '烧烤', icon: 'tag', color: '#F0854B' },
+  { key: 'chinese', label: '中餐', icon: 'tag', color: '#D9403A' },
+  { key: 'japanese', label: '日料', icon: 'tag', color: '#7BA587' },
+  { key: 'korean', label: '韩餐', icon: 'tag', color: '#E0707D' },
+  { key: 'western', label: '西餐', icon: 'tag', color: '#9B6E4A' },
+  { key: 'cafe', label: '咖啡', icon: 'tag', color: '#B08870' },
+  { key: 'dessert', label: '甜品', icon: 'tag', color: '#E8A0AD' },
+  { key: 'street', label: '小吃', icon: 'tag', color: '#EAA838' },
+  { key: 'bar', label: '酒吧', icon: 'tag', color: '#726080' },
+  { key: 'park', label: '公园', icon: 'tag', color: '#6EA07A' },
+  { key: 'museum', label: '博物馆', icon: 'tag', color: '#95A3B5' },
+  { key: 'shopping', label: '逛街', icon: 'tag', color: '#E28870' },
+  { key: 'sports', label: '运动', icon: 'tag', color: '#5D9DD5' },
+  { key: 'entertainment', label: '娱乐', icon: 'tag', color: '#A075C0' },
+  { key: 'other', label: '其他', icon: 'tag', color: '#B5A595' },
+];
+
+// Preset color palette for category manager color picker
+const CATEGORY_COLORS = [
+  '#E8533F', '#F0854B', '#D9403A', '#7BA587', '#E0707D',
+  '#9B6E4A', '#B08870', '#E8A0AD', '#EAA838', '#726080',
+  '#6EA07A', '#95A3B5', '#E28870', '#5D9DD5', '#A075C0',
+  '#B5A595', '#6EB5C0', '#D4A070', '#8899AA', '#C09B6E',
 ];
 
 const PLATFORMS = [
@@ -68,4 +76,34 @@ const CATEGORY_COVERS = {
   other:      'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#C8B8A8"/><stop offset="100%" stop-color="#9B8B7D"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
 };
 
-module.exports = { CATEGORIES, PLATFORMS, STATUS, COLORS, CATEGORY_COVERS };
+/**
+ * Darken a hex color by a given factor (0-1).
+ * @param {string} hex - e.g. "#E8533F"
+ * @param {number} amount - 0.3 = darken by 30%
+ * @returns {string} darkened hex color
+ */
+function darkenHex(hex, amount) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  const factor = 1 - amount;
+  const rr = Math.floor(r * factor);
+  const gg = Math.floor(g * factor);
+  const bb = Math.floor(b * factor);
+  return '#' + [rr, gg, bb].map(v => Math.min(255, Math.max(0, v)).toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Generate a dynamic category cover SVG data URI from a single color.
+ * Produces a radial gradient + 3 concentric circle rings, matching the
+ * visual language of the hardcoded CATEGORY_COVERS.
+ * @param {string} color - primary hex color (e.g. "#E8533F")
+ * @returns {string} data:image/svg+xml URI
+ */
+function generateCategoryCover(color) {
+  const dark = darkenHex(color, 0.35);
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="' + color + '"/><stop offset="100%" stop-color="' + dark + '"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>';
+  return 'data:image/svg+xml,' + encodeURIComponent(svg);
+}
+
+module.exports = { CATEGORIES, PLATFORMS, STATUS, COLORS, CATEGORY_COLORS, CATEGORY_COVERS, generateCategoryCover, darkenHex };

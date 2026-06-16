@@ -7,11 +7,14 @@
 
   <view wx:if="{{stats}}" class="stats-section card-elevated">
     <view class="stats-row">
-      <view class="stat-item"><view class="stat-num">{{stats.total}}</view><view class="stat-label">总收藏</view></view>
+      <view class="stat-item pressable" bindtap="onTapStat" data-status="">
+        <view class="stat-num">{{stats.total}}</view><view class="stat-label">总收藏</view></view>
       <view class="stat-divider"></view>
-      <view class="stat-item"><view class="stat-num">{{stats.wantToGo}}</view><view class="stat-label">想去</view></view>
+      <view class="stat-item pressable" bindtap="onTapStat" data-status="want_to_go">
+        <view class="stat-num">{{stats.wantToGo}}</view><view class="stat-label">想去</view></view>
       <view class="stat-divider"></view>
-      <view class="stat-item"><view class="stat-num">{{stats.visited}}</view><view class="stat-label">去过</view></view>
+      <view class="stat-item pressable" bindtap="onTapStat" data-status="visited">
+        <view class="stat-num">{{stats.visited}}</view><view class="stat-label">去过</view></view>
     </view>
   </view>
 

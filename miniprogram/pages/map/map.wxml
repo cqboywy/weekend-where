@@ -3,13 +3,16 @@
 
   <view class="map-filter-bar">
     <scroll-view class="map-filter-scroll" scroll-x enable-flex>
-      <view wx:for="{{categories}}" wx:key="key" wx:if="{{index < 8}}" class="map-chip pressable {{selectedCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
+      <view wx:for="{{categories}}" wx:key="key" class="map-chip pressable {{selectedCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
     </scroll-view>
   </view>
 
   <view class="locate-btn pressable" bindtap="onMoveToCurrent">
     <lucide-icon name="navigation" size="36" color="#E8876A" />
   </view>
+
+  <!-- Hidden canvas for generating marker icons -->
+  <canvas type="2d" id="markerCanvas" style="position:fixed;left:-9999px;width:56px;height:56px;"></canvas>
 
   <view wx:if="{{showDetailCard}}" class="map-detail-card safe-area-bottom">
     <view class="map-detail-header">

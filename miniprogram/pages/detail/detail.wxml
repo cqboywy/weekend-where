@@ -34,7 +34,10 @@
   </view>
 
   <view wx:if="{{item.note}}" class="detail-section card">
-    <view class="section-label"><lucide-icon name="info" size="24" color="#E8876A" /> 备注</view>
+    <view class="section-label">
+      <lucide-icon name="info" size="24" color="#E8876A" /> 备注
+      <text class="note-copy pressable" catchtap="onCopyNote">复制</text>
+    </view>
     <view class="note-content">{{item.note}}</view>
   </view>
 

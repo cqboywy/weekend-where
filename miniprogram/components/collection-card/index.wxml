@@ -42,7 +42,6 @@
 
       <view class="card-footer">
         <text class="card-date">{{formattedDate}}</text>
-        <view wx:if="{{item.note}}" class="card-note ellipsis">{{item.note}}</view>
       </view>
     </view>
   </view>

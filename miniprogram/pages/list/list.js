@@ -11,6 +11,7 @@ Page({
   },
 
   onLoad() {
+    this.initCategories();
     // Check for status filter preset from home page stats tap
     const app = getApp();
     if (app.globalData.statusFilter) {
@@ -21,6 +22,7 @@ Page({
   },
 
   onShow() {
+    this.initCategories();
     // Re-check on each show in case user navigates back
     const app = getApp();
     if (app.globalData.statusFilter && app.globalData.statusFilter !== this.data.activeStatus) {
@@ -28,6 +30,14 @@ Page({
       delete app.globalData.statusFilter;
       this.loadData(true);
     }
+  },
+
+  initCategories() {
+    const app = getApp();
+    const cats = (app.globalData.categories && app.globalData.categories.length > 0)
+      ? app.globalData.categories
+      : CATEGORIES;
+    this.setData({ categories: [{ key: '', label: '全部' }, ...cats] });
   },
 
   async loadData(refresh = false) {
@@ -77,13 +87,20 @@ Page({
     wx.navigateTo({ url: `/pages/detail/detail?id=${item._id}` });
   },
   onCardLongPress(e) {
-    this.setData({ actionItem: e.detail.item, showActionSheet: true });
+    const item = e.detail && e.detail.item;
+    if (item) {
+      this.setData({ actionItem: item, showActionSheet: true });
+    }
   },
 
   onAction(e) {
     const action = e.currentTarget.dataset.action;
     const { actionItem } = this.data;
     this.setData({ showActionSheet: false });
+    if (!actionItem) {
+      wx.showToast({ title: '操作失败，请重试', icon: 'none' });
+      return;
+    }
     if (action === 'toggleStatus') this.toggleStatus(actionItem);
     else if (action === 'delete') this.deleteItem(actionItem);
     else if (action === 'share') wx.showToast({ title: '请点击右上角分享', icon: 'none' });
@@ -111,6 +128,7 @@ Page({
     }
   },
 
+  noop() {},
   onCloseAction() { this.setData({ showActionSheet: false }); },
 
   onClearStatus() {

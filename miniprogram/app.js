@@ -1,3 +1,5 @@
+const { CATEGORIES } = require('./utils/constants.js');
+
 App({
   onLaunch: function () {
     if (!wx.cloud) {
@@ -24,6 +26,27 @@ App({
     });
 
     this.getOpenIdPromise = this.getOpenId();
+
+    // Seed default categories (async, non-blocking) then load into globalData
+    // NOTE: require cloud.js AFTER wx.cloud.init() — it calls wx.cloud.database() at module level
+    const { seedDefaultCategories, getCategories } = require('./utils/cloud.js');
+    this.categoriesReady = this.getOpenIdPromise
+      .then(() => seedDefaultCategories(CATEGORIES))
+      .then(seedRes => {
+        console.log(seedRes.seeded ? `已种子 ${seedRes.count} 个默认分类` : '分类数据已存在，跳过种子');
+        return getCategories();
+      })
+      .then(res => {
+        if (res.success) {
+          this.globalData.categories = res.data;
+          console.log(`已加载 ${res.data.length} 个分类到全局缓存`);
+        }
+      })
+      .catch(err => {
+        // Fallback to hardcoded defaults if cloud fails
+        console.error('加载分类失败，使用本地默认:', err);
+        this.globalData.categories = CATEGORIES.map((c, i) => ({ ...c, isDefault: true, order: i }));
+      });
   },
 
   globalData: {

@@ -143,9 +143,3 @@
 .card-date {
   opacity: 0.7;
 }
-.card-note {
-  max-width: 55%;
-  text-align: right;
-  opacity: 0.7;
-  font-style: italic;
-}

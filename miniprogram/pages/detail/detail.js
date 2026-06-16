@@ -1,5 +1,5 @@
 const { getCollectionDetail, updateCollectionItem, deleteCollectionItem } = require('../../utils/cloud.js');
-const { CATEGORIES, PLATFORMS, STATUS, CATEGORY_COVERS } = require('../../utils/constants.js');
+const { CATEGORIES, PLATFORMS, STATUS, generateCategoryCover } = require('../../utils/constants.js');
 
 Page({
   data: { item: null, loading: true, categoryInfo: null, platformInfo: null, statusLabel: '', displayCover: '' },
@@ -13,12 +13,15 @@ Page({
     const result = await getCollectionDetail(id);
     if (result.success && result.data) {
       const item = result.data;
-      console.log('=== Detail item loaded ===', JSON.stringify(item));
-      console.log('rating value:', item.rating, 'type:', typeof item.rating);
-      const categoryInfo = CATEGORIES.find(c => c.key === item.category);
+      // Use dynamic categories for BOTH info lookup and cover
+      const app = getApp();
+      const cats = (app.globalData.categories && app.globalData.categories.length > 0)
+        ? app.globalData.categories
+        : CATEGORIES;
+      const categoryInfo = cats.find(c => c.key === item.category) || cats.find(c => c.key === 'other') || { key: 'other', label: '其他', color: '#B5A595' };
       const platformInfo = PLATFORMS.find(p => p.key === item.platform);
       const statusLabel = STATUS.find(s => s.key === item.status)?.label || '';
-      const displayCover = item.coverImage || (CATEGORY_COVERS[item.category] || CATEGORY_COVERS['other']);
+      const displayCover = item.coverImage || generateCategoryCover(categoryInfo.color || '#B5A595');
       this.setData({ item, categoryInfo, platformInfo, statusLabel, displayCover, loading: false });
     } else {
       wx.showToast({ title: '加载失败', icon: 'none' });
@@ -46,6 +49,15 @@ Page({
     const app = getApp();
     app.globalData.editItemId = this.data.item._id;
     wx.switchTab({ url: '/pages/add/add' });
+  },
+
+  onCopyNote() {
+    if (this.data.item.note) {
+      wx.setClipboardData({
+        data: this.data.item.note,
+        success: () => { wx.showToast({ title: '备注已复制', icon: 'success' }); }
+      });
+    }
   },
 
   onOpenOriginal() {

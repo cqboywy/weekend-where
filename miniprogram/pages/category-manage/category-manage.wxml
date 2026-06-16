@@ -1,0 +1,91 @@
+<view class="page category-manage-page">
+  <!-- Header -->
+  <view class="page-header">
+    <view class="header-title">分类管理</view>
+    <view class="header-desc">管理你的收藏分类，自定义颜色与名称</view>
+  </view>
+
+  <!-- Category list -->
+  <view class="card category-list">
+    <block wx:for="{{categories}}" wx:key="_id">
+      <view class="cat-row">
+        <view class="cat-left">
+          <view class="cat-color" style="background: {{item.color}};"></view>
+          <view class="cat-info">
+            <view class="cat-name">{{item.label}}</view>
+            <view class="cat-meta">{{item.itemCount || 0}} 个收藏{{item.isDefault ? ' · 默认分类' : ''}}</view>
+          </view>
+        </view>
+        <view class="cat-actions">
+          <view class="cat-action-btn pressable" data-category="{{item}}" bindtap="onEdit">
+            <lucide-icon name="pencil" size="32" color="#B8A89A" />
+          </view>
+          <view class="cat-action-btn pressable {{item.itemCount > 0 ? 'disabled' : ''}}" data-category="{{item}}" bindtap="onDelete">
+            <lucide-icon name="trash-2" size="32" color="{{item.itemCount > 0 ? '#E8E0D5' : '#D4735E'}}" />
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{index < categories.length - 1}}" class="cat-divider"></view>
+    </block>
+  </view>
+
+  <!-- Empty state -->
+  <view wx:if="{{!loading && categories.length === 0}}" class="empty-state">
+    <lucide-icon name="tag" size="64" color="#E8E0D5" />
+    <view class="empty-text">还没有分类</view>
+    <view class="empty-sub">点击下方按钮添加你的第一个分类</view>
+  </view>
+
+  <!-- Loading -->
+  <view wx:if="{{loading}}" class="loading-state">
+    <view class="skeleton-row" wx:for="{{[1,2,3,4,5]}}" wx:key="*this"></view>
+  </view>
+
+  <!-- Add button -->
+  <view class="bottom-bar safe-area-bottom">
+    <button class="add-btn" bindtap="onAdd">
+      <lucide-icon name="plus" size="36" color="#fff" />
+      <text>添加分类</text>
+    </button>
+  </view>
+
+  <!-- Modal overlay -->
+  <view wx:if="{{showModal}}" class="modal-overlay" bindtap="onModalBgTap">
+    <view class="modal-sheet" catchtap="">
+      <view class="modal-header">
+        <view class="modal-title">{{modalTitle}}</view>
+        <view class="modal-close pressable" bindtap="closeModal">
+          <lucide-icon name="x" size="40" color="#B8A89A" />
+        </view>
+      </view>
+
+      <!-- Name input -->
+      <view class="modal-section">
+        <view class="modal-label">分类名称</view>
+        <input class="modal-input" placeholder="输入分类名称（不超过10字）" value="{{formName}}" bindinput="onNameInput" maxlength="10" focus="{{true}}" />
+      </view>
+
+      <!-- Color picker -->
+      <view class="modal-section">
+        <view class="modal-label">选择颜色</view>
+        <view class="color-grid">
+          <block wx:for="{{presetColors}}" wx:key="*this">
+            <view class="color-cell {{formColor === item ? 'selected' : ''}}" style="background: {{item}};" data-color="{{item}}" bindtap="onPickColor">
+              <view wx:if="{{formColor === item}}" class="color-check">
+                <lucide-icon name="check" size="24" color="#fff" />
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <!-- Actions -->
+      <view class="modal-actions">
+        <button class="modal-cancel" bindtap="closeModal">取消</button>
+        <button class="modal-save {{saving ? 'loading' : ''}}" bindtap="onSave" disabled="{{saving}}" loading="{{saving}}">
+          {{saving ? '保存中...' : (editingId ? '保存修改' : '添加')}}
+        </button>
+      </view>
+    </view>
+  </view>
+</view>

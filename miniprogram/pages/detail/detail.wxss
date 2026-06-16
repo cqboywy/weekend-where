@@ -54,6 +54,8 @@
 }
 
 .note-content { font-size: var(--text-base); line-height: var(--leading-relaxed); color: var(--color-text); }
+.note-copy { margin-left: auto; font-size: var(--text-sm); color: var(--color-primary); font-weight: 600; padding: 4rpx 12rpx; }
+.note-copy:active { opacity: 0.7; }
 .link-row { display: flex; align-items: center; justify-content: space-between; padding: 16rpx 0; }
 .link-url { font-size: var(--text-sm); color: var(--color-primary); flex: 1; }
 .link-arrow { font-size: 28rpx; color: var(--color-accent); margin-left: 12rpx; }
