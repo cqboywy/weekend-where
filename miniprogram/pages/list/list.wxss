@@ -1,4 +1,4 @@
-.list-page { background: var(--color-bg); min-height: 100vh; }
+.list-page { background: var(--color-bg); min-height: 100vh; overflow-x: hidden; }
 
 /* Header */
 .list-header { padding: 28rpx 24rpx 0; }
