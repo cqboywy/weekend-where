@@ -1,4 +1,4 @@
-const { getCollections, deleteCollectionItem, updateCollectionItem } = require('../../utils/cloud.js');
+const { getCollections, deleteCollectionItem, updateCollectionItem, getTagStats } = require('../../utils/cloud.js');
 const { CATEGORIES, STATUS } = require('../../utils/constants.js');
 
 Page({
@@ -8,10 +8,12 @@ Page({
     activeCategory: '', activeStatus: '', keyword: '', showSearch: false, searchValue: '',
     sortBy: 'time', showSortMenu: false,
     actionItem: null, showActionSheet: false,
+    tagStats: [],
   },
 
   onLoad() {
     this.initCategories();
+    this.loadTagStats();
     // Check for status filter preset from home page stats tap
     const app = getApp();
     if (app.globalData.statusFilter) {
@@ -23,8 +25,17 @@ Page({
 
   onShow() {
     this.initCategories();
-    // Re-check on each show in case user navigates back
+    this.loadTagStats();
     const app = getApp();
+    // Handle tag filter from mine page
+    if (app.globalData.tagFilter) {
+      const tag = app.globalData.tagFilter;
+      delete app.globalData.tagFilter;
+      this.setData({ showSearch: true, searchValue: tag, keyword: tag });
+      this.loadData(true);
+      return;
+    }
+    // Re-check on each show in case user navigates back
     if (app.globalData.statusFilter && app.globalData.statusFilter !== this.data.activeStatus) {
       this.setData({ activeStatus: app.globalData.statusFilter });
       delete app.globalData.statusFilter;
@@ -38,6 +49,19 @@ Page({
       ? app.globalData.categories
       : CATEGORIES;
     this.setData({ categories: [{ key: '', label: '全部' }, ...cats] });
+  },
+
+  async loadTagStats() {
+    const result = await getTagStats();
+    if (result.success) {
+      this.setData({ tagStats: result.data.slice(0, 10) });
+    }
+  },
+
+  onTapTag(e) {
+    const tag = e.currentTarget.dataset.tag;
+    this.setData({ showSearch: true, searchValue: tag, keyword: tag });
+    this.loadData(true);
   },
 
   async loadData(refresh = false) {
@@ -90,6 +114,15 @@ Page({
     const item = e.detail && e.detail.item;
     if (item) {
       this.setData({ actionItem: item, showActionSheet: true });
+    }
+  },
+
+  onCardTagTap(e) {
+    const tag = e.detail.tag;
+    if (tag) {
+      this.setData({ showSearch: true, searchValue: tag, keyword: tag });
+      this.loadData(true);
+      wx.pageScrollTo({ scrollTop: 0, duration: 200 });
     }
   },
 

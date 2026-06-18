@@ -30,6 +30,8 @@ Component({
     formattedDate: '',
     staggerClass: 'stagger-1',
     displayCover: '',
+    displayTags: [],
+    overflowCount: 0,
   },
 
   methods: {
@@ -43,6 +45,9 @@ Component({
       const categoryInfo = cats.find(c => c.key === item.category) || cats.find(c => c.key === 'other') || { key: 'other', label: '其他', color: '#B5A595' };
       const categoryColor = categoryInfo.color || '#B5A595';
       const displayCover = item.coverImage || generateCategoryCover(categoryColor);
+      const tags = item.tags || [];
+      const displayTags = tags.slice(0, 3);
+      const overflowCount = tags.length - 3;
       const date = new Date(item.createdAt);
       const now = new Date();
       const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
@@ -52,7 +57,7 @@ Component({
       else if (diffDays < 7) formattedDate = `${diffDays}天前`;
       else formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
 
-      this.setData({ platformInfo, categoryInfo, formattedDate, displayCover });
+      this.setData({ platformInfo, categoryInfo, formattedDate, displayCover, displayTags, overflowCount });
     },
 
     onTap() {
@@ -61,6 +66,10 @@ Component({
 
     onLongPress() {
       this.triggerEvent('longpress', { item: this.properties.item });
+    },
+
+    onTagTap(e) {
+      this.triggerEvent('tagtap', { tag: e.currentTarget.dataset.tag });
     },
   }
 });

@@ -59,6 +59,7 @@ async function getCollections({ category, keyword, status, skip = 0, limit = 20 
           { title: db.RegExp({ regexp: keyword, options: 'i' }) },
           { note: db.RegExp({ regexp: keyword, options: 'i' }) },
           { 'location.name': db.RegExp({ regexp: keyword, options: 'i' }) },
+          { tags: db.RegExp({ regexp: keyword, options: 'i' }) },
         ])
       );
     }
@@ -150,6 +151,36 @@ async function getCollectionStats() {
   } catch (err) {
     console.error('获取统计失败:', err);
     return { success: false, error: err };
+  }
+}
+
+/**
+ * Aggregate tag frequencies from all user collections.
+ * @returns {Promise<{success: boolean, data: Array<{tag: string, count: number}>}>}
+ */
+async function getTagStats() {
+  try {
+    const userId = await ensureOpenId();
+    const res = await collection('collection_items')
+      .where({ userId })
+      .field({ tags: true })
+      .limit(200)
+      .get();
+    const freq = {};
+    res.data.forEach(item => {
+      if (item.tags && item.tags.length > 0) {
+        item.tags.forEach(tag => {
+          freq[tag] = (freq[tag] || 0) + 1;
+        });
+      }
+    });
+    const data = Object.entries(freq)
+      .map(([tag, count]) => ({ tag, count }))
+      .sort((a, b) => b.count - a.count);
+    return { success: true, data };
+  } catch (err) {
+    console.error('获取标签统计失败:', err);
+    return { success: false, error: err, data: [] };
   }
 }
 
@@ -288,7 +319,7 @@ module.exports = {
   db, _, collection,
   addCollectionItem, getCollections, getAllCollections,
   getCollectionDetail, updateCollectionItem, deleteCollectionItem,
-  getCollectionStats,
+  getCollectionStats, getTagStats,
   getCategories, addCategory, updateCategory, deleteCategory,
   seedDefaultCategories, getCategoryItemCount,
   uploadImage,

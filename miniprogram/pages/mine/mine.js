@@ -1,13 +1,17 @@
-const { getCollectionStats } = require('../../utils/cloud.js');
+const { getCollectionStats, getTagStats } = require('../../utils/cloud.js');
 
 Page({
-  data: { stats: null, loading: true },
-  onShow() { this.loadStats(); },
+  data: { stats: null, loading: true, tagStats: [] },
+  onShow() { this.loadStats(); this.loadTagStats(); },
   async loadStats() {
     this.setData({ loading: true });
     const result = await getCollectionStats();
     if (result.success) { this.setData({ stats: result.data, loading: false }); }
     else { this.setData({ loading: false }); }
+  },
+  async loadTagStats() {
+    const result = await getTagStats();
+    if (result.success) { this.setData({ tagStats: result.data }); }
   },
   onExport() { wx.showToast({ title: '功能开发中，敬请期待', icon: 'none' }); },
   onAbout() {
@@ -24,6 +28,12 @@ Page({
     } else {
       delete app.globalData.statusFilter;
     }
+    wx.switchTab({ url: '/pages/list/list' });
+  },
+
+  onTapStatTag(e) {
+    const tag = e.currentTarget.dataset.tag;
+    getApp().globalData.tagFilter = tag;
     wx.switchTab({ url: '/pages/list/list' });
   },
 });

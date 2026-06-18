@@ -36,6 +36,11 @@
         </view>
       </view>
 
+      <view wx:if="{{displayTags.length > 0}}" class="card-tags">
+        <text wx:for="{{displayTags}}" wx:key="*this" class="card-tag-chip" data-tag="{{item}}" catchtap="onTagTap">#{{item}}</text>
+        <text wx:if="{{overflowCount > 0}}" class="card-tag-overflow">+{{overflowCount}}</text>
+      </view>
+
       <view wx:if="{{item.location && item.location.name}}" class="card-location ellipsis">
         <lucide-icon name="map-pin" size="24" /> {{item.location.name}}
       </view>

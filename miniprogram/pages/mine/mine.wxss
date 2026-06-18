@@ -26,3 +26,22 @@
 .menu-icon { width: 60rpx; text-align: center; }
 .menu-text { flex: 1; font-size: var(--text-base); color: var(--color-text); font-weight: 500; }
 .menu-arrow { opacity: 0.6; }
+
+/* Tag stats */
+.tag-section { margin: 28rpx 24rpx; padding: 28rpx 24rpx; }
+.section-head { margin-bottom: 20rpx; }
+.section-title { font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 700; }
+.tag-grid { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.tag-stat-chip {
+  display: inline-flex; align-items: center; gap: 8rpx;
+  padding: 12rpx 22rpx; border-radius: var(--radius-full);
+  background: var(--color-primary-soft); color: var(--color-primary);
+  font-size: var(--text-sm); font-weight: 500;
+}
+.tag-stat-num {
+  font-weight: 700; font-size: var(--text-xs);
+  background: var(--color-primary); color: #fff;
+  border-radius: var(--radius-full); min-width: 36rpx;
+  height: 36rpx; line-height: 36rpx; text-align: center;
+  padding: 0 8rpx;
+}
