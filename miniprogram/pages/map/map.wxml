@@ -2,8 +2,12 @@
   <map id="myMap" class="map-container" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" markers="{{markers}}" bindmarkertap="onMarkerTap" show-location="{{true}}"/>
 
   <view class="map-filter-bar">
-    <scroll-view class="map-filter-scroll" scroll-x enable-flex>
-      <view wx:for="{{categories}}" wx:key="key" class="map-chip pressable {{selectedCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
+    <scroll-view class="map-filter-scroll" scroll-x>
+      <view class="filter-row">
+        <view class="mode-chip pressable" bindtap="onToggleFilterMode">{{filterMode === 'category' ? '分类 ▾' : '标签 ▾'}}</view>
+        <view wx:if="{{filterMode === 'category'}}" wx:for="{{categories}}" wx:key="key" class="map-chip pressable {{selectedCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
+        <view wx:if="{{filterMode === 'tag'}}" wx:for="{{allTags}}" wx:key="tag" class="map-chip pressable {{selectedTag === item.tag ? 'active' : ''}}" data-tag="{{item.tag}}" bindtap="onSelectTag">{{item.label}}</view>
+      </view>
     </scroll-view>
   </view>
 
@@ -12,7 +16,7 @@
   </view>
 
   <!-- Hidden canvas for generating marker icons -->
-  <canvas type="2d" id="markerCanvas" style="position:fixed;left:-9999px;width:56px;height:56px;"></canvas>
+  <canvas type="2d" id="markerCanvas" style="position:fixed;left:-9999px;width:64px;height:64px;"></canvas>
 
   <view wx:if="{{showDetailCard}}" class="map-detail-card safe-area-bottom">
     <view class="map-detail-header">

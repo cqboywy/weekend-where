@@ -235,8 +235,8 @@ Page({
     if (this.data.formData.tags.includes(tag)) {
       wx.showToast({ title: '标签已存在', icon: 'none' }); return;
     }
-    if (this.data.formData.tags.length >= 5) {
-      wx.showToast({ title: '最多添加5个标签', icon: 'none' }); return;
+    if (this.data.formData.tags.length >= 10) {
+      wx.showToast({ title: '最多添加10个标签', icon: 'none' }); return;
     }
     this.setData({
       'formData.tags': [...this.data.formData.tags, tag],

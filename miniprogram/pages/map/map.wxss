@@ -3,9 +3,16 @@
 
 .map-filter-bar { position: absolute; top: 24rpx; left: 24rpx; right: 24rpx; z-index: 10; }
 .map-filter-scroll {
-  white-space: nowrap; background: rgba(255,255,255,0.92);
-  border-radius: var(--radius-full); padding: 8rpx 16rpx;
-  box-shadow: var(--shadow-elevated); backdrop-filter: blur(8px);
+  background: rgba(255,255,255,0.92); border-radius: var(--radius-full);
+  padding: 8rpx 24rpx; box-shadow: var(--shadow-elevated); backdrop-filter: blur(8px);
+}
+.filter-row {
+  display: inline-flex; white-space: nowrap; flex-wrap: nowrap; align-items: center;
+}
+.mode-chip {
+  display: inline-block; padding: 10rpx 22rpx; border-radius: var(--radius-full);
+  font-size: var(--text-sm); color: var(--color-primary); font-weight: 700;
+  margin-right: 8rpx; background: var(--color-primary-soft);
 }
 .map-chip {
   display: inline-block; padding: 10rpx 22rpx; border-radius: var(--radius-full);

@@ -19,13 +19,6 @@
     <view wx:for="{{categories}}" wx:key="key" class="filter-chip pressable {{activeCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
   </scroll-view>
 
-  <view wx:if="{{tagStats.length > 0 && !activeCategory && !keyword}}" class="tag-stats-row">
-    <text class="tag-stats-label">热门标签</text>
-    <scroll-view class="tag-stats-scroll" scroll-x enable-flex>
-      <view wx:for="{{tagStats}}" wx:key="tag" class="tag-chip pressable" data-tag="{{item.tag}}" bindtap="onTapTag">{{item.tag}}<text class="tag-chip-count"> {{item.count}}</text></view>
-    </scroll-view>
-  </view>
-
   <view wx:if="{{!loading && items.length === 0}}" class="list-body">
     <empty-state title="还没有收藏" description="{{activeCategory ? '该分类下暂无收藏' : '去添加你的第一个好吃好玩的地方吧'}}" bind:action="onGoAdd"/>
   </view>

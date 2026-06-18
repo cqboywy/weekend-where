@@ -5,8 +5,9 @@ Page({
   data: {
     latitude: 39.9042, longitude: 116.4074, scale: 13,
     markers: [], allItems: [],
-    selectedCategory: '', showCategoryFilter: false,
-    categories: CATEGORIES,
+    selectedCategory: '', selectedTag: '',
+    categories: CATEGORIES, allTags: [],
+    filterMode: 'category',
     selectedItem: null, showDetailCard: false,
   },
 
@@ -26,7 +27,7 @@ Page({
     const cats = (app.globalData.categories && app.globalData.categories.length > 0)
       ? app.globalData.categories
       : CATEGORIES;
-    this.setData({ categories: cats });
+    this.setData({ categories: [{ key: '', label: '全部' }, ...cats] });
   },
 
   async loadMarkers() {
@@ -37,13 +38,23 @@ Page({
         this._hasLocated = true;
         this.setData({ latitude: items[0].location.latitude, longitude: items[0].location.longitude });
       }
-      this.setData({ allItems: items });
+      // Collect unique tags
+      const tagSet = new Set();
+      items.forEach(item => {
+        if (item.tags && item.tags.length > 0) {
+          item.tags.forEach(t => tagSet.add(t));
+        }
+      });
+      const allTags = [{ tag: '', label: '全部' }];
+      tagSet.forEach(t => allTags.push({ tag: t, label: t }));
+
+      this.setData({ allItems: items, allTags });
       await this.updateMarkers();
     }
   },
 
   /**
-   * Generate a solid filled circle marker PNG via canvas.
+   * Generate a teardrop pin marker PNG via canvas.
    * Results are cached by color hex string.
    */
   generateMarkerIcon(color) {
@@ -51,55 +62,70 @@ Page({
       return Promise.resolve(this._markerIconCache[color]);
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const query = wx.createSelectorQuery();
       query.select('#markerCanvas').fields({ node: true, size: true }).exec((res) => {
         if (!res || !res[0] || !res[0].node) {
-          // Canvas 2d not available, fallback to built-in image
           resolve('/images/tab-map-active.png');
           return;
         }
 
         const canvas = res[0].node;
         const ctx = canvas.getContext('2d');
-        const size = 56;
-        const dpr = wx.getSystemInfoSync().pixelRatio;
-        canvas.width = size * dpr;
-        canvas.height = size * dpr;
+        // High-res canvas → crisp output
+        const out = 64;
+        const dpr = Math.max(wx.getSystemInfoSync().pixelRatio, 3);
+        canvas.width = out * dpr;
+        canvas.height = out * dpr;
         ctx.scale(dpr, dpr);
+        ctx.clearRect(0, 0, out, out);
 
-        // Clear
-        ctx.clearRect(0, 0, size, size);
+        // Teardrop pin geometry
+        const cx = out / 2;
+        const cy = 22;
+        const r = 17;
+        const tip = cy + r + 12;
 
-        // Shadow
-        ctx.shadowColor = 'rgba(0,0,0,0.25)';
-        ctx.shadowBlur = 4;
+        // Pin body path
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, Math.PI * 1.02, -0.02);
+        ctx.quadraticCurveTo(cx + r + 1, cy + r + 2, cx, tip);
+        ctx.quadraticCurveTo(cx - r - 1, cy + r + 2, cx - r, cy);
+        ctx.closePath();
+
+        // Shadow (draw first, beneath body)
+        ctx.shadowColor = 'rgba(0,0,0,0.22)';
+        ctx.shadowBlur = 8;
         ctx.shadowOffsetX = 0;
-        ctx.shadowOffsetY = 2;
-
-        // Outer circle (white border)
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, 24, 0, Math.PI * 2);
-        ctx.fillStyle = '#FFFFFF';
+        ctx.shadowOffsetY = 4;
+        ctx.fillStyle = '#000000';
         ctx.fill();
-
-        // Inner filled circle (category color)
         ctx.shadowColor = 'transparent';
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, 20, 0, Math.PI * 2);
+
+        // Fill
         ctx.fillStyle = color;
         ctx.fill();
 
-        // Highlight (lighter arc at top-left for 3D pin feel)
+        // Outer white ring (crisp edges)
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        // Inner hairline — definition edge
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Specular highlight (small bright dot)
         ctx.beginPath();
-        ctx.arc(size / 2 - 4, size / 2 - 4, 10, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.ellipse(cx - 6, cy - 6, 5, 4, -0.4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
         ctx.fill();
 
         wx.canvasToTempFilePath({
           canvas,
-          x: 0, y: 0, width: size, height: size,
-          destWidth: size, destHeight: size,
+          x: 0, y: 0, width: out, height: out,
+          destWidth: out, destHeight: out,
           success: (result) => {
             this._markerIconCache[color] = result.tempFilePath;
             resolve(result.tempFilePath);
@@ -111,9 +137,10 @@ Page({
   },
 
   async updateMarkers() {
-    const { allItems, selectedCategory, categories } = this.data;
+    const { allItems, selectedCategory, selectedTag, categories } = this.data;
     let filteredItems = allItems;
-    if (selectedCategory) { filteredItems = allItems.filter(item => item.category === selectedCategory); }
+    if (selectedCategory) { filteredItems = filteredItems.filter(item => item.category === selectedCategory); }
+    if (selectedTag) { filteredItems = filteredItems.filter(item => item.tags && item.tags.includes(selectedTag)); }
 
     // Collect unique colors
     const colors = new Set();
@@ -125,7 +152,6 @@ Page({
     // Pre-generate all needed marker icons
     await Promise.all([...colors].map(c => this.generateMarkerIcon(c)));
 
-    const hasFilter = !!selectedCategory;
     const markers = filteredItems.map((item) => {
       const originalIndex = allItems.indexOf(item);
       const cat = categories.find(c => c.key === item.category) || {};
@@ -136,8 +162,8 @@ Page({
         longitude: item.location.longitude,
         title: item.title,
         iconPath: this._markerIconCache[catColor] || '/images/tab-map-active.png',
-        width: hasFilter ? 52 : 44,
-        height: hasFilter ? 52 : 44,
+        width: 44,
+        height: 44,
         anchor: { x: 0.5, y: 0.5 },
         callout: {
           content: item.title,
@@ -146,7 +172,7 @@ Page({
           borderRadius: 12,
           bgColor: catColor,
           padding: 12,
-          display: hasFilter ? 'ALWAYS' : 'BYCLICK',
+          display: 'ALWAYS',
           textAlign: 'center',
         },
       };
@@ -154,10 +180,22 @@ Page({
     this.setData({ markers });
   },
 
-  onToggleFilter() { this.setData({ showCategoryFilter: !this.data.showCategoryFilter }); },
   onSelectCategory(e) {
-    const category = e.currentTarget.dataset.category;
-    this.setData({ selectedCategory: category === this.data.selectedCategory ? '' : category, showCategoryFilter: false });
+    this.setData({ selectedCategory: e.currentTarget.dataset.category });
+    this.updateMarkers();
+  },
+  onSelectTag(e) {
+    this.setData({ selectedTag: e.currentTarget.dataset.tag });
+    this.updateMarkers();
+  },
+  onToggleFilterMode() {
+    const mode = this.data.filterMode === 'category' ? 'tag' : 'category';
+    // Clear the other mode's filter when switching
+    this.setData({
+      filterMode: mode,
+      selectedCategory: '',
+      selectedTag: '',
+    });
     this.updateMarkers();
   },
 
