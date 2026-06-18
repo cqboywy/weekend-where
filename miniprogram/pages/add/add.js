@@ -304,29 +304,25 @@ Page({
       result = await addCollectionItem(payload);
     }
 
-    this.setData({ submitting: false });
+    this.setData({ submitting: false, isUploading: false });
     if (result.success) {
       wx.vibrateShort({ type: 'light' });
       wx.showToast({ title: isEditing ? '已更新收藏' : '已加入收藏', icon: 'success', duration: 1500 });
+
+      // Clear form for both add and edit — ready for next use
+      const emptyForm = {
+        originalUrl: '', title: '', platform: '', category: '',
+        locationName: '', locationAddress: '',
+        latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
+        coverImage: '',
+      };
       if (isEditing) {
-        // Consume editItemId now that save is complete
         getApp().globalData.editItemId = null;
         wx.setNavigationBarTitle({ title: '添加收藏' });
-        this.setData({ isEditing: false, editId: '' });
+        this.setData({ isEditing: false, editId: '', coverImageTemp: '', parseError: '', tagInput: '', formData: emptyForm });
         setTimeout(() => { wx.switchTab({ url: '/pages/list/list' }); }, 800);
       } else {
-        // Auto-clear form for next addition
-        this.setData({
-          formData: {
-            originalUrl: '', title: '', platform: '', category: '',
-            locationName: '', locationAddress: '',
-            latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
-            coverImage: '',
-          },
-          coverImageTemp: '',
-          parseError: '',
-          tagInput: '',
-        });
+        this.setData({ coverImageTemp: '', parseError: '', tagInput: '', formData: emptyForm });
       }
     } else {
       wx.showToast({ title: '保存失败，请重试', icon: 'none' });
