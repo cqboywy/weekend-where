@@ -44,14 +44,15 @@ cloudfunctions/
 └── parseLink/            # 链接解析（OG 标签）
 ```
 
-## 设计系统
+## 文档
 
-详见 [docs/design-system-editorial-journal.md](docs/design-system-editorial-journal.md)
-
-- 配色：暖象牙白 + 墨色 + 铁锈红
-- 标题：思源宋体 Noto Serif SC
-- 正文：思源黑体 Noto Sans SC
-- 风格：编辑室 Editorial Journal
+| 文档 | 说明 |
+|------|------|
+| [产品概述](docs/product-overview.md) | 产品定位、使用场景、功能清单、页面结构 |
+| [技术架构](docs/technical-architecture.md) | 技术栈、数据模型、云函数、全局状态 |
+| [设计系统](docs/design-system-editorial-journal.md) | 配色、字体、圆角、阴影、按钮、布局原则 |
+| [更新日志](docs/changelog.md) | v1.0 / v1.1 完整更新记录 |
+| [图标指南](docs/icon-guide.md) | 图标系统使用说明 |
 
 ## 开始使用
 
