@@ -32,6 +32,14 @@ Page({
       this.loadData(true);
       return;
     }
+    // Handle category filter from category-manage page
+    if (app.globalData.categoryFilter) {
+      const catKey = app.globalData.categoryFilter;
+      delete app.globalData.categoryFilter;
+      this.setData({ activeCategory: catKey });
+      this.loadData(true);
+      return;
+    }
     // Re-check on each show in case user navigates back
     if (app.globalData.statusFilter && app.globalData.statusFilter !== this.data.activeStatus) {
       this.setData({ activeStatus: app.globalData.statusFilter });

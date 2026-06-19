@@ -8,7 +8,7 @@
   <!-- Category list -->
   <view class="card category-list">
     <block wx:for="{{categories}}" wx:key="_id">
-      <view class="cat-row">
+      <view class="cat-row pressable" data-category="{{item.key}}" bindtap="onTapCategory">
         <view class="cat-left">
           <view class="cat-color" style="background: {{item.color}};"></view>
           <view class="cat-info">

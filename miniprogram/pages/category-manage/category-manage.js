@@ -38,6 +38,12 @@ Page({
     }
   },
 
+  onTapCategory(e) {
+    const catKey = e.currentTarget.dataset.category;
+    getApp().globalData.categoryFilter = catKey;
+    wx.switchTab({ url: '/pages/list/list' });
+  },
+
   // ---- Modal handlers ----
 
   onAdd() {
