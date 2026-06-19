@@ -1,6 +1,7 @@
 <view class="page mine-page">
   <view class="mine-header">
-    <view class="avatar"><lucide-icon name="user" size="56" color="#E8876A" /></view>
+    <view class="avatar"><lucide-icon name="user" size="52" color="#9E9688" /></view>
+    <view class="header-issue">WEEKEND · WHERE</view>
     <view class="nickname">周末去哪儿</view>
     <view class="bio">收藏 {{stats ? stats.total : '...'}} 个好吃好玩的地方</view>
   </view>
@@ -18,17 +19,17 @@
     </view>
   </view>
 
-  <view class="menu-section card">
-    <view class="menu-item pressable" bindtap="onManageCategories"><view class="menu-icon"><lucide-icon name="tag" size="36" color="#E8876A" /></view><view class="menu-text">分类管理</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="28" color="#C8B8A8" /></view></view>
-    <view class="menu-item pressable" bindtap="onExport"><view class="menu-icon"><lucide-icon name="download" size="36" color="#E8876A" /></view><view class="menu-text">导出收藏</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="28" color="#C8B8A8" /></view></view>
-    <view class="menu-item pressable" bindtap="onFeedback"><view class="menu-icon"><lucide-icon name="message-circle" size="36" color="#E8876A" /></view><view class="menu-text">意见反馈</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="28" color="#C8B8A8" /></view></view>
-    <view class="menu-item pressable" bindtap="onAbout"><view class="menu-icon"><lucide-icon name="info" size="36" color="#E8876A" /></view><view class="menu-text">关于</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="28" color="#C8B8A8" /></view></view>
-  </view>
-
   <view wx:if="{{tagStats.length > 0}}" class="tag-section card">
     <view class="section-head"><view class="section-title">标签统计</view></view>
     <view class="tag-grid">
       <view wx:for="{{tagStats}}" wx:key="tag" class="tag-stat-chip pressable" data-tag="{{item.tag}}" bindtap="onTapStatTag">{{item.tag}}<text class="tag-stat-num">{{item.count}}</text></view>
     </view>
+  </view>
+
+  <view class="menu-section card">
+    <view class="menu-item pressable" bindtap="onManageCategories"><view class="menu-icon"><lucide-icon name="tag" size="32" color="#9E9688" /></view><view class="menu-text">分类管理</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="24" color="#C8BFB2" /></view></view>
+    <view class="menu-item pressable" bindtap="onExport"><view class="menu-icon"><lucide-icon name="download" size="32" color="#9E9688" /></view><view class="menu-text">导出收藏</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="24" color="#C8BFB2" /></view></view>
+    <view class="menu-item pressable" bindtap="onFeedback"><view class="menu-icon"><lucide-icon name="message-circle" size="32" color="#9E9688" /></view><view class="menu-text">意见反馈</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="24" color="#C8BFB2" /></view></view>
+    <view class="menu-item pressable" bindtap="onAbout"><view class="menu-icon"><lucide-icon name="info" size="32" color="#9E9688" /></view><view class="menu-text">关于</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="24" color="#C8BFB2" /></view></view>
   </view>
 </view>

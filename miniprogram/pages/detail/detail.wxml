@@ -57,10 +57,10 @@
 
   <!-- Bottom actions -->
   <view class="detail-actions safe-area-bottom">
-    <view class="action-btn pressable" bindtap="onEdit"><lucide-icon name="tag" size="28" color="#E8876A" /> 编辑</view>
-    <view class="action-btn pressable" bindtap="onToggleStatus"><lucide-icon name="check" size="28" color="#E8876A" /> {{item.status === 'want_to_go' ? '去过' : '想去'}}</view>
+    <view class="action-btn pressable" bindtap="onToggleStatus"><lucide-icon name="check" size="28" color="{{item.status === 'want_to_go' ? '#7C9A7E' : '#9E9688'}}" /> {{item.status === 'want_to_go' ? '去过' : '想去'}}</view>
+    <button class="action-btn pressable plain-btn" open-type="share"><lucide-icon name="share" size="28" color="#9E9688" /> 分享</button>
+    <view class="action-btn pressable" bindtap="onEdit"><lucide-icon name="pencil" size="28" color="#9E9688" /> 编辑</view>
     <view class="action-btn primary pressable" bindtap="onNavigate"><lucide-icon name="navigation" size="28" color="#fff" /> 导航</view>
-    <button class="action-btn pressable" open-type="share"><lucide-icon name="share" size="28" color="#3D2B1F" /> 分享</button>
   </view>
 </view>
 

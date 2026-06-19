@@ -91,7 +91,7 @@
   </view>
 
   <view class="bottom-actions safe-area-bottom">
-    <button class="reset-btn" bindtap="onReset">清空</button>
-    <button class="submit-btn {{submitting ? 'loading' : ''}}" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">{{isUploading ? '上传中...' : (submitting ? '保存中...' : (isEditing ? '保存修改' : '加入收藏'))}}</button>
+    <view class="reset-btn pressable" bindtap="onReset">清空</view>
+    <button class="submit-btn plain-btn pressable" bindtap="onSubmit" disabled="{{submitting}}" loading="{{submitting}}">{{isUploading ? '上传中…' : (submitting ? '保存中…' : (isEditing ? '保存修改' : '加入收藏'))}}</button>
   </view>
 </view>
