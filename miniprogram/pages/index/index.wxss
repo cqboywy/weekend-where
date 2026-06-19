@@ -36,9 +36,9 @@
    ============================================ */
 .featured-section { margin: 0 28rpx 48rpx; }
 .featured-card {
-  position: relative; border-radius: var(--radius-xl);
+  position: relative; border-radius: var(--radius-lg);
   overflow: hidden; height: 480rpx;
-  box-shadow: var(--shadow-elevated);
+  box-shadow: 0 2rpx 16rpx rgba(44,36,22,0.06), 0 0 0 1px rgba(44,36,22,0.03);
 }
 .featured-cover { width: 100%; height: 100%; }
 .featured-overlay {
@@ -71,23 +71,31 @@
    Masonry section
    ============================================ */
 .masonry-section { margin: 0 28rpx; padding-bottom: 48rpx; }
-.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 28rpx; }
-.section-title { font-family: var(--font-heading); font-size: var(--text-xl); font-weight: 700; }
-.section-link { font-size: var(--text-sm); color: var(--color-primary); font-weight: 600; }
+.section-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 28rpx; padding-bottom: 16rpx;
+  border-bottom: 1px solid var(--color-border);
+}
+.section-title { font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 700; }
+.section-link { font-size: var(--text-sm); color: var(--color-muted); font-weight: 500; }
 
 .masonry-grid { column-count: 2; column-gap: 16rpx; }
 .masonry-item {
   break-inside: avoid; margin-bottom: 16rpx;
   background: var(--color-white); border-radius: var(--radius-lg);
-  overflow: hidden; box-shadow: var(--shadow-card);
-  transition: transform 0.2s ease;
+  overflow: hidden;
+  box-shadow: 0 1rpx 8rpx rgba(44,36,22,0.05), 0 0 0 1px rgba(44,36,22,0.03);
+  transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.3s ease;
 }
-.masonry-item:active { transform: scale(0.975); }
+.masonry-item:active {
+  transform: scale(0.98);
+  box-shadow: 0 4rpx 20rpx rgba(44,36,22,0.10), 0 0 0 1px rgba(44,36,22,0.05);
+}
 .masonry-img {
   width: 100%; display: block;
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
-.masonry-body { padding: 18rpx 20rpx 22rpx; }
+.masonry-body { padding: 20rpx 22rpx 24rpx; }
 .masonry-title {
   font-family: var(--font-heading);
   font-size: var(--text-md); font-weight: 700;
@@ -96,8 +104,8 @@
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
 }
 .masonry-cat {
-  display: inline-block; padding: 4rpx 14rpx;
-  border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 600;
+  display: inline-block; padding: 4rpx 12rpx;
+  border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 500;
 }
 
 /* ============================================
