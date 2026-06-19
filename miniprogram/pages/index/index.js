@@ -16,12 +16,12 @@ Page({
   setGreeting() {
     const hour = new Date().getHours();
     let greeting;
-    if (hour < 6) greeting = '夜深了';
-    else if (hour < 9) greeting = '早上好';
-    else if (hour < 12) greeting = '上午好';
-    else if (hour < 14) greeting = '中午好';
-    else if (hour < 18) greeting = '下午好';
-    else greeting = '晚上好';
+    if (hour < 6) greeting = '夜深人静';
+    else if (hour < 9) greeting = '晨光熹微';
+    else if (hour < 12) greeting = '天朗气清';
+    else if (hour < 14) greeting = '日正当中';
+    else if (hour < 18) greeting = '日影西斜';
+    else greeting = '暮色四合';
     const days = ['日', '一', '二', '三', '四', '五', '六'];
     const now = new Date();
     const dateStr = `${now.getMonth() + 1}月${now.getDate()}日 星期${days[now.getDay()]}`;
