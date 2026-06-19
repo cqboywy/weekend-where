@@ -1,7 +1,14 @@
 const { getCollections, getCollectionStats } = require('../../utils/cloud.js');
+const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
 
 Page({
-  data: { recentItems: [], stats: null, loading: true, greeting: '', currentDate: '' },
+  data: {
+    featuredItem: null,
+    recentItems: [],
+    loading: true,
+    greeting: '',
+    currentDate: '',
+  },
 
   onLoad() { this.setGreeting(); this.loadData(); },
   onShow() { this.loadData(); },
@@ -23,36 +30,68 @@ Page({
 
   async loadData() {
     this.setData({ loading: true });
+
+    const app = getApp();
+    const cats = (app.globalData.categories && app.globalData.categories.length > 0)
+      ? app.globalData.categories
+      : CATEGORIES;
+
     const [recentResult, statsResult] = await Promise.all([
-      getCollections({ limit: 6 }),
+      getCollections({ limit: 30 }),
       getCollectionStats(),
     ]);
-    this.setData({
-      recentItems: recentResult.success ? recentResult.data : [],
-      stats: statsResult.success ? statsResult.data : null,
-      loading: false,
-    });
+
+    if (recentResult.success && recentResult.data.length > 0) {
+      const all = recentResult.data;
+
+      // Random featured pick
+      const featuredIdx = Math.floor(Math.random() * all.length);
+      const featuredItem = all[featuredIdx];
+
+      // Rest for masonry (exclude featured, limit 20)
+      const rest = all.filter((_, i) => i !== featuredIdx).slice(0, 20);
+
+      // Attach category color/label + pre-computed cover to each item
+      const enrich = (item) => {
+        const cat = cats.find(c => c.key === item.category) || cats.find(c => c.key === 'other') || {};
+        const color = cat.color || '#E8876A';
+        return {
+          ...item,
+          catColor: color,
+          catBg: color + '1A',
+          catLabel: cat.label || '其他',
+          displayCover: item.coverImage || generateCategoryCover(color),
+        };
+      };
+
+      this.setData({
+        featuredItem: enrich(featuredItem),
+        recentItems: rest.map(enrich),
+        loading: false,
+      });
+    } else {
+      this.setData({
+        featuredItem: null,
+        recentItems: [],
+        loading: false,
+      });
+    }
+  },
+
+  onViewFeatured() {
+    const item = this.data.featuredItem;
+    if (item && item._id) {
+      wx.navigateTo({ url: `/pages/detail/detail?id=${item._id}` });
+    }
+  },
+
+  onViewDetail(e) {
+    const id = e.currentTarget.dataset.id;
+    if (id) {
+      wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+    }
   },
 
   onGoAdd() { wx.switchTab({ url: '/pages/add/add' }); },
-  onGoList(e) {
-    const category = e.currentTarget.dataset.category || '';
-    wx.switchTab({ url: '/pages/list/list' });
-    if (category) { getApp().globalData.listFilter = category; }
-  },
-  onTapStat(e) {
-    const status = e.currentTarget.dataset.status;
-    if (status) {
-      getApp().globalData.statusFilter = status;
-    } else {
-      delete getApp().globalData.statusFilter;
-    }
-    wx.switchTab({ url: '/pages/list/list' });
-  },
-  onGoMap() { wx.switchTab({ url: '/pages/map/map' }); },
-  onViewDetail(e) {
-    const item = e.detail && e.detail.item;
-    if (!item || !item._id) return;
-    wx.navigateTo({ url: `/pages/detail/detail?id=${item._id}` });
-  },
+  onGoList() { wx.switchTab({ url: '/pages/list/list' }); },
 });

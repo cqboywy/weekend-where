@@ -1,0 +1,43 @@
+<view class="splash-page {{fadeIn ? 'show' : ''}}" style="background: linear-gradient(160deg, {{season.bg[0]}}, {{season.bg[1]}});">
+  <view class="splash-content">
+    <!-- Chinese title -->
+    <view class="splash-cn" style="color: {{season.accent}};">周末去哪儿</view>
+
+    <!-- English subtitle -->
+    <view class="splash-en" style="color: {{season.accent}};">WEEKEND · WHERE</view>
+
+    <!-- Seasonal symbol -->
+    <view class="splash-symbol {{season.symbol}}">
+      <!-- Spring: cherry blossom (5 petals) -->
+      <view wx:if="{{season.symbol === 'cherry'}}" class="cherry-blossom">
+        <view class="petal p1" style="background:{{season.accent}};"></view>
+        <view class="petal p2" style="background:{{season.accent}};"></view>
+        <view class="petal p3" style="background:{{season.accent}};"></view>
+        <view class="petal p4" style="background:{{season.accent}};"></view>
+        <view class="petal p5" style="background:{{season.accent}};"></view>
+        <view class="petal-center" style="background:{{season.bg[0]}};"></view>
+      </view>
+      <!-- Summer: stacked waves -->
+      <view wx:if="{{season.symbol === 'wave'}}" class="waves">
+        <view class="wave w1" style="border-color:{{season.accent}};"></view>
+        <view class="wave w2" style="border-color:{{season.accent}};"></view>
+        <view class="wave w3" style="border-color:{{season.accent}};"></view>
+      </view>
+      <!-- Autumn: diamond leaves -->
+      <view wx:if="{{season.symbol === 'leaf'}}" class="leaves">
+        <view class="leaf l1" style="background:{{season.accent}};"></view>
+        <view class="leaf l2" style="background:{{season.accent}};"></view>
+        <view class="leaf l3" style="background:{{season.accent}};"></view>
+      </view>
+      <!-- Winter: six-pointed star -->
+      <view wx:if="{{season.symbol === 'snow'}}" class="snowflake">
+        <view class="star-bar sb1" style="background:{{season.accent}};"></view>
+        <view class="star-bar sb2" style="background:{{season.accent}};"></view>
+        <view class="star-bar sb3" style="background:{{season.accent}};"></view>
+      </view>
+    </view>
+
+    <!-- Tagline -->
+    <view class="splash-tagline" style="color: {{season.accent}};">{{season.tagline}}</view>
+  </view>
+</view>

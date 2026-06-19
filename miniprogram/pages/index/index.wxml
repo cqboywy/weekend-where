@@ -6,63 +6,51 @@
     <view class="hero-sub">{{currentDate}}</view>
   </view>
 
-  <!-- Primary CTA — warm coral card -->
-  <view class="cta-card card-elevated pressable" bindtap="onGoAdd">
-    <view class="cta-icon-wrap">
-      <lucide-icon name="plus" size="40" color="#fff" />
-    </view>
-    <view class="cta-body">
-      <view class="cta-title">添加新收藏</view>
-      <view class="cta-sub">粘贴链接，自动识别并整理</view>
-    </view>
-    <view class="cta-arrow">
-      <lucide-icon name="arrow-right" size="32" color="rgba(255,255,255,0.7)" />
-    </view>
-  </view>
-
-  <!-- Quick Nav -->
-  <view class="quick-row">
-    <view class="quick-item card pressable" bindtap="onGoMap">
-      <lucide-icon name="map-pin" size="36" color="#E8876A" />
-      <view class="quick-label">地图浏览</view>
-    </view>
-    <view class="quick-item card pressable" bindtap="onGoList">
-      <lucide-icon name="layout-grid" size="36" color="#E8876A" />
-      <view class="quick-label">全部收藏</view>
+  <!-- Featured daily pick -->
+  <view wx:if="{{featuredItem}}" class="featured-section">
+    <view class="featured-card pressable" bindtap="onViewFeatured">
+      <image src="{{featuredItem.displayCover}}" mode="aspectFill" class="featured-cover"/>
+      <view class="featured-overlay">
+        <view class="featured-tag">今日精选</view>
+        <view class="featured-title">{{featuredItem.title}}</view>
+        <view wx:if="{{featuredItem.tags && featuredItem.tags.length > 0}}" class="featured-tags">
+          <text wx:for="{{featuredItem.tags}}" wx:for-item="t" wx:key="*this" class="featured-tag-chip">#{{t}}</text>
+        </view>
+      </view>
     </view>
   </view>
 
-  <!-- Stats -->
-  <view wx:if="{{stats}}" class="stats-section">
+  <!-- Past collections — masonry grid -->
+  <view class="masonry-section">
     <view class="section-head">
-      <view class="section-title">收藏统计</view>
-    </view>
-    <view class="stats-grid">
-      <view class="stat-cell card pressable" bindtap="onTapStat" data-status="">
-        <view class="stat-num">{{stats.total}}</view>
-        <view class="stat-label">总收藏</view>
-      </view>
-      <view class="stat-cell card pressable" bindtap="onTapStat" data-status="want_to_go">
-        <view class="stat-num">{{stats.wantToGo}}</view>
-        <view class="stat-label">想去</view>
-      </view>
-      <view class="stat-cell card pressable" bindtap="onTapStat" data-status="visited">
-        <view class="stat-num">{{stats.visited}}</view>
-        <view class="stat-label">去过</view>
-      </view>
-    </view>
-  </view>
-
-  <!-- Recent -->
-  <view class="recent-section">
-    <view class="section-head">
-      <view class="section-title">最近收藏</view>
+      <view class="section-title">往期收藏</view>
       <view class="section-link" bindtap="onGoList">全部 →</view>
     </view>
-    <view wx:if="{{loading}}"><skeleton loading="{{true}}" count="{{2}}"/></view>
-    <view wx:elif="{{recentItems.length === 0}}"><empty-state bind:action="onGoAdd"/></view>
-    <view wx:else>
-      <collection-card wx:for="{{recentItems}}" wx:key="_id" item="{{item}}" index="{{index}}" showStatus="{{true}}" bind:tap="onViewDetail"/>
+
+    <view wx:if="{{loading}}">
+      <view class="masonry-grid">
+        <view class="masonry-item skeleton-card" wx:for="{{[1,2,3,4]}}" wx:key="*this">
+          <view class="masonry-img skeleton-img"></view>
+          <view class="masonry-body">
+            <view class="skeleton-line w-80"></view>
+            <view class="skeleton-line w-50"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view wx:elif="{{recentItems.length === 0}}">
+      <empty-state title="还没有收藏" description="去添加你的第一个好吃好玩的地方吧" bind:action="onGoAdd"/>
+    </view>
+
+    <view wx:else class="masonry-grid">
+      <view wx:for="{{recentItems}}" wx:key="_id" class="masonry-item pressable" bindtap="onViewDetail" data-id="{{item._id}}">
+        <image src="{{item.displayCover}}" mode="widthFix" class="masonry-img"/>
+        <view class="masonry-body">
+          <view class="masonry-title">{{item.title}}</view>
+          <view class="masonry-cat" style="color:{{item.catColor || '#E8876A'}}; background:{{item.catBg || '#FFF0E8'}};">{{item.catLabel || '其他'}}</view>
+        </view>
+      </view>
     </view>
   </view>
 </view>

@@ -54,28 +54,6 @@ const COLORS = {
   muted: '#B8A89A',
 };
 
-// Category-specific default cover — rich SVG with icon-like geometric patterns
-// Each gradient uses a distinct 2-color palette + a centered decorative circle ring
-// No external deps, no domain whitelist needed, renders instantly
-const CATEGORY_COVERS = {
-  hotpot:     'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#F06B5A"/><stop offset="100%" stop-color="#C0392B"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  barbecue:   'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#F09050"/><stop offset="100%" stop-color="#D4642A"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  chinese:    'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#E8483A"/><stop offset="100%" stop-color="#9B1B1C"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  japanese:   'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#8CB59A"/><stop offset="100%" stop-color="#4A7C59"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  korean:     'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#EB7585"/><stop offset="100%" stop-color="#C44258"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  western:    'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#A07858"/><stop offset="100%" stop-color="#6B3F1F"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  cafe:       'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#B8957D"/><stop offset="100%" stop-color="#7B6152"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  dessert:    'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#F2B5C0"/><stop offset="100%" stop-color="#D48495"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  street:     'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#F5B040"/><stop offset="100%" stop-color="#D4891A"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  bar:        'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#7B6A8A"/><stop offset="100%" stop-color="#4A3D5C"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  park:       'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#7BA88A"/><stop offset="100%" stop-color="#4A7C59"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  museum:     'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#9DABBD"/><stop offset="100%" stop-color="#62708C"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  shopping:   'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#EC9580"/><stop offset="100%" stop-color="#D06750"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  sports:     'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#6BAADD"/><stop offset="100%" stop-color="#3B7BB5"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  entertainment: 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#AB80C5"/><stop offset="100%" stop-color="#7B4DA0"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-  other:      'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="#C8B8A8"/><stop offset="100%" stop-color="#9B8B7D"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>'),
-};
-
 /**
  * Darken a hex color by a given factor (0-1).
  * @param {string} hex - e.g. "#E8533F"
@@ -94,16 +72,46 @@ function darkenHex(hex, amount) {
 }
 
 /**
- * Generate a dynamic category cover SVG data URI from a single color.
- * Produces a radial gradient + 3 concentric circle rings, matching the
- * visual language of the hardcoded CATEGORY_COVERS.
+ * Generate a category cover SVG with a gradient base + 4 semi-transparent
+ * "light-spot" ellipses (Spotify / Apple Music style).  Spot layout is
+ * deterministic per colour so every category looks unique without needing
+ * any pre-defined icon or font.
  * @param {string} color - primary hex color (e.g. "#E8533F")
  * @returns {string} data:image/svg+xml URI
  */
 function generateCategoryCover(color) {
   const dark = darkenHex(color, 0.35);
-  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="' + color + '"/><stop offset="100%" stop-color="' + dark + '"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/><circle cx="200" cy="200" r="64" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="3"/><circle cx="200" cy="200" r="48" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/><circle cx="200" cy="200" r="32" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5"/></svg>';
+
+  // Deterministic seed from the 3 RGB channels
+  const r = parseInt(color.slice(1, 3), 16);
+  const g = parseInt(color.slice(3, 5), 16);
+  const b = parseInt(color.slice(5, 7), 16);
+  const seed = r * 65536 + g * 256 + b;
+  // Simple Mulberry32 PRNG
+  let state = seed;
+  function rand() {
+    state |= 0; state = state + 0x6D2B79F5 | 0;
+    let t = Math.imul(state ^ state >>> 15, 1 | state);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+
+  // 4 light-spot ellipses
+  let spots = '';
+  for (let i = 0; i < 4; i++) {
+    const cx = 30 + rand() * 340;
+    const cy = 30 + rand() * 380;
+    const rx = 45 + rand() * 110;
+    const ry = 35 + rand() * 85;
+    const rot = Math.round(rand() * 360);
+    const opacity = (0.06 + rand() * 0.10).toFixed(3);
+    spots += '<ellipse cx="' + cx + '" cy="' + cy + '" rx="' + rx + '" ry="' + ry +
+      '" transform="rotate(' + rot + ' ' + cx + ' ' + cy + ')"' +
+      ' fill="rgba(255,255,255,' + opacity + ')" />';
+  }
+
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="440" viewBox="0 0 400 440"><defs><radialGradient id="g" cx="50%" cy="40%" r="60%"><stop offset="0%" stop-color="' + color + '"/><stop offset="100%" stop-color="' + dark + '"/></radialGradient></defs><rect width="400" height="440" fill="url(#g)"/>' + spots + '</svg>';
   return 'data:image/svg+xml,' + encodeURIComponent(svg);
 }
 
-module.exports = { CATEGORIES, PLATFORMS, STATUS, COLORS, CATEGORY_COLORS, CATEGORY_COVERS, generateCategoryCover, darkenHex };
+module.exports = { CATEGORIES, PLATFORMS, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex };
