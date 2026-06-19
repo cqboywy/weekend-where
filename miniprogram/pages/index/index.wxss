@@ -3,19 +3,18 @@
 /* ============================================
    Hero
    ============================================ */
-.hero { padding: 104rpx 36rpx 36rpx; }
+.hero { padding: 120rpx 40rpx 48rpx; }
 .hero-badge {
   display: inline-block;
   font-family: var(--font-body);
   font-size: var(--text-xs);
-  color: var(--color-accent);
-  font-weight: 700;
-  letter-spacing: 4rpx;
+  color: var(--color-primary);
+  font-weight: 500;
+  letter-spacing: 6rpx;
   text-transform: uppercase;
-  margin-bottom: 20rpx;
-  background: var(--color-accent-soft);
-  padding: 8rpx 20rpx;
-  border-radius: var(--radius-full);
+  margin-bottom: 28rpx;
+  padding: 6rpx 0;
+  border-bottom: 1.5px solid var(--color-primary);
 }
 .hero-title {
   font-family: var(--font-heading);
@@ -35,7 +34,7 @@
 /* ============================================
    Featured daily pick
    ============================================ */
-.featured-section { margin: 0 24rpx 40rpx; }
+.featured-section { margin: 0 28rpx 48rpx; }
 .featured-card {
   position: relative; border-radius: var(--radius-xl);
   overflow: hidden; height: 480rpx;
@@ -71,8 +70,8 @@
 /* ============================================
    Masonry section
    ============================================ */
-.masonry-section { margin: 0 24rpx; padding-bottom: 40rpx; }
-.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20rpx; }
+.masonry-section { margin: 0 28rpx; padding-bottom: 48rpx; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 28rpx; }
 .section-title { font-family: var(--font-heading); font-size: var(--text-xl); font-weight: 700; }
 .section-link { font-size: var(--text-sm); color: var(--color-primary); font-weight: 600; }
 

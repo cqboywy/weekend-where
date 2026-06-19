@@ -13,20 +13,20 @@
 
 /* Typography */
 .splash-cn {
-  font-family: "Playfair Display", "Georgia", serif;
-  font-size: 96rpx; font-weight: 700;
-  letter-spacing: 4rpx; line-height: 1.1;
+  font-family: var(--font-heading);
+  font-size: 96rpx; font-weight: 900;
+  letter-spacing: 6rpx; line-height: 1.1;
 }
 .splash-en {
-  font-family: "Source Sans 3", "PingFang SC", sans-serif;
-  font-size: 28rpx; font-weight: 600;
-  letter-spacing: 8rpx; opacity: 0.55;
+  font-family: var(--font-body);
+  font-size: 28rpx; font-weight: 500;
+  letter-spacing: 10rpx; opacity: 0.45;
   text-transform: uppercase;
 }
 .splash-tagline {
-  font-family: "Source Sans 3", "PingFang SC", sans-serif;
-  font-size: 32rpx; font-weight: 500;
-  margin-top: 28rpx; opacity: 0.75;
+  font-family: var(--font-body);
+  font-size: 32rpx; font-weight: 400;
+  margin-top: 28rpx; opacity: 0.65;
   font-style: italic; letter-spacing: 2rpx;
 }
 

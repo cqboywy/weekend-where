@@ -11,18 +11,18 @@ App({
       });
     }
 
-    // Load Botanical Design System fonts
+    // Load Editorial Journal fonts
     wx.loadFontFace({
-      family: 'Playfair Display',
-      source: 'url("https://fonts.gstatic.com/s/playfairdisplay/v37/nuFvD-vYSZviVYUb_rj3ij__anPXJzDwcbmjWBN2PKd3vXDXbtXK-F2qC0s.woff2")',
-      success: () => console.log('Playfair Display loaded'),
-      fail: () => console.log('Playfair Display failed, using fallback')
+      family: 'Noto Serif SC',
+      source: 'url("https://fonts.gstatic.com/s/notoserifsc/v22/H4c8BXePl9DZ0Xe7gG9cyOj7mm63SzZBEtERe7Y.otf")',
+      success: () => console.log('Noto Serif SC loaded'),
+      fail: () => console.log('Noto Serif SC failed, using fallback')
     });
     wx.loadFontFace({
-      family: 'Source Sans 3',
-      source: 'url("https://fonts.gstatic.com/s/sourcesans3/v15/nwpBtKy2OAdR1K-IwhWudF-R9QMylBJLYyJg.woff2")',
-      success: () => console.log('Source Sans 3 loaded'),
-      fail: () => console.log('Source Sans 3 failed, using fallback')
+      family: 'Noto Sans SC',
+      source: 'url("https://fonts.gstatic.com/s/notosanssc/v26/k3kCo84MPvpLmixcA63oeAL7Iqp5IZJF9bmaG9_EnYxNbPzS5HE.woff2")',
+      success: () => console.log('Noto Sans SC loaded'),
+      fail: () => console.log('Noto Sans SC failed, using fallback')
     });
 
     this.getOpenIdPromise = this.getOpenId();
