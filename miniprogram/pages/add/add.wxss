@@ -1,9 +1,8 @@
 .add-page { padding-bottom: 200rpx; background: var(--color-bg); }
 
 /* Header */
-.page-header { padding: 48rpx 32rpx 32rpx; }
-.header-title { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 700; }
-.header-desc { font-size: var(--text-sm); color: var(--color-muted); margin-top: 8rpx; }
+.page-header { padding: 40rpx 32rpx 36rpx; text-align: center; }
+.header-desc { font-size: var(--text-sm); color: var(--color-muted); font-weight: 400; letter-spacing: 4rpx; }
 
 /* Sections */
 .section { margin: 0 28rpx 20rpx; padding: 32rpx 28rpx; }

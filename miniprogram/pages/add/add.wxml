@@ -1,7 +1,6 @@
 <view class="page add-page">
   <view class="page-header">
-    <view class="header-title">{{isEditing ? '编辑收藏' : '添加收藏'}}</view>
-    <view class="header-desc">{{isEditing ? '修改收藏信息' : '收藏一个好吃或好玩的地方'}}</view>
+    <view class="header-desc">{{isEditing ? '· 编辑 ·' : '· 新收藏 ·'}}</view>
   </view>
 
   <view class="section card">

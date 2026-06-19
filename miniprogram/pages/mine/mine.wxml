@@ -1,6 +1,6 @@
 <view class="page mine-page">
   <view class="mine-header">
-    <view class="avatar"><lucide-icon name="user" size="52" color="#9E9688" /></view>
+    <image class="avatar" src="/images/app-icon.png" mode="aspectFill" />
     <view class="header-issue">WEEKEND · WHERE</view>
     <view class="nickname">周末去哪儿</view>
     <view class="bio">收藏 {{stats ? stats.total : '...'}} 个好吃好玩的地方</view>

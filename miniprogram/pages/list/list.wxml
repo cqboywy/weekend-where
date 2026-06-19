@@ -1,12 +1,12 @@
 <view class="page list-page">
   <view class="list-header">
     <view class="list-title-row">
-      <view class="list-title">我的收藏</view>
-      <view class="list-search-btn pressable" bindtap="onToggleSearch"><lucide-icon name="search" size="40" color="#E8876A" /></view>
-    </view>
-    <view wx:if="{{activeStatus}}" class="status-filter-hint">
-      <text>筛选：{{activeStatus === 'want_to_go' ? '想去' : '去过'}}</text>
-      <text class="clear-filter" bindtap="onClearStatus">✕ 清除</text>
+      <view wx:if="{{activeStatus}}" class="status-filter-hint">
+        <text>{{activeStatus === 'want_to_go' ? '想去' : '去过'}}</text>
+        <text class="clear-filter" bindtap="onClearStatus">✕ 清除</text>
+      </view>
+      <view wx:else class="list-header-label">收藏</view>
+      <view class="list-search-btn pressable" bindtap="onToggleSearch"><lucide-icon name="search" size="40" color="#9E9688" /></view>
     </view>
   </view>
 

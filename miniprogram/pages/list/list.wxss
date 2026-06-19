@@ -5,7 +5,8 @@
 .list-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16rpx; }
 .list-title { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 700; }
 .list-search-btn { padding: 8rpx; }
-.status-filter-hint { display: flex; align-items: center; gap: 16rpx; margin-top: 8rpx; font-size: var(--text-sm); color: var(--color-primary); }
+.list-header-label { font-size: var(--text-sm); color: var(--color-muted); font-weight: 400; letter-spacing: 2rpx; }
+.status-filter-hint { display: flex; align-items: center; gap: 16rpx; font-size: var(--text-sm); color: var(--color-primary); }
 .clear-filter { color: var(--color-muted); border-bottom: 1rpx solid var(--color-muted); }
 
 /* Search */
