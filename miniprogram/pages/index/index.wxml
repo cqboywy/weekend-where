@@ -29,7 +29,7 @@
       <view class="section-title">下次去</view>
       <view class="section-count">{{nextGoItems.length}} 个地方</view>
     </view>
-    <scroll-view class="nextgo-scroll" scroll-x enable-flex show-scrollbar="{{false}}">
+    <view class="nextgo-scroll">
       <view wx:for="{{nextGoItems}}" wx:key="_id" class="nextgo-item">
         <view class="nextgo-card pressable" bindtap="onViewNextGo" data-id="{{item._id}}">
           <image src="{{item.displayCover}}" mode="aspectFill" class="nextgo-cover"/>
@@ -42,7 +42,7 @@
           <lucide-icon name="x" size="28" color="#9E9688" />
         </view>
       </view>
-    </scroll-view>
+    </view>
   </view>
 
   <!-- Past collections — masonry grid -->
