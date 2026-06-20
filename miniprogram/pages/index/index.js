@@ -1,5 +1,6 @@
 const { getCollections, getCollectionStats } = require('../../utils/cloud.js');
 const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
+const { getGreeting } = require('../../utils/weather-greeting.js');
 
 Page({
   data: {
@@ -14,18 +15,56 @@ Page({
   onShow() { this.loadData(); },
 
   setGreeting() {
-    const hour = new Date().getHours();
-    let greeting;
-    if (hour < 6) greeting = '夜深人静';
-    else if (hour < 9) greeting = '晨光熹微';
-    else if (hour < 12) greeting = '天朗气清';
-    else if (hour < 14) greeting = '日正当中';
-    else if (hour < 18) greeting = '日影西斜';
-    else greeting = '暮色四合';
-    const days = ['日', '一', '二', '三', '四', '五', '六'];
     const now = new Date();
+    const hour = now.getHours();
+
+    // 先设纯时间短语，天气拿到后更新
+    const fallbackGreeting = getGreeting(hour, null);
+    const days = ['日', '一', '二', '三', '四', '五', '六'];
     const dateStr = `${now.getMonth() + 1}月${now.getDate()}日 星期${days[now.getDay()]}`;
-    this.setData({ greeting, currentDate: dateStr });
+    this.setData({ greeting: fallbackGreeting, currentDate: dateStr });
+
+    // 异步获取天气
+    this.fetchWeatherAndUpdate(hour);
+  },
+
+  async fetchWeatherAndUpdate(hour) {
+    const app = getApp();
+
+    // 检查缓存（30 分钟 TTL）
+    if (app.globalData._weatherCache) {
+      const { weatherType, ts } = app.globalData._weatherCache;
+      if (Date.now() - ts < 30 * 60 * 1000) {
+        this.setData({ greeting: getGreeting(hour, weatherType) });
+        return;
+      }
+    }
+
+    try {
+      // 获取位置
+      const locRes = await new Promise((resolve, reject) => {
+        wx.getLocation({ type: 'wgs84', success: resolve, fail: reject });
+      });
+
+      // 调用云函数
+      const { result } = await wx.cloud.callFunction({
+        name: 'getWeather',
+        data: { lat: locRes.latitude, lon: locRes.longitude },
+      });
+
+      if (result && result.success && result.data) {
+        const { weatherType } = result.data;
+
+        // 缓存
+        app.globalData._weatherCache = { weatherType, ts: Date.now() };
+
+        this.setData({ greeting: getGreeting(hour, weatherType) });
+      }
+      // 失败静默回退 — 已经显示了纯时间短语
+    } catch (err) {
+      console.log('天气获取失败，使用纯时间短语:', err && err.errMsg || err);
+      // 已经显示了 fallback 短语，无需额外处理
+    }
   },
 
   async loadData() {
