@@ -216,7 +216,7 @@ Page({
     const res = isInPlan ? await removeFromNextGo(item._id) : await addToNextGo(item._id);
     if (res.success) {
       this.updateItemLocally(item._id, { nextGo: !isInPlan });
-      wx.showToast({ title: isInPlan ? '已移出' : '已加入「下次去」', icon: 'success' });
+      wx.showToast({ title: isInPlan ? '已移出' : '已加入「计划去」', icon: 'success' });
     }
   },
 

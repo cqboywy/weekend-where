@@ -35,7 +35,7 @@ Page({
     if (res.success) {
       getApp().globalData.listNeedsRefresh = true;
       this.setData({ 'item.nextGo': !isInPlan });
-      wx.showToast({ title: isInPlan ? '已移出' : '已加入「下次去」', icon: 'success' });
+      wx.showToast({ title: isInPlan ? '已移出' : '已加入「计划去」', icon: 'success' });
     }
   },
 

@@ -26,7 +26,7 @@
   <!-- Next Go -->
   <view wx:if="{{nextGoItems.length > 0}}" class="nextgo-section">
     <view class="section-head">
-      <view class="section-title">下次去</view>
+      <view class="section-title">计划去</view>
       <view class="section-count">{{nextGoItems.length}} 个地方</view>
     </view>
     <view class="nextgo-scroll">
