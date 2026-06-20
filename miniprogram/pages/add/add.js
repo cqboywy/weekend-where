@@ -148,7 +148,11 @@ Page({
       },
     });
   },
-  onTagInput(e) { this.setData({ tagInput: e.detail.value }); },
+  onTagInput(e) {
+    const val = e.detail.value;
+    this.setData({ tagInput: val });
+    this.refreshAvailableTags(val.trim());
+  },
   onAddTag() {
     const tag = this.data.tagInput.trim();
     if (!tag) return;
@@ -168,15 +172,20 @@ Page({
     const res = await getTagStats();
     if (res.success && res.data.length > 0) {
       const allTags = res.data.map(t => t.tag);
-      this.setData({ allTags, existingTags: allTags });
+      // 默认只显示高频前10个，输入时动态过滤
+      this.setData({ allTags, existingTags: allTags.slice(0, 10) });
     }
   },
 
-  refreshAvailableTags() {
+  refreshAvailableTags(keyword) {
     const added = this.data.formData.tags;
-    this.setData({
-      existingTags: this.data.allTags.filter(t => added.indexOf(t) === -1),
-    });
+    let pool = this.data.allTags.filter(t => added.indexOf(t) === -1);
+    if (keyword) {
+      pool = pool.filter(t => t.indexOf(keyword) !== -1);
+    } else {
+      pool = pool.slice(0, 10); // 无输入时只显示前10个高频标签
+    }
+    this.setData({ existingTags: pool });
   },
 
   onTapExistingTag(e) {

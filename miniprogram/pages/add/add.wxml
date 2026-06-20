@@ -59,11 +59,11 @@
   <view class="section card">
     <view class="section-label">自定义标签</view>
     <view class="tag-input-row">
-      <input class="form-input tag-input" placeholder="添加标签（如：朋友聚会、约会）" value="{{tagInput}}" bindinput="onTagInput" bindconfirm="onAddTag"/>
+      <input class="form-input tag-input" placeholder="输入或搜索已有标签" value="{{tagInput}}" bindinput="onTagInput" bindconfirm="onAddTag"/>
       <button class="tag-add-btn" bindtap="onAddTag">添加</button>
     </view>
     <view wx:if="{{existingTags.length > 0}}" class="existing-tags">
-      <view class="existing-tags-label">已有标签（点击添加）</view>
+      <view class="existing-tags-label">{{tagInput ? '匹配标签（点击添加）' : '常用标签（输入可搜索）'}}</view>
       <view class="existing-tags-row">
         <view wx:for="{{existingTags}}" wx:for-item="tag" wx:key="*this" class="existing-tag-chip" data-tag="{{tag}}" bindtap="onTapExistingTag">{{tag}}</view>
       </view>
