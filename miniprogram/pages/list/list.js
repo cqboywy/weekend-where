@@ -1,56 +1,67 @@
 const { getCollections, deleteCollectionItem, updateCollectionItem, addToNextGo, removeFromNextGo } = require('../../utils/cloud.js');
-const { CATEGORIES, STATUS } = require('../../utils/constants.js');
+const { CATEGORIES } = require('../../utils/constants.js');
 
 Page({
   data: {
-    items: [], loading: true, hasMore: true, skip: 0, refreshTriggered: false,
-    categories: [{ key: '', label: '全部' }, ...CATEGORIES],
-    activeCategory: '', activeStatus: '', keyword: '', showSearch: false, searchValue: '',
-    sortBy: 'time', showSortMenu: false,
-    actionItem: null, showActionSheet: false,
+    categories: [],
+    activeCategory: '',
+    activeStatus: '',
+    keyword: '',
+    showSearch: false,
+    searchValue: '',
+    showActionSheet: false,
+    actionItem: null,
+    swiperIndex: 0,
+    swiperHeight: 600,
+    categoryData: {},  // { [key]: { items, loading, loadingMore, hasMore, skip } }
   },
 
   onLoad() {
     this.initCategories();
-    // Check for status filter preset from home page stats tap
     const app = getApp();
     if (app.globalData.statusFilter) {
       this.setData({ activeStatus: app.globalData.statusFilter });
       delete app.globalData.statusFilter;
     }
-    this.loadData(true);
+    this.calcSwiperHeight();
   },
 
   onShow() {
     this.initCategories();
     const app = getApp();
-    // Handle tag filter from mine page — reset other filters
+
     if (app.globalData.tagFilter) {
       const tag = app.globalData.tagFilter;
       delete app.globalData.tagFilter;
-      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '', activeStatus: '' });
-      this.loadData(true);
+      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '', activeStatus: '', swiperIndex: 0 });
+      this.reloadAll();
       return;
     }
-    // Handle category filter from category-manage page — reset other filters
     if (app.globalData.categoryFilter) {
       const catKey = app.globalData.categoryFilter;
       delete app.globalData.categoryFilter;
-      this.setData({ activeCategory: catKey, keyword: '', searchValue: '', showSearch: false, activeStatus: '' });
-      this.loadData(true);
+      const idx = this.data.categories.findIndex(c => c.key === catKey);
+      this.setData({ activeCategory: catKey, keyword: '', searchValue: '', showSearch: false, activeStatus: '', swiperIndex: Math.max(0, idx) });
+      this.loadCategoryData(catKey);
       return;
     }
-    // Re-check on each show in case user navigates back
     if (app.globalData.statusFilter && app.globalData.statusFilter !== this.data.activeStatus) {
-      this.setData({ activeStatus: app.globalData.statusFilter, activeCategory: '', keyword: '', searchValue: '', showSearch: false });
+      this.setData({ activeStatus: app.globalData.statusFilter, activeCategory: '', keyword: '', searchValue: '', showSearch: false, swiperIndex: 0 });
       delete app.globalData.statusFilter;
-      this.loadData(true);
+      this.reloadAll();
     }
-    // Refresh if data was modified (edit / status toggle / delete)
     if (app.globalData.listNeedsRefresh) {
       delete app.globalData.listNeedsRefresh;
-      this.loadData(true);
+      this.reloadAll();
     }
+  },
+
+  calcSwiperHeight() {
+    const info = wx.getSystemInfoSync();
+    // header ~80 + search ~60 + chips ~50 = ~190rpx ≈ 95px + tabBar ~50px + safe
+    const top = 95;
+    const bottom = 50 + (info.safeArea ? info.safeArea.bottom - info.screenHeight : 0);
+    this.setData({ swiperHeight: info.windowHeight - top - bottom + 30 });
   },
 
   async initCategories() {
@@ -59,7 +70,6 @@ Page({
       ? app.globalData.categories
       : CATEGORIES;
 
-    // 用缓存或重新拉取分类统计来排序
     if (!app.globalData._sortedCategories) {
       try {
         const { getCollectionStats } = require('../../utils/cloud.js');
@@ -73,124 +83,186 @@ Page({
     }
 
     const cats = app.globalData._sortedCategories || raw;
-    this.setData({ categories: [{ key: '', label: '全部' }, ...cats] });
-  },
-
-  async loadData(refresh = false) {
-    if (refresh) { this.setData({ skip: 0, hasMore: true, items: [], loading: true }); }
-    else if (!this.data.hasMore || this.data.loading) { return; }
-
-    this.setData({ loading: true });
-    const { activeCategory, activeStatus, keyword, skip } = this.data;
-    const result = await getCollections({
-      category: activeCategory || undefined,
-      status: activeStatus || undefined,
-      keyword: keyword || undefined,
-      skip: refresh ? 0 : skip, limit: 20,
-    });
-
-    if (result.success) {
-      const items = refresh ? result.data : [...this.data.items, ...result.data];
-      this.setData({ items, skip: items.length, hasMore: result.hasMore, loading: false, refreshTriggered: false });
-    } else {
-      this.setData({ loading: false, refreshTriggered: false });
-      wx.showToast({ title: '加载失败', icon: 'none' });
+    const full = [{ key: '', label: '全部' }, ...cats];
+    if (JSON.stringify(full.map(c => c.key)) !== JSON.stringify(this.data.categories.map(c => c.key))) {
+      this.setData({ categories: full });
     }
   },
 
-  onPullDownRefresh() {
-    this.setData({ refreshTriggered: true });
-    this.loadData(true).then(() => wx.stopPullDownRefresh());
+  // ── Category data ──
+
+  async loadCategoryData(catKey, refresh = false) {
+    const key = catKey || '';
+    const prev = this.data.categoryData[key] || { items: [], loading: false, loadingMore: false, hasMore: true, skip: 0 };
+
+    if (refresh) {
+      prev.skip = 0;
+      prev.hasMore = true;
+      prev.items = [];
+    }
+    if (!prev.hasMore && !refresh) return;
+
+    const setDataObj = {};
+    if (refresh) {
+      setDataObj[`categoryData.${key}.loading`] = true;
+      setDataObj[`categoryData.${key}.items`] = [];
+    } else {
+      setDataObj[`categoryData.${key}.loadingMore`] = true;
+    }
+    this.setData(setDataObj);
+
+    const result = await getCollections({
+      category: key || undefined,
+      status: this.data.activeStatus || undefined,
+      keyword: this.data.keyword || undefined,
+      skip: refresh ? 0 : prev.skip,
+      limit: 20,
+    });
+
+    const patch = {};
+    if (result.success) {
+      const items = refresh ? result.data : [...prev.items, ...result.data];
+      patch[`categoryData.${key}.items`] = items;
+      patch[`categoryData.${key}.skip`] = items.length;
+      patch[`categoryData.${key}.hasMore`] = result.hasMore;
+    }
+    patch[`categoryData.${key}.loading`] = false;
+    patch[`categoryData.${key}.loadingMore`] = false;
+    this.setData(patch);
   },
-  onReachBottom() { this.loadData(false); },
+
+  reloadAll() {
+    const init = {};
+    this.data.categories.forEach(c => {
+      init[c.key || ''] = { items: [], loading: false, loadingMore: false, hasMore: true, skip: 0 };
+    });
+    this.setData({ categoryData: init });
+    this.loadCategoryData(this.data.activeCategory, true);
+  },
+
+  // ── Swiper ──
+
+  onSwiperChange(e) {
+    const idx = e.detail.current;
+    const cat = this.data.categories[idx];
+    if (cat) {
+      this.setData({ activeCategory: cat.key, swiperIndex: idx });
+      this.loadCategoryData(cat.key);
+    }
+  },
 
   onSelectCategory(e) {
-    this.setData({ activeCategory: e.currentTarget.dataset.category });
-    this.loadData(true);
+    const catKey = e.currentTarget.dataset.category;
+    const idx = this.data.categories.findIndex(c => c.key === catKey);
+    this.setData({ activeCategory: catKey, swiperIndex: idx });
+    this.loadCategoryData(catKey);
   },
+
+  // ── Search ──
+
   onToggleSearch() {
-    this.setData({ showSearch: !this.data.showSearch, searchValue: '' });
-    if (!this.data.showSearch) { this.setData({ keyword: '' }); this.loadData(true); }
+    if (this.data.showSearch) {
+      this.setData({ showSearch: false, searchValue: '', keyword: '' });
+      this.reloadAll();
+    } else {
+      this.setData({ showSearch: true, searchValue: '' });
+    }
   },
   onSearchInput(e) { this.setData({ searchValue: e.detail.value }); },
   onSearchConfirm() {
     this.setData({ keyword: this.data.searchValue.trim() });
-    this.loadData(true);
+    this.reloadAll();
   },
 
+  // ── Cards ──
+
   onCardTap(e) {
-    const item = e.detail.item;
-    wx.navigateTo({ url: `/pages/detail/detail?id=${item._id}` });
+    wx.navigateTo({ url: `/pages/detail/detail?id=${e.detail.item._id}` });
   },
   onCardLongPress(e) {
     const item = e.detail && e.detail.item;
-    if (item) {
-      this.setData({ actionItem: item, showActionSheet: true });
-    }
+    if (item) this.setData({ actionItem: item, showActionSheet: true });
   },
-
   onCardTagTap(e) {
     const tag = e.detail.tag;
     if (tag) {
-      this.setData({ showSearch: true, searchValue: tag, keyword: tag });
-      this.loadData(true);
-      wx.pageScrollTo({ scrollTop: 0, duration: 200 });
+      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '', activeStatus: '', swiperIndex: 0 });
+      this.reloadAll();
     }
   },
+
+  // ── Actions ──
 
   onAction(e) {
     const action = e.currentTarget.dataset.action;
     const { actionItem } = this.data;
     this.setData({ showActionSheet: false });
-    if (!actionItem) {
-      wx.showToast({ title: '操作失败，请重试', icon: 'none' });
-      return;
-    }
+    if (!actionItem) return;
     if (action === 'toggleNextGo') this.toggleNextGo(actionItem);
     else if (action === 'toggleStatus') this.toggleStatus(actionItem);
     else if (action === 'delete') this.deleteItem(actionItem);
     else if (action === 'share') wx.showToast({ title: '请点击右上角分享', icon: 'none' });
   },
 
+  async toggleNextGo(item) {
+    const isInPlan = item.nextGo;
+    const res = isInPlan ? await removeFromNextGo(item._id) : await addToNextGo(item._id);
+    if (res.success) {
+      this.updateItemLocally(item._id, { nextGo: !isInPlan });
+      wx.showToast({ title: isInPlan ? '已移出' : '已加入「下次去」', icon: 'success' });
+    }
+  },
+
   async toggleStatus(item) {
     const newStatus = item.status === 'want_to_go' ? 'visited' : 'want_to_go';
-    const result = await updateCollectionItem(item._id, { status: newStatus });
-    if (result.success) {
-      const items = this.data.items.map(i => i._id === item._id ? { ...i, status: newStatus } : i);
-      this.setData({ items });
+    const res = await updateCollectionItem(item._id, { status: newStatus });
+    if (res.success) {
+      this.updateItemLocally(item._id, { status: newStatus });
       wx.showToast({ title: newStatus === 'visited' ? '标记为已去过' : '标记为想去', icon: 'success' });
     }
   },
 
   async deleteItem(item) {
-    const confirmRes = await new Promise(resolve => {
-      wx.showModal({ title: '确认删除', content: `确定删除「${item.title}」吗？`, success: resolve });
-    });
+    const confirmRes = await new Promise(r => wx.showModal({ title: '确认删除', content: `确定删除「${item.title}」吗？`, success: r }));
     if (!confirmRes.confirm) return;
-    const result = await deleteCollectionItem(item._id);
-    if (result.success) {
-      this.setData({ items: this.data.items.filter(i => i._id !== item._id) });
+    const res = await deleteCollectionItem(item._id);
+    if (res.success) {
+      this.removeItemLocally(item._id);
       wx.showToast({ title: '已删除', icon: 'success' });
     }
   },
 
-  async toggleNextGo(item) {
-    const isInPlan = item.nextGo;
-    const res = isInPlan ? await removeFromNextGo(item._id) : await addToNextGo(item._id);
-    if (res.success) {
-      const items = this.data.items.map(i => i._id === item._id ? { ...i, nextGo: !isInPlan } : i);
-      this.setData({ items });
-      wx.showToast({ title: isInPlan ? '已移出' : '已加入「下次去」', icon: 'success' });
-    }
+  updateItemLocally(id, patch) {
+    const data = { ...this.data.categoryData };
+    Object.keys(data).forEach(key => {
+      data[key] = { ...data[key], items: data[key].items.map(i => i._id === id ? { ...i, ...patch } : i) };
+    });
+    this.setData({ categoryData: data });
   },
+
+  removeItemLocally(id) {
+    const data = { ...this.data.categoryData };
+    Object.keys(data).forEach(key => {
+      data[key] = { ...data[key], items: data[key].items.filter(i => i._id !== id) };
+    });
+    this.setData({ categoryData: data });
+  },
+
+  // ── Misc ──
 
   noop() {},
   onCloseAction() { this.setData({ showActionSheet: false }); },
-
   onClearStatus() {
     this.setData({ activeStatus: '' });
-    this.loadData(true);
+    this.reloadAll();
+  },
+  onGoAdd() { wx.switchTab({ url: '/pages/add/add' }); },
+
+  onPullDownRefresh() {
+    this.loadCategoryData(this.data.activeCategory, true);
   },
 
-  onGoAdd() { wx.switchTab({ url: '/pages/add/add' }); },
+  onReachBottom() {
+    this.loadCategoryData(this.data.activeCategory, false);
+  },
 });
