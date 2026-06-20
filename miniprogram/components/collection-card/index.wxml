@@ -11,10 +11,6 @@
       />
       <!-- Gradient overlay -->
       <view class="cover-overlay"></view>
-      <!-- Platform badge -->
-      <view class="platform-badge" style="background: {{platformInfo.color}};">
-        {{platformInfo.label}}
-      </view>
       <!-- Status badge -->
       <view wx:if="{{showStatus && item.status === 'visited'}}" class="status-badge">
         <lucide-icon name="check" size="20" color="#fff" /> 去过

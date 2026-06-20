@@ -1,36 +1,24 @@
 const { addCollectionItem, updateCollectionItem, getCollectionDetail, uploadImage } = require('../../utils/cloud.js');
-const { CATEGORIES, PLATFORMS } = require('../../utils/constants.js');
+const { CATEGORIES } = require('../../utils/constants.js');
 
 Page({
   data: {
     formData: {
-      originalUrl: '', title: '', platform: '', category: '',
+      title: '', category: '',
       locationName: '', locationAddress: '',
       latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
       coverImage: '',
     },
     coverImageTemp: '',
-    isParsing: false,
-    parseError: '',
     isUploading: false,
     categories: CATEGORIES,
-    platforms: PLATFORMS,
     tagInput: '',
-    showCategoryPicker: false,
-    showPlatformPicker: false,
-    showMapPicker: false,
-    marker: null,
     submitting: false,
     isEditing: false,
     editId: '',
   },
 
   onLoad(options) {
-    if (options.url) {
-      this.setData({ 'formData.originalUrl': decodeURIComponent(options.url) });
-      this.parseLink(decodeURIComponent(options.url));
-    }
-
     // Edit mode: load existing data from DB
     if (options.edit === '1' && options.id) {
       wx.setNavigationBarTitle({ title: '编辑收藏' });
@@ -46,9 +34,7 @@ Page({
         const item = result.data;
         this.setData({
           formData: {
-            originalUrl: item.originalUrl || '',
             title: item.title || '',
-            platform: item.platform || '',
             category: item.category || '',
             locationName: (item.location && item.location.name) || '',
             locationAddress: (item.location && item.location.address) || '',
@@ -80,8 +66,6 @@ Page({
     // Check for edit mode triggered from detail page via globalData bridge
     if (app.globalData.editItemId) {
       const editId = app.globalData.editItemId;
-      // Don't consume editItemId here — onShow may fire multiple times
-      // (WeChat tab lifecycle). Only clear it after save or explicit reset.
       if (this.data.editId !== editId) {
         wx.setNavigationBarTitle({ title: '编辑收藏' });
         this.setData({ isEditing: true, editId });
@@ -95,91 +79,6 @@ Page({
       wx.setNavigationBarTitle({ title: '添加收藏' });
       this.setData({ isEditing: false, editId: '' });
     }
-
-    this.checkClipboard();
-  },
-
-  async checkClipboard() {
-    try {
-      const res = await wx.getClipboardData();
-      const content = res.data || '';
-      const urlMatch = content.match(/https?:\/\/[^\s]+/);
-      if (urlMatch && !this.data.formData.originalUrl) {
-        wx.showModal({
-          title: '检测到链接',
-          content: '剪贴板中有链接，是否添加收藏？',
-          success: (modalRes) => {
-            if (modalRes.confirm) {
-              this.setData({ 'formData.originalUrl': urlMatch[0] });
-              this.parseLink(urlMatch[0]);
-            }
-          }
-        });
-      }
-    } catch (err) { /* clipboard permission denied, skip silently */ }
-  },
-
-  async parseLink(url, shareHint = '') {
-    if (!url) return;
-    this.setData({ isParsing: true, parseError: '' });
-    try {
-      const res = await wx.cloud.callFunction({
-        name: 'parseLink',
-        data: { url }
-      });
-      if (res.result && res.result.success) {
-        const data = res.result.data;
-        // Use OG title if available, fallback to share text hint
-        const title = data.title || shareHint || this.data.formData.title;
-        this.setData({
-          'formData.title': title,
-          'formData.platform': data.platform || this.data.formData.platform,
-          'formData.coverImage': data.coverImage || this.data.formData.coverImage,
-          isParsing: false,
-        });
-        wx.showToast({ title: title ? '解析成功' : '仅识别平台，请手动填写标题', icon: 'success' });
-      } else {
-        // Cloud function failed, use share hint as fallback
-        if (shareHint) {
-          this.setData({
-            'formData.title': shareHint,
-            isParsing: false,
-          });
-          wx.showToast({ title: '已从分享文字提取标题', icon: 'success' });
-        } else {
-          this.setData({ parseError: '链接解析失败，请检查链接是否正确', isParsing: false });
-        }
-      }
-    } catch (err) {
-      console.error('链接解析失败:', err);
-      if (shareHint) {
-        this.setData({ 'formData.title': shareHint, isParsing: false });
-        wx.showToast({ title: '已从分享文字提取标题', icon: 'success' });
-      } else {
-        this.setData({ parseError: '网络错误，请重试', isParsing: false });
-      }
-    }
-  },
-
-  onUrlInput(e) { this.setData({ 'formData.originalUrl': e.detail.value }); },
-  onParseTap() {
-    const raw = this.data.formData.originalUrl.trim();
-    if (!raw) { wx.showToast({ title: '请先粘贴链接或分享文字', icon: 'none' }); return; }
-
-    // Extract URL from share text (e.g. Douyin share format)
-    const urlMatch = raw.match(/https?:\/\/[^\s]+/);
-    const url = urlMatch ? urlMatch[0] : raw;
-    if (!url.startsWith('http')) {
-      wx.showToast({ title: '未检测到有效链接', icon: 'none' });
-      return;
-    }
-
-    // Extract title hints from share text (e.g. 看看【作者】描述...)
-    let shareHint = '';
-    const authorMatch = raw.match(/看看【(.+?)的作品】/);
-    if (authorMatch) shareHint = authorMatch[1];
-
-    this.parseLink(url, shareHint);
   },
 
   onChooseCover() {
@@ -205,10 +104,7 @@ Page({
 
   onTitleInput(e) { this.setData({ 'formData.title': e.detail.value }); },
   onSelectCategory(e) {
-    this.setData({ 'formData.category': e.currentTarget.dataset.category, showCategoryPicker: false });
-  },
-  onSelectPlatform(e) {
-    this.setData({ 'formData.platform': e.currentTarget.dataset.platform, showPlatformPicker: false });
+    this.setData({ 'formData.category': e.currentTarget.dataset.category });
   },
   onChooseLocation() {
     const that = this;
@@ -263,7 +159,7 @@ Page({
     this.setData({ submitting: true, isUploading: false });
 
     // Upload cover image if user picked a new one
-    let coverImage = formData.coverImage; // existing URL/fileID
+    let coverImage = formData.coverImage;
     if (coverImageTemp) {
       this.setData({ isUploading: true });
       const uploadRes = await uploadImage(coverImageTemp);
@@ -276,13 +172,8 @@ Page({
       }
     }
 
-    const platformInfo = PLATFORMS.find(p => p.key === formData.platform) || PLATFORMS.find(p => p.key === 'other');
-
     const payload = {
       title: formData.title.trim(),
-      platform: formData.platform || 'other',
-      platformLabel: platformInfo.label,
-      originalUrl: formData.originalUrl,
       category: formData.category,
       tags: formData.tags,
       location: {
@@ -311,7 +202,7 @@ Page({
 
       // Clear form for both add and edit — ready for next use
       const emptyForm = {
-        originalUrl: '', title: '', platform: '', category: '',
+        title: '', category: '',
         locationName: '', locationAddress: '',
         latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
         coverImage: '',
@@ -319,10 +210,10 @@ Page({
       if (isEditing) {
         getApp().globalData.editItemId = null;
         wx.setNavigationBarTitle({ title: '添加收藏' });
-        this.setData({ isEditing: false, editId: '', coverImageTemp: '', parseError: '', tagInput: '', formData: emptyForm });
+        this.setData({ isEditing: false, editId: '', coverImageTemp: '', tagInput: '', formData: emptyForm });
         setTimeout(() => { wx.switchTab({ url: '/pages/list/list' }); }, 800);
       } else {
-        this.setData({ coverImageTemp: '', parseError: '', tagInput: '', formData: emptyForm });
+        this.setData({ coverImageTemp: '', tagInput: '', formData: emptyForm });
       }
     } else {
       wx.showToast({ title: '保存失败，请重试', icon: 'none' });
@@ -335,18 +226,16 @@ Page({
       content: '确定要清空已填写的内容吗？',
       success: (res) => {
         if (res.confirm) {
-          // Also clear any pending edit mode
           getApp().globalData.editItemId = null;
           wx.setNavigationBarTitle({ title: '添加收藏' });
           this.setData({
             formData: {
-              originalUrl: '', title: '', platform: '', category: '',
+              title: '', category: '',
               locationName: '', locationAddress: '',
               latitude: 0, longitude: 0, note: '', rating: 0, tags: [],
               coverImage: '',
             },
             coverImageTemp: '',
-            parseError: '',
             tagInput: '',
             isEditing: false,
             editId: '',

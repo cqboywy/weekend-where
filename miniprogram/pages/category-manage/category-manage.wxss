@@ -1,4 +1,4 @@
-.category-manage-page { min-height: 100vh; background: var(--color-bg); padding-bottom: 160rpx; }
+.category-manage-page { min-height: 100vh; background: var(--color-bg); padding-bottom: 150rpx; }
 
 /* Header */
 .page-header { padding: 40rpx 28rpx 20rpx; }
@@ -35,7 +35,7 @@
 /* Bottom bar */
 .bottom-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
-  padding: 16rpx 24rpx;
+  padding: 12rpx 24rpx 36rpx;
   background: rgba(250,248,245,0.94);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-top: 1rpx solid var(--color-border);

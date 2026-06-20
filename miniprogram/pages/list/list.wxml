@@ -5,13 +5,13 @@
         <text>{{activeStatus === 'want_to_go' ? '想去' : '去过'}}</text>
         <text class="clear-filter" bindtap="onClearStatus">✕ 清除</text>
       </view>
-      <view wx:else class="list-header-label">收藏</view>
+      <view wx:else class="list-header-label">我的收藏</view>
       <view class="list-search-btn pressable" bindtap="onToggleSearch"><lucide-icon name="search" size="40" color="#9E9688" /></view>
     </view>
   </view>
 
   <view wx:if="{{showSearch}}" class="search-row">
-    <input class="search-input" placeholder="搜索名称或标签" value="{{searchValue}}" bindinput="onSearchInput" bindconfirm="onSearchConfirm" focus="{{true}}" confirm-type="search"/>
+    <input class="search-input" placeholder="搜索名称、标签、备注或地点" value="{{searchValue}}" bindinput="onSearchInput" bindconfirm="onSearchConfirm" focus="{{true}}" confirm-type="search"/>
     <view class="search-cancel" bindtap="onToggleSearch">取消</view>
   </view>
 

@@ -4,15 +4,6 @@
   </view>
 
   <view class="section card">
-    <view class="section-label">粘贴链接</view>
-    <view class="url-input-row">
-      <input class="url-input" placeholder="粘贴链接或抖音/小红书分享文字..." value="{{formData.originalUrl}}" bindinput="onUrlInput" confirm-type="done"/>
-      <button class="parse-btn {{isParsing ? 'loading' : ''}}" bindtap="onParseTap" disabled="{{isParsing}}">{{isParsing ? '解析中...' : '解析'}}</button>
-    </view>
-    <view wx:if="{{parseError}}" class="parse-error">{{parseError}}</view>
-  </view>
-
-  <view class="section card">
     <view class="section-label">封面图片</view>
     <view class="cover-picker" bindtap="onChooseCover">
       <image wx:if="{{coverImageTemp || formData.coverImage}}"
@@ -34,14 +25,6 @@
     <view class="form-item">
       <view class="form-label">名称 <text class="required">*</text></view>
       <input class="form-input" placeholder="输入名称" value="{{formData.title}}" bindinput="onTitleInput"/>
-    </view>
-    <view class="form-item">
-      <view class="form-label">来源平台</view>
-      <view class="chip-row chip-row-scroll">
-        <block wx:for="{{platforms}}" wx:key="key">
-          <view class="chip {{formData.platform === item.key ? 'chip-active' : ''}}" data-platform="{{item.key}}" bindtap="onSelectPlatform" style="{{formData.platform === item.key ? 'background:' + item.color + ';color:#fff;' : ''}}">{{item.label}}</view>
-        </block>
-      </view>
     </view>
     <view class="form-item">
       <view class="form-label">分类 <text class="required">*</text></view>

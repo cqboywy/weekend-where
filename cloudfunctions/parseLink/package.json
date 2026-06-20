@@ -1,7 +1,0 @@
-{
-  "name": "parseLink",
-  "version": "1.0.0",
-  "description": "解析外部链接，提取标题/封面/平台",
-  "main": "index.js",
-  "dependencies": { "wx-server-sdk": "~2.6.3" }
-}

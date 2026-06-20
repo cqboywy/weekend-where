@@ -17,11 +17,11 @@
           </view>
         </view>
         <view class="cat-actions">
-          <view class="cat-action-btn pressable" data-category="{{item}}" bindtap="onEdit">
+          <view class="cat-action-btn pressable" data-category="{{item}}" catchtap="onEdit">
             <lucide-icon name="pencil" size="32" color="#B8A89A" />
           </view>
-          <view class="cat-action-btn pressable {{item.itemCount > 0 ? 'disabled' : ''}}" data-category="{{item}}" bindtap="onDelete">
-            <lucide-icon name="trash-2" size="32" color="{{item.itemCount > 0 ? '#E8E0D5' : '#D4735E'}}" />
+          <view class="cat-action-btn pressable" data-category="{{item}}" catchtap="onDelete">
+            <lucide-icon name="trash-2" size="32" color="#D4735E" />
           </view>
         </view>
       </view>
@@ -42,7 +42,7 @@
   </view>
 
   <!-- Add button -->
-  <view class="bottom-bar safe-area-bottom">
+  <view class="bottom-bar">
     <button class="add-btn" bindtap="onAdd">
       <lucide-icon name="plus" size="36" color="#fff" />
       <text>添加分类</text>

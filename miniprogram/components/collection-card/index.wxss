@@ -47,19 +47,6 @@
   pointer-events: none;
 }
 
-/* Badges */
-.platform-badge {
-  position: absolute;
-  top: 20rpx;
-  left: 20rpx;
-  padding: 8rpx 20rpx;
-  border-radius: var(--radius-full);
-  font-size: var(--text-xs);
-  color: #fff;
-  font-weight: 600;
-  letter-spacing: var(--tracking-wide);
-  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.15);
-}
 .status-badge {
   position: absolute;
   top: 20rpx;

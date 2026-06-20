@@ -1,5 +1,8 @@
 <view class="empty-state">
-  <view class="empty-icon">{{icon}}</view>
+  <view class="empty-icon">
+    <lucide-icon wx:if="{{iconName}}" name="{{iconName}}" size="72" color="#C4B5A8" />
+    <text wx:else>{{icon}}</text>
+  </view>
   <view class="empty-title">{{title}}</view>
   <view class="empty-desc">{{description}}</view>
   <button wx:if="{{showButton}}" class="empty-btn" bindtap="onButtonTap">{{buttonText}}</button>

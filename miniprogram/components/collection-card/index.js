@@ -1,4 +1,4 @@
-const { PLATFORMS, CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
+const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
 
 Component({
   properties: {
@@ -25,7 +25,6 @@ Component({
   },
 
   data: {
-    platformInfo: {},
     categoryInfo: {},
     formattedDate: '',
     staggerClass: 'stagger-1',
@@ -36,7 +35,6 @@ Component({
 
   methods: {
     processItem(item) {
-      const platformInfo = PLATFORMS.find(p => p.key === item.platform) || PLATFORMS.find(p => p.key === 'other');
       // Use dynamic categories from globalData, fallback to hardcoded CATEGORIES
       const app = getApp();
       const cats = (app.globalData.categories && app.globalData.categories.length > 0)
@@ -57,7 +55,7 @@ Component({
       else if (diffDays < 7) formattedDate = `${diffDays}天前`;
       else formattedDate = `${date.getMonth() + 1}/${date.getDate()}`;
 
-      this.setData({ platformInfo, categoryInfo, formattedDate, displayCover, displayTags, overflowCount });
+      this.setData({ categoryInfo, formattedDate, displayCover, displayTags, overflowCount });
     },
 
     onTap() {
