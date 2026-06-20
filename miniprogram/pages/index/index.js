@@ -1,4 +1,4 @@
-const { getCollections, getCollectionStats, removeFromWeekendPlan } = require('../../utils/cloud.js');
+const { getCollections, getCollectionStats, removeFromNextGo } = require('../../utils/cloud.js');
 const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
 const { getGreeting, classifyWmoCode } = require('../../utils/weather-greeting.js');
 
@@ -29,7 +29,7 @@ Page({
   data: {
     featuredItem: null,
     recentItems: [],
-    weekendPlanItems: [],
+    nextGoItems: [],
     loading: true,
     greeting: '',
     currentDate: '',
@@ -101,7 +101,7 @@ Page({
     const [recentResult, statsResult, weekendResult] = await Promise.all([
       getCollections({ limit: 30 }),
       getCollectionStats(),
-      getCollections({ weekendPlan: true, limit: 50 }),
+      getCollections({ nextGo: true, limit: 50 }),
     ]);
 
     if (recentResult.success && recentResult.data.length > 0) {
@@ -130,14 +130,14 @@ Page({
       this.setData({
         featuredItem: enrich(featuredItem),
         recentItems: rest.map(enrich),
-        weekendPlanItems: (weekendResult.success ? weekendResult.data : []).map(enrich),
+        nextGoItems: (weekendResult.success ? weekendResult.data : []).map(enrich),
         loading: false,
       });
     } else {
       this.setData({
         featuredItem: null,
         recentItems: [],
-        weekendPlanItems: (weekendResult.success ? weekendResult.data : []).map(enrich),
+        nextGoItems: (weekendResult.success ? weekendResult.data : []).map(enrich),
         loading: false,
       });
     }
@@ -157,18 +157,18 @@ Page({
     }
   },
 
-  onViewWeekendPlan(e) {
+  onViewNextGo(e) {
     const id = e.currentTarget.dataset.id;
     if (id) wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
   },
 
-  async onRemoveWeekendPlan(e) {
+  async onRemoveNextGo(e) {
     const id = e.currentTarget.dataset.id;
-    const res = await removeFromWeekendPlan(id);
+    const res = await removeFromNextGo(id);
     if (res.success) {
       wx.showToast({ title: '已移出', icon: 'success' });
-      const items = this.data.weekendPlanItems.filter(item => item._id !== id);
-      this.setData({ weekendPlanItems: items });
+      const items = this.data.nextGoItems.filter(item => item._id !== id);
+      this.setData({ nextGoItems: items });
     }
   },
 

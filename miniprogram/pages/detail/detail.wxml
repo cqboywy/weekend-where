@@ -56,7 +56,7 @@
 
   <!-- Bottom actions -->
   <view class="detail-actions safe-area-bottom">
-    <view class="action-btn pressable" bindtap="onToggleWeekendPlan"><lucide-icon name="bookmark" size="28" color="{{item.weekendPlan ? '#C2674A' : '#9E9688'}}" /> {{item.weekendPlan ? '已加入' : '周末清单'}}</view>
+    <view class="action-btn pressable" bindtap="onToggleNextGo"><lucide-icon name="bookmark" size="28" color="{{item.nextGo ? '#C2674A' : '#9E9688'}}" /> {{item.nextGo ? '✓' : '下次去'}}</view>
     <view class="action-btn pressable" bindtap="onToggleStatus"><lucide-icon name="check" size="28" color="{{item.status === 'want_to_go' ? '#7C9A7E' : '#9E9688'}}" /> {{item.status === 'want_to_go' ? '去过' : '想去'}}</view>
     <button class="action-btn pressable plain-btn" open-type="share"><lucide-icon name="share" size="28" color="#9E9688" /> 分享</button>
     <view class="action-btn pressable" bindtap="onEdit"><lucide-icon name="pencil" size="28" color="#9E9688" /> 编辑</view>

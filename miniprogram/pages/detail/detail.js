@@ -1,4 +1,4 @@
-const { getCollectionDetail, updateCollectionItem, deleteCollectionItem, addToWeekendPlan, removeFromWeekendPlan } = require('../../utils/cloud.js');
+const { getCollectionDetail, updateCollectionItem, deleteCollectionItem, addToNextGo, removeFromNextGo } = require('../../utils/cloud.js');
 const { CATEGORIES, STATUS, generateCategoryCover } = require('../../utils/constants.js');
 
 Page({
@@ -28,14 +28,14 @@ Page({
     }
   },
 
-  async onToggleWeekendPlan() {
+  async onToggleNextGo() {
     const item = this.data.item;
-    const isInPlan = item.weekendPlan;
-    const res = isInPlan ? await removeFromWeekendPlan(item._id) : await addToWeekendPlan(item._id);
+    const isInPlan = item.nextGo;
+    const res = isInPlan ? await removeFromNextGo(item._id) : await addToNextGo(item._id);
     if (res.success) {
       getApp().globalData.listNeedsRefresh = true;
-      this.setData({ 'item.weekendPlan': !isInPlan });
-      wx.showToast({ title: isInPlan ? '已移出' : '已加入周末清单', icon: 'success' });
+      this.setData({ 'item.nextGo': !isInPlan });
+      wx.showToast({ title: isInPlan ? '已移出' : '已加入「下次去」', icon: 'success' });
     }
   },
 

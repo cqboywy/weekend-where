@@ -40,7 +40,7 @@ async function addCollectionItem(data) {
   }
 }
 
-async function getCollections({ category, keyword, status, weekendPlan, skip = 0, limit = 20 } = {}) {
+async function getCollections({ category, keyword, status, nextGo, skip = 0, limit = 20 } = {}) {
   try {
     const userId = await ensureOpenId();
     // Build all conditions into a single array and use _.and() to avoid the
@@ -53,8 +53,8 @@ async function getCollections({ category, keyword, status, weekendPlan, skip = 0
     if (status) {
       conditions.push({ status });
     }
-    if (weekendPlan !== undefined) {
-      conditions.push({ weekendPlan });
+    if (nextGo !== undefined) {
+      conditions.push({ nextGo });
     }
     if (keyword) {
       conditions.push(
@@ -376,31 +376,31 @@ async function removeTagFromAllCollections(tag) {
 }
 
 /**
- * Add a collection to the weekend plan.
+ * Add a collection to the next-go list.
  */
-async function addToWeekendPlan(id) {
+async function addToNextGo(id) {
   try {
     await collection('collection_items').doc(id).update({
-      data: { weekendPlan: true, weekendPlanAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+      data: { nextGo: true, nextGoAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
     });
     return { success: true };
   } catch (err) {
-    console.error('加入周末清单失败:', err);
+    console.error('加入「下次去」失败:', err);
     return { success: false, error: err };
   }
 }
 
 /**
- * Remove a collection from the weekend plan.
+ * Remove a collection from the next-go list.
  */
-async function removeFromWeekendPlan(id) {
+async function removeFromNextGo(id) {
   try {
     await collection('collection_items').doc(id).update({
-      data: { weekendPlan: false, updatedAt: new Date().toISOString() }
+      data: { nextGo: false, updatedAt: new Date().toISOString() }
     });
     return { success: true };
   } catch (err) {
-    console.error('移出周末清单失败:', err);
+    console.error('移出「下次去」失败:', err);
     return { success: false, error: err };
   }
 }
@@ -414,5 +414,5 @@ module.exports = {
   seedDefaultCategories, getCategoryItemCount,
   uploadImage,
   renameTagInCollections, removeTagFromAllCollections,
-  addToWeekendPlan, removeFromWeekendPlan,
+  addToNextGo, removeFromNextGo,
 };
