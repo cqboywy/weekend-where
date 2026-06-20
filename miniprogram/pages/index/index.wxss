@@ -23,14 +23,14 @@
 }
 .hero-title {
   font-family: var(--font-heading);
-  font-size: var(--text-3xl);
-  font-weight: 700;
+  font-size: 96rpx;
+  font-weight: 900;
   color: var(--color-text);
   line-height: var(--leading-tight);
 }
 .hero-temp {
   font-family: var(--font-heading);
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   color: var(--color-accent);
   font-weight: 400;
   letter-spacing: 1rpx;
