@@ -1,6 +1,6 @@
 const { getCollections, getCollectionStats } = require('../../utils/cloud.js');
 const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
-const { getGreeting } = require('../../utils/weather-greeting.js');
+const { getGreeting, classifyQWeatherIcon } = require('../../utils/weather-greeting.js');
 
 Page({
   data: {
@@ -41,29 +41,29 @@ Page({
     }
 
     try {
-      // 获取位置
+      // 获取位置（模糊即可，用于天气查询）
       const locRes = await new Promise((resolve, reject) => {
         wx.getLocation({ type: 'wgs84', success: resolve, fail: reject });
       });
 
-      // 调用云函数
-      const { result } = await wx.cloud.callFunction({
-        name: 'getWeather',
-        data: { lat: locRes.latitude, lon: locRes.longitude },
+      // 直接调用和风天气 API
+      const API_KEY = 'cf0e3d6b987a4a7c806997656dc6b8ca';
+      const { statusCode, data } = await new Promise((resolve, reject) => {
+        wx.request({
+          url: `https://devapi.qweather.com/v7/weather/now?location=${locRes.longitude},${locRes.latitude}&key=${API_KEY}`,
+          method: 'GET',
+          success: resolve,
+          fail: reject,
+        });
       });
 
-      if (result && result.success && result.data) {
-        const { weatherType } = result.data;
-
-        // 缓存
+      if (statusCode === 200 && data && data.code === '200' && data.now) {
+        const weatherType = classifyQWeatherIcon(Number(data.now.icon));
         app.globalData._weatherCache = { weatherType, ts: Date.now() };
-
         this.setData({ greeting: getGreeting(hour, weatherType) });
       }
-      // 失败静默回退 — 已经显示了纯时间短语
     } catch (err) {
       console.log('天气获取失败，使用纯时间短语:', err && err.errMsg || err);
-      // 已经显示了 fallback 短语，无需额外处理
     }
   },
 

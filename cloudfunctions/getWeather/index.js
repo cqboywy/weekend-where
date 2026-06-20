@@ -1,6 +1,6 @@
 const https = require('https');
 
-const API_KEY = 'YOUR_QWEATHER_KEY'; // 替换为你的和风天气 API Key
+const API_KEY = 'cf0e3d6b987a4a7c806997656dc6b8ca'; // 替换为你的和风天气 API Key
 
 /**
  * QWeather icon → simplified weather type
