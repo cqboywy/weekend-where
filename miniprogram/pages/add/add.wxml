@@ -62,6 +62,12 @@
       <input class="form-input tag-input" placeholder="添加标签（如：朋友聚会、约会）" value="{{tagInput}}" bindinput="onTagInput" bindconfirm="onAddTag"/>
       <button class="tag-add-btn" bindtap="onAddTag">添加</button>
     </view>
+    <view wx:if="{{existingTags.length > 0}}" class="existing-tags">
+      <view class="existing-tags-label">已有标签（点击添加）</view>
+      <view class="existing-tags-row">
+        <text wx:for="{{existingTags}}" wx:key="*this" wx:if="{{formData.tags.indexOf(item) === -1}}" class="existing-tag-chip" data-tag="{{item}}" bindtap="onTapExistingTag">{{item}}</text>
+      </view>
+    </view>
     <view wx:if="{{formData.tags.length > 0}}" class="tag-list">
       <view wx:for="{{formData.tags}}" wx:key="*this" class="tag-item">{{item}}<text class="tag-remove" data-index="{{index}}" bindtap="onRemoveTag">✕</text></view>
     </view>

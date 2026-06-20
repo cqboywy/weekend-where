@@ -1,4 +1,4 @@
-const { addCollectionItem, updateCollectionItem, getCollectionDetail, uploadImage } = require('../../utils/cloud.js');
+const { addCollectionItem, updateCollectionItem, getCollectionDetail, uploadImage, getTagStats } = require('../../utils/cloud.js');
 const { CATEGORIES } = require('../../utils/constants.js');
 
 Page({
@@ -13,6 +13,7 @@ Page({
     isUploading: false,
     categories: CATEGORIES,
     tagInput: '',
+    existingTags: [],
     submitting: false,
     isEditing: false,
     editId: '',
@@ -62,6 +63,9 @@ Page({
       ? app.globalData.categories
       : CATEGORIES;
     this.setData({ categories: cats });
+
+    // Load existing tags for quick-add suggestions
+    this.loadExistingTags();
 
     // Check for edit mode triggered from detail page via globalData bridge
     if (app.globalData.editItemId) {
@@ -144,6 +148,25 @@ Page({
     const tags = [...this.data.formData.tags];
     tags.splice(index, 1);
     this.setData({ 'formData.tags': tags });
+  },
+
+  async loadExistingTags() {
+    const res = await getTagStats();
+    if (res.success && res.data.length > 0) {
+      this.setData({ existingTags: res.data.map(t => t.tag) });
+    }
+  },
+
+  onTapExistingTag(e) {
+    const tag = e.currentTarget.dataset.tag;
+    if (this.data.formData.tags.includes(tag)) return;
+    if (this.data.formData.tags.length >= 10) {
+      wx.showToast({ title: '最多添加10个标签', icon: 'none' });
+      return;
+    }
+    this.setData({
+      'formData.tags': [...this.data.formData.tags, tag],
+    });
   },
   onRate(e) {
     const rate = parseInt(e.currentTarget.dataset.rate) || 0;
