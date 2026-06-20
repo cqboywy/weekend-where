@@ -1,7 +1,7 @@
 const { getCollectionStats, getTagStats } = require('../../utils/cloud.js');
 
 Page({
-  data: { stats: null, loading: true, tagStats: [] },
+  data: { stats: null, loading: true, tagStats: [], showAllTags: false },
   onShow() { this.loadStats(); this.loadTagStats(); },
   async loadStats() {
     this.setData({ loading: true });
@@ -36,5 +36,9 @@ Page({
     const tag = e.currentTarget.dataset.tag;
     getApp().globalData.tagFilter = tag;
     wx.switchTab({ url: '/pages/list/list' });
+  },
+
+  onToggleShowAllTags() {
+    this.setData({ showAllTags: !this.data.showAllTags });
   },
 });
