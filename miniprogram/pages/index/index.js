@@ -15,6 +15,7 @@ Page({
   onShow() { this.loadData(); },
 
   setGreeting() {
+    console.log('[天气] setGreeting 被调用');
     const now = new Date();
     const hour = now.getHours();
 
@@ -42,28 +43,31 @@ Page({
 
     try {
       // 获取位置（模糊即可，用于天气查询）
+      console.log('[天气] 开始获取位置...');
       const locRes = await new Promise((resolve, reject) => {
         wx.getLocation({ type: 'wgs84', success: resolve, fail: reject });
       });
+      console.log('[天气] 位置获取成功:', locRes.latitude, locRes.longitude);
 
       // 直接调用和风天气 API
       const API_KEY = 'cf0e3d6b987a4a7c806997656dc6b8ca';
-      const { statusCode, data } = await new Promise((resolve, reject) => {
-        wx.request({
-          url: `https://devapi.qweather.com/v7/weather/now?location=${locRes.longitude},${locRes.latitude}&key=${API_KEY}`,
-          method: 'GET',
-          success: resolve,
-          fail: reject,
-        });
+      const url = `https://devapi.qweather.com/v7/weather/now?location=${locRes.longitude},${locRes.latitude}&key=${API_KEY}`;
+      console.log('[天气] 请求URL:', url);
+      const res = await new Promise((resolve, reject) => {
+        wx.request({ url, method: 'GET', success: resolve, fail: reject });
       });
+      console.log('[天气] wx.request返回:', JSON.stringify(res));
 
-      if (statusCode === 200 && data && data.code === '200' && data.now) {
-        const weatherType = classifyQWeatherIcon(Number(data.now.icon));
+      if (res.statusCode === 200 && res.data && String(res.data.code) === '200' && res.data.now) {
+        const weatherType = classifyQWeatherIcon(Number(res.data.now.icon));
+        console.log('[天气] 天气类型:', weatherType, '天气文字:', res.data.now.text);
         app.globalData._weatherCache = { weatherType, ts: Date.now() };
         this.setData({ greeting: getGreeting(hour, weatherType) });
+      } else {
+        console.log('[天气] 响应异常: statusCode=' + res.statusCode + ' code=' + (res.data && res.data.code));
       }
     } catch (err) {
-      console.log('天气获取失败，使用纯时间短语:', err && err.errMsg || err);
+      console.log('[天气] 获取失败:', err && err.errMsg || err);
     }
   },
 
