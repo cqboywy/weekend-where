@@ -22,12 +22,27 @@ Page({
     this.loadMarkers();
   },
 
-  initCategories() {
+  async initCategories() {
     const app = getApp();
-    const cats = (app.globalData.categories && app.globalData.categories.length > 0)
+    const raw = (app.globalData.categories && app.globalData.categories.length > 0)
       ? app.globalData.categories
       : CATEGORIES;
-    this.setData({ categories: [{ key: '', label: '全部' }, ...cats] });
+
+    // 按收藏数排序（复用缓存）
+    if (!app.globalData._sortedCategories) {
+      try {
+        const { getCollectionStats } = require('../../utils/cloud.js');
+        const statsRes = await getCollectionStats();
+        if (statsRes.success) {
+          const counts = statsRes.data.byCategory || {};
+          const sorted = [...raw].sort((a, b) => (counts[b.key] || 0) - (counts[a.key] || 0));
+          app.globalData._sortedCategories = sorted;
+        }
+      } catch (e) { /* fallback */ }
+    }
+
+    const sorted = app.globalData._sortedCategories || raw;
+    this.setData({ categories: [{ key: '', label: '全部' }, ...sorted] });
   },
 
   async loadMarkers() {
@@ -38,15 +53,18 @@ Page({
         this._hasLocated = true;
         this.setData({ latitude: items[0].location.latitude, longitude: items[0].location.longitude });
       }
-      // Collect unique tags
-      const tagSet = new Set();
+      // Collect and sort tags by frequency
+      const tagCount = {};
       items.forEach(item => {
         if (item.tags && item.tags.length > 0) {
-          item.tags.forEach(t => tagSet.add(t));
+          item.tags.forEach(t => { tagCount[t] = (tagCount[t] || 0) + 1; });
         }
       });
+      const sortedTags = Object.entries(tagCount)
+        .sort((a, b) => b[1] - a[1])
+        .map(([tag]) => tag);
       const allTags = [{ tag: '', label: '全部' }];
-      tagSet.forEach(t => allTags.push({ tag: t, label: t }));
+      sortedTags.forEach(t => allTags.push({ tag: t, label: t }));
 
       this.setData({ allItems: items, allTags });
       await this.updateMarkers();
