@@ -262,6 +262,7 @@ Page({
       };
       if (isEditing) {
         getApp().globalData.editItemId = null;
+        getApp().globalData.listNeedsRefresh = true;
         wx.setNavigationBarTitle({ title: '添加收藏' });
         this.setData({ isEditing: false, editId: '', coverImageTemp: '', tagInput: '', formData: emptyForm });
         setTimeout(() => { wx.switchTab({ url: '/pages/list/list' }); }, 800);

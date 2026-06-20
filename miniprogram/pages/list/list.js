@@ -46,6 +46,11 @@ Page({
       delete app.globalData.statusFilter;
       this.loadData(true);
     }
+    // Refresh if data was modified (edit / status toggle / delete)
+    if (app.globalData.listNeedsRefresh) {
+      delete app.globalData.listNeedsRefresh;
+      this.loadData(true);
+    }
   },
 
   initCategories() {

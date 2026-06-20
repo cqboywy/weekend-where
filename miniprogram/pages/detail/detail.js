@@ -33,6 +33,7 @@ Page({
     const newStatus = this.data.item.status === 'want_to_go' ? 'visited' : 'want_to_go';
     const result = await updateCollectionItem(this.data.item._id, { status: newStatus });
     if (result.success) {
+      getApp().globalData.listNeedsRefresh = true;
       const statusLabel = STATUS.find(s => s.key === newStatus).label;
       this.setData({ 'item.status': newStatus, statusLabel });
       wx.showToast({ title: `已标记为「${statusLabel}」`, icon: 'success' });
@@ -73,7 +74,7 @@ Page({
     const res = await new Promise(r => { wx.showModal({ title: '确认删除', content: `确定删除「${this.data.item.title}」吗？`, success: r }); });
     if (!res.confirm) return;
     const result = await deleteCollectionItem(this.data.item._id);
-    if (result.success) { wx.showToast({ title: '已删除', icon: 'success' }); setTimeout(() => wx.navigateBack(), 1500); }
+    if (result.success) { getApp().globalData.listNeedsRefresh = true; wx.showToast({ title: '已删除', icon: 'success' }); setTimeout(() => wx.navigateBack(), 1500); }
   },
 
   onShareAppMessage() {
