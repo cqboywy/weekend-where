@@ -267,6 +267,12 @@ Page({
         setTimeout(() => { wx.switchTab({ url: '/pages/list/list' }); }, 800);
       } else {
         this.setData({ coverImageTemp: '', tagInput: '', formData: emptyForm });
+        // Navigate to the new item's detail page
+        if (result.id) {
+          setTimeout(() => {
+            wx.navigateTo({ url: `/pages/detail/detail?id=${result.id}` });
+          }, 800);
+        }
       }
     } else {
       wx.showToast({ title: '保存失败，请重试', icon: 'none' });
