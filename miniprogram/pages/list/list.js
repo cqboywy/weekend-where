@@ -1,4 +1,4 @@
-const { getCollections, deleteCollectionItem, updateCollectionItem } = require('../../utils/cloud.js');
+const { getCollections, deleteCollectionItem, updateCollectionItem, addToNextGo, removeFromNextGo } = require('../../utils/cloud.js');
 const { CATEGORIES, STATUS } = require('../../utils/constants.js');
 
 Page({
@@ -131,7 +131,8 @@ Page({
       wx.showToast({ title: '操作失败，请重试', icon: 'none' });
       return;
     }
-    if (action === 'toggleStatus') this.toggleStatus(actionItem);
+    if (action === 'toggleNextGo') this.toggleNextGo(actionItem);
+    else if (action === 'toggleStatus') this.toggleStatus(actionItem);
     else if (action === 'delete') this.deleteItem(actionItem);
     else if (action === 'share') wx.showToast({ title: '请点击右上角分享', icon: 'none' });
   },
@@ -155,6 +156,16 @@ Page({
     if (result.success) {
       this.setData({ items: this.data.items.filter(i => i._id !== item._id) });
       wx.showToast({ title: '已删除', icon: 'success' });
+    }
+  },
+
+  async toggleNextGo(item) {
+    const isInPlan = item.nextGo;
+    const res = isInPlan ? await removeFromNextGo(item._id) : await addToNextGo(item._id);
+    if (res.success) {
+      const items = this.data.items.map(i => i._id === item._id ? { ...i, nextGo: !isInPlan } : i);
+      this.setData({ items });
+      wx.showToast({ title: isInPlan ? '已移出' : '已加入「下次去」', icon: 'success' });
     }
   },
 
