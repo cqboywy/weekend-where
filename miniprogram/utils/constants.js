@@ -25,15 +25,6 @@ const CATEGORY_COLORS = [
   '#B5A595', '#6EB5C0', '#D4A070', '#8899AA', '#C09B6E',
 ];
 
-const PLATFORMS = [
-  { key: 'xiaohongshu', label: '小红书', color: '#FF3B4A' },
-  { key: 'douyin', label: '抖音', color: '#1A1A1A' },
-  { key: 'bilibili', label: 'B站', color: '#FB7299' },
-  { key: 'dianping', label: '大众点评', color: '#FF9F0A' },
-  { key: 'wechat', label: '微信', color: '#07C160' },
-  { key: 'other', label: '其他', color: '#999999' },
-];
-
 const STATUS = [
   { key: 'want_to_go', label: '想去' },
   { key: 'visited', label: '去过' },
@@ -114,4 +105,4 @@ function generateCategoryCover(color) {
   return 'data:image/svg+xml,' + encodeURIComponent(svg);
 }
 
-module.exports = { CATEGORIES, PLATFORMS, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex };
+module.exports = { CATEGORIES, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex };

@@ -7,12 +7,6 @@
   position: absolute; bottom: 0; left: 0; right: 0; height: 200rpx;
   background: linear-gradient(to top, rgba(30,22,12,0.45), transparent);
 }
-.cover-platform {
-  position: absolute; bottom: 28rpx; left: 28rpx;
-  padding: 6rpx 20rpx; border-radius: var(--radius-full);
-  font-size: var(--text-xs); color: #fff; font-weight: 500;
-  letter-spacing: var(--tracking-wide);
-}
 .cover-status {
   position: absolute; bottom: 28rpx; right: 28rpx;
   font-size: var(--text-sm); color: #fff; font-weight: 400;

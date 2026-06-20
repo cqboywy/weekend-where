@@ -1,8 +1,8 @@
 const { getCollectionDetail, updateCollectionItem, deleteCollectionItem } = require('../../utils/cloud.js');
-const { CATEGORIES, PLATFORMS, STATUS, generateCategoryCover } = require('../../utils/constants.js');
+const { CATEGORIES, STATUS, generateCategoryCover } = require('../../utils/constants.js');
 
 Page({
-  data: { item: null, loading: true, categoryInfo: null, platformInfo: null, statusLabel: '', displayCover: '' },
+  data: { item: null, loading: true, categoryInfo: null, statusLabel: '', displayCover: '' },
 
   onLoad(options) {
     if (options.id) { this.loadDetail(options.id); }
@@ -19,10 +19,9 @@ Page({
         ? app.globalData.categories
         : CATEGORIES;
       const categoryInfo = cats.find(c => c.key === item.category) || cats.find(c => c.key === 'other') || { key: 'other', label: '其他', color: '#B5A595' };
-      const platformInfo = PLATFORMS.find(p => p.key === item.platform);
       const statusLabel = STATUS.find(s => s.key === item.status)?.label || '';
       const displayCover = item.coverImage || generateCategoryCover(categoryInfo.color || '#B5A595');
-      this.setData({ item, categoryInfo, platformInfo, statusLabel, displayCover, loading: false });
+      this.setData({ item, categoryInfo, statusLabel, displayCover, loading: false });
     } else {
       wx.showToast({ title: '加载失败', icon: 'none' });
       this.setData({ loading: false });

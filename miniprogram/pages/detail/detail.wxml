@@ -3,7 +3,6 @@
   <view class="detail-cover">
     <image src="{{displayCover}}" mode="aspectFill" class="cover-image"/>
     <view class="cover-gradient"></view>
-    <view class="cover-platform" style="background: {{platformInfo.color || '#999'}};">{{platformInfo.label || '其他'}}</view>
     <view class="cover-status">{{statusLabel}}</view>
   </view>
 
