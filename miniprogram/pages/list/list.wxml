@@ -15,7 +15,7 @@
     <view class="search-cancel" bindtap="onToggleSearch">取消</view>
   </view>
 
-  <scroll-view class="category-scroll" scroll-x enable-flex>
+  <scroll-view class="category-scroll" scroll-x enable-flex enhanced show-scrollbar="{{false}}">
     <view wx:for="{{categories}}" wx:key="key" class="filter-chip pressable {{activeCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" bindtap="onSelectCategory">{{item.label}}</view>
   </scroll-view>
 

@@ -53,11 +53,26 @@ Page({
     }
   },
 
-  initCategories() {
+  async initCategories() {
     const app = getApp();
-    const cats = (app.globalData.categories && app.globalData.categories.length > 0)
+    const raw = (app.globalData.categories && app.globalData.categories.length > 0)
       ? app.globalData.categories
       : CATEGORIES;
+
+    // 用缓存或重新拉取分类统计来排序
+    if (!app.globalData._sortedCategories) {
+      try {
+        const { getCollectionStats } = require('../../utils/cloud.js');
+        const statsRes = await getCollectionStats();
+        if (statsRes.success) {
+          const counts = statsRes.data.byCategory || {};
+          const sorted = [...raw].sort((a, b) => (counts[b.key] || 0) - (counts[a.key] || 0));
+          app.globalData._sortedCategories = sorted;
+        }
+      } catch (e) { /* fallback */ }
+    }
+
+    const cats = app.globalData._sortedCategories || raw;
     this.setData({ categories: [{ key: '', label: '全部' }, ...cats] });
   },
 
