@@ -16,8 +16,8 @@
   </view>
 
   <!-- Category tabs -->
-  <scroll-view class="category-scroll" scroll-x enable-flex enhanced show-scrollbar="{{false}}">
-    <view wx:for="{{categories}}" wx:key="key" class="filter-chip pressable {{activeCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" data-index="{{index}}" bindtap="onSelectCategory">{{item.label}}</view>
+  <scroll-view class="category-scroll" scroll-x enable-flex enhanced show-scrollbar="{{false}}" scroll-into-view="{{'chip-' + activeCategory}}" scroll-with-animation>
+    <view wx:for="{{categories}}" wx:key="key" id="chip-{{item.key}}" class="filter-chip pressable {{activeCategory === item.key ? 'active' : ''}}" data-category="{{item.key}}" data-index="{{index}}" bindtap="onSelectCategory">{{item.label}}</view>
   </scroll-view>
 
   <!-- Swipeable content -->
