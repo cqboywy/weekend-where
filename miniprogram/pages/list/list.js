@@ -24,6 +24,7 @@ Page({
       delete app.globalData.statusFilter;
     }
     this.calcSwiperHeight();
+    this.loadCategoryData('', true);
   },
 
   onShow() {
@@ -85,7 +86,13 @@ Page({
     const cats = app.globalData._sortedCategories || raw;
     const full = [{ key: '', label: '全部' }, ...cats];
     if (JSON.stringify(full.map(c => c.key)) !== JSON.stringify(this.data.categories.map(c => c.key))) {
-      this.setData({ categories: full });
+      // 为新分类初始化空数据槽
+      const initData = { ...this.data.categoryData };
+      full.forEach(c => {
+        const k = c.key || '';
+        if (!initData[k]) initData[k] = { items: [], loading: false, loadingMore: false, hasMore: true, skip: 0 };
+      });
+      this.setData({ categories: full, categoryData: initData });
     }
   },
 
