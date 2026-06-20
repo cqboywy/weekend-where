@@ -17,7 +17,7 @@ Page({
   },
   onExport() { wx.showToast({ title: '功能开发中，敬请期待', icon: 'none' }); },
   onAbout() {
-    wx.showModal({ title: '周末去哪儿', content: 'v1.0.0\n聚合你的美食与游玩灵感\n告别周末选择困难', showCancel: false });
+    wx.showModal({ title: '周末去哪儿', content: 'v1.2\n天气感知 · 标签管理 · 计划去\n滑动切换 · 编辑室杂志风格', showCancel: false });
   },
   onManageCategories() { wx.navigateTo({ url: '/pages/category-manage/category-manage' }); },
   onManageTags() { wx.navigateTo({ url: '/pages/tag-manage/tag-manage' }); },
