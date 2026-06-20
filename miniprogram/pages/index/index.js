@@ -51,7 +51,7 @@ Page({
 
       // 直接调用和风天气 API
       const API_KEY = 'cf0e3d6b987a4a7c806997656dc6b8ca';
-      const url = `https://devapi.qweather.com/v7/weather/now?location=${locRes.longitude},${locRes.latitude}&key=${API_KEY}`;
+      const url = `https://api.qweather.com/v7/weather/now?location=${locRes.longitude},${locRes.latitude}&key=${API_KEY}`;
       console.log('[天气] 请求URL:', url);
       const res = await new Promise((resolve, reject) => {
         wx.request({ url, method: 'GET', success: resolve, fail: reject });
