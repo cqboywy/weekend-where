@@ -9,6 +9,7 @@ Page({
     loading: true,
     greeting: '',
     currentDate: '',
+    weatherDetail: '',
   },
 
   onLoad() { this.setGreeting(); this.loadData(); },
@@ -33,9 +34,9 @@ Page({
 
     // 检查缓存（30 分钟 TTL）
     if (app.globalData._weatherCache) {
-      const { weatherType, ts } = app.globalData._weatherCache;
+      const { weatherType, ts, temp } = app.globalData._weatherCache;
       if (Date.now() - ts < 30 * 60 * 1000) {
-        this.setData({ greeting: getGreeting(hour, weatherType) });
+        this.setData({ greeting: getGreeting(hour, weatherType), weatherDetail: temp != null ? temp + '°C' : '' });
         return;
       }
     }
@@ -52,9 +53,14 @@ Page({
       });
 
       if (res.statusCode === 200 && res.data && res.data.current_weather) {
-        const weatherType = classifyWmoCode(res.data.current_weather.weathercode);
-        app.globalData._weatherCache = { weatherType, ts: Date.now() };
-        this.setData({ greeting: getGreeting(hour, weatherType) });
+        const cw = res.data.current_weather;
+        const weatherType = classifyWmoCode(cw.weathercode);
+        const temp = Math.round(cw.temperature);
+        app.globalData._weatherCache = { weatherType, temp, ts: Date.now() };
+        this.setData({
+          greeting: getGreeting(hour, weatherType),
+          weatherDetail: temp + '°C',
+        });
       }
     } catch (err) {
       console.log('天气获取失败:', err && err.errMsg || err);

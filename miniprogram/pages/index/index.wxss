@@ -30,6 +30,11 @@
   margin-top: 14rpx;
   font-style: italic;
 }
+.hero-temp {
+  color: var(--color-accent);
+  font-style: normal;
+  font-weight: 500;
+}
 
 /* ============================================
    Featured daily pick
