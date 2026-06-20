@@ -152,8 +152,13 @@ Page({
 
   async loadExistingTags() {
     const res = await getTagStats();
+    console.log('[标签] getTagStats结果:', JSON.stringify(res));
     if (res.success && res.data.length > 0) {
-      this.setData({ existingTags: res.data.map(t => t.tag) });
+      const tags = res.data.map(t => t.tag);
+      console.log('[标签] 已有标签:', tags);
+      this.setData({ existingTags: tags });
+    } else {
+      console.log('[标签] 无标签数据');
     }
   },
 
