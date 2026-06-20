@@ -97,7 +97,7 @@
 
 .existing-tags { margin-top: 16rpx; }
 .existing-tags-label { font-size: var(--text-xs); color: var(--color-muted); margin-bottom: 12rpx; }
-.existing-tags-row { display: flex; flex-wrap: wrap; gap: 8rpx; }
+.existing-tags-row { display: flex; flex-wrap: wrap; gap: 8rpx; margin-bottom: 12rpx; }
 .existing-tag-chip {
   display: inline-block;
   padding: 8rpx 20rpx;

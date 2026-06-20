@@ -14,6 +14,7 @@ Page({
     categories: CATEGORIES,
     tagInput: '',
     existingTags: [],
+    allTags: [],
     submitting: false,
     isEditing: false,
     editId: '',
@@ -143,23 +144,20 @@ Page({
       tagInput: '',
     });
   },
-  onRemoveTag(e) {
-    const index = e.currentTarget.dataset.index;
-    const tags = [...this.data.formData.tags];
-    tags.splice(index, 1);
-    this.setData({ 'formData.tags': tags });
-  },
 
   async loadExistingTags() {
     const res = await getTagStats();
-    console.log('[标签] getTagStats结果:', JSON.stringify(res));
     if (res.success && res.data.length > 0) {
-      const tags = res.data.map(t => t.tag);
-      console.log('[标签] 已有标签:', tags);
-      this.setData({ existingTags: tags });
-    } else {
-      console.log('[标签] 无标签数据');
+      const allTags = res.data.map(t => t.tag);
+      this.setData({ allTags, existingTags: allTags });
     }
+  },
+
+  refreshAvailableTags() {
+    const added = this.data.formData.tags;
+    this.setData({
+      existingTags: this.data.allTags.filter(t => added.indexOf(t) === -1),
+    });
   },
 
   onTapExistingTag(e) {
@@ -169,9 +167,17 @@ Page({
       wx.showToast({ title: '最多添加10个标签', icon: 'none' });
       return;
     }
-    this.setData({
-      'formData.tags': [...this.data.formData.tags, tag],
-    });
+    const tags = [...this.data.formData.tags, tag];
+    this.setData({ 'formData.tags': tags });
+    this.refreshAvailableTags();
+  },
+
+  onRemoveTag(e) {
+    const index = e.currentTarget.dataset.index;
+    const tags = [...this.data.formData.tags];
+    tags.splice(index, 1);
+    this.setData({ 'formData.tags': tags });
+    this.refreshAvailableTags();
   },
   onRate(e) {
     const rate = parseInt(e.currentTarget.dataset.rate) || 0;
