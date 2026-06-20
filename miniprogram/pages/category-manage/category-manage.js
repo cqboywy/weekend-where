@@ -28,6 +28,7 @@ Page({
         const countRes = await getCategoryItemCount(cat.key);
         return { ...cat, itemCount: countRes.success ? countRes.count : 0 };
       }));
+      cats.sort((a, b) => b.itemCount - a.itemCount);
       this.setData({ categories: cats, loading: false });
       // Sync to globalData
       const app = getApp();
