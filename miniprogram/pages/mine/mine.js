@@ -1,7 +1,7 @@
 const { getCollectionStats, getTagStats } = require('../../utils/cloud.js');
 
 Page({
-  data: { stats: null, loading: true, tagStats: [], showAllTags: false },
+  data: { stats: null, loading: true, tagStats: [], displayTagStats: [], showAllTags: false },
   onShow() { this.loadStats(); this.loadTagStats(); },
   async loadStats() {
     this.setData({ loading: true });
@@ -11,7 +11,9 @@ Page({
   },
   async loadTagStats() {
     const result = await getTagStats();
-    if (result.success) { this.setData({ tagStats: result.data }); }
+    if (result.success) {
+      this.setData({ tagStats: result.data, displayTagStats: result.data.slice(0, 10) });
+    }
   },
   onExport() { wx.showToast({ title: '功能开发中，敬请期待', icon: 'none' }); },
   onAbout() {
@@ -39,6 +41,10 @@ Page({
   },
 
   onToggleShowAllTags() {
-    this.setData({ showAllTags: !this.data.showAllTags });
+    const show = !this.data.showAllTags;
+    this.setData({
+      showAllTags: show,
+      displayTagStats: show ? this.data.tagStats : this.data.tagStats.slice(0, 10),
+    });
   },
 });

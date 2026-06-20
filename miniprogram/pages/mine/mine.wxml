@@ -22,12 +22,12 @@
   <view wx:if="{{tagStats.length > 0}}" class="tag-section card">
     <view class="section-head"><view class="section-title">标签统计</view></view>
     <view class="tag-grid">
-      <block wx:for="{{showAllTags ? tagStats : tagStats.slice(0, 10)}}" wx:key="tag">
+      <block wx:for="{{displayTagStats}}" wx:key="tag">
         <view class="tag-stat-chip pressable" data-tag="{{item.tag}}" bindtap="onTapStatTag">{{item.tag}}<text class="tag-stat-num">{{item.count}}</text></view>
       </block>
     </view>
     <view wx:if="{{tagStats.length > 10}}" class="tag-more" bindtap="onToggleShowAllTags">
-      <text>{{showAllTags ? '收起' : '查看全部 ' + tagStats.length + ' 个标签 →'}}</text>
+      <text>{{showAllTags ? '收起 ▲' : '查看全部 ' + tagStats.length + ' 个标签 ▼'}}</text>
     </view>
   </view>
 
