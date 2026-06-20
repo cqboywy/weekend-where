@@ -18,6 +18,7 @@ Page({
     wx.showModal({ title: '周末去哪儿', content: 'v1.0.0\n聚合你的美食与游玩灵感\n告别周末选择困难', showCancel: false });
   },
   onManageCategories() { wx.navigateTo({ url: '/pages/category-manage/category-manage' }); },
+  onManageTags() { wx.navigateTo({ url: '/pages/tag-manage/tag-manage' }); },
   onFeedback() { wx.showToast({ title: '功能开发中，敬请期待', icon: 'none' }); },
 
   onTapStat(e) {

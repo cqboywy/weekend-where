@@ -315,6 +315,63 @@ async function uploadImage(filePath) {
   }
 }
 
+/**
+ * Rename a tag across all user collections.
+ * @param {string} oldTag
+ * @param {string} newTag
+ * @returns {Promise<{success: boolean, updated: number}>}
+ */
+async function renameTagInCollections(oldTag, newTag) {
+  try {
+    const userId = await ensureOpenId();
+    const res = await collection('collection_items')
+      .where({ userId, tags: db.RegExp({ regexp: oldTag, options: 'i' }) })
+      .field({ tags: true })
+      .limit(200)
+      .get();
+    let updated = 0;
+    for (const item of res.data) {
+      const tags = item.tags.map(t => t === oldTag ? newTag : t);
+      await collection('collection_items').doc(item._id).update({
+        data: { tags, updatedAt: new Date().toISOString() }
+      });
+      updated++;
+    }
+    return { success: true, updated };
+  } catch (err) {
+    console.error('重命名标签失败:', err);
+    return { success: false, error: err, updated: 0 };
+  }
+}
+
+/**
+ * Remove a tag from all user collections.
+ * @param {string} tag
+ * @returns {Promise<{success: boolean, updated: number}>}
+ */
+async function removeTagFromAllCollections(tag) {
+  try {
+    const userId = await ensureOpenId();
+    const res = await collection('collection_items')
+      .where({ userId, tags: db.RegExp({ regexp: tag, options: 'i' }) })
+      .field({ tags: true })
+      .limit(200)
+      .get();
+    let updated = 0;
+    for (const item of res.data) {
+      const tags = item.tags.filter(t => t !== tag);
+      await collection('collection_items').doc(item._id).update({
+        data: { tags, updatedAt: new Date().toISOString() }
+      });
+      updated++;
+    }
+    return { success: true, updated };
+  } catch (err) {
+    console.error('删除标签失败:', err);
+    return { success: false, error: err, updated: 0 };
+  }
+}
+
 module.exports = {
   db, _, collection,
   addCollectionItem, getCollections, getAllCollections,
@@ -323,4 +380,5 @@ module.exports = {
   getCategories, addCategory, updateCategory, deleteCategory,
   seedDefaultCategories, getCategoryItemCount,
   uploadImage,
+  renameTagInCollections, removeTagFromAllCollections,
 };

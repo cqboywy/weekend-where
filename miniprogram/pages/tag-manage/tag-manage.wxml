@@ -1,0 +1,56 @@
+<view class="page tag-manage-page">
+  <view class="page-header">
+    <view class="header-title">标签管理</view>
+    <view class="header-desc">重命名或删除标签，改动会同步到所有收藏</view>
+  </view>
+
+  <view class="card tag-list" wx:if="{{!loading && tags.length > 0}}">
+    <block wx:for="{{tags}}" wx:key="tag">
+      <view class="tag-row pressable" data-tag="{{item.tag}}" bindtap="onTapTag">
+        <view class="tag-left">
+          <view class="tag-name">#{{item.tag}}</view>
+          <view class="tag-meta">{{item.count}} 个收藏</view>
+        </view>
+        <view class="tag-actions">
+          <view class="tag-action-btn pressable" data-tag="{{item.tag}}" catchtap="onEdit">
+            <lucide-icon name="pencil" size="32" color="#B8A89A" />
+          </view>
+          <view class="tag-action-btn pressable" data-tag="{{item.tag}}" catchtap="onDelete">
+            <lucide-icon name="trash-2" size="32" color="#D4735E" />
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{index < tags.length - 1}}" class="tag-divider"></view>
+    </block>
+  </view>
+
+  <view wx:if="{{!loading && tags.length === 0}}" class="empty-state">
+    <lucide-icon name="tag" size="64" color="#E8E0D5" />
+    <view class="empty-text">还没有标签</view>
+    <view class="empty-sub">添加收藏时打上标签后这里就会出现</view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-state">
+    <view class="skeleton-row" wx:for="{{[1,2,3,4,5]}}" wx:key="*this"></view>
+  </view>
+
+  <!-- Edit modal -->
+  <view wx:if="{{showModal}}" class="modal-overlay" bindtap="closeModal">
+    <view class="modal-sheet" catchtap="">
+      <view class="modal-header">
+        <view class="modal-title">{{modalTitle}}</view>
+        <view class="modal-close pressable" bindtap="closeModal">
+          <lucide-icon name="x" size="40" color="#B8A89A" />
+        </view>
+      </view>
+      <view class="modal-section">
+        <view class="modal-label">标签名称</view>
+        <input class="modal-input" placeholder="输入新标签名" value="{{formName}}" bindinput="onNameInput" maxlength="10" focus="{{true}}" />
+      </view>
+      <view class="modal-actions">
+        <button class="modal-cancel" bindtap="closeModal">取消</button>
+        <button class="modal-save" bindtap="onSave" disabled="{{saving}}" loading="{{saving}}">{{saving ? '保存中...' : '保存'}}</button>
+      </view>
+    </view>
+  </view>
+</view>

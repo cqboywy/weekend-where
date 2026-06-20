@@ -7,6 +7,7 @@
     "pages/list/list",
     "pages/detail/detail",
     "pages/category-manage/category-manage",
+    "pages/tag-manage/tag-manage",
     "pages/mine/mine"
   ],
   "usingComponents": {
