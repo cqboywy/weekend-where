@@ -162,10 +162,8 @@ Page({
     if (this.data.formData.tags.length >= 10) {
       wx.showToast({ title: '最多添加10个标签', icon: 'none' }); return;
     }
-    this.setData({
-      'formData.tags': [...this.data.formData.tags, tag],
-      tagInput: '',
-    });
+    this.setData({ 'formData.tags': [...this.data.formData.tags, tag], tagInput: '' });
+    this.refreshAvailableTags('');
   },
 
   async loadExistingTags() {
