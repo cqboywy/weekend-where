@@ -112,6 +112,27 @@ Page({
     this.setData({ 'formData.category': e.currentTarget.dataset.category });
   },
   onChooseLocation() {
+    // 先确保有位置权限，再打开地图选择器
+    wx.getLocation({
+      type: 'wgs84',
+      success: () => {
+        this.openLocationPicker();
+      },
+      fail: () => {
+        // 无权限时直接弹设置引导
+        wx.showModal({
+          title: '需要位置权限',
+          content: '请在设置中允许小程序使用位置信息',
+          confirmText: '去设置',
+          success: (res) => {
+            if (res.confirm) wx.openSetting();
+          },
+        });
+      },
+    });
+  },
+
+  openLocationPicker() {
     wx.chooseLocation({
       success: (res) => {
         this.setData({
@@ -123,19 +144,8 @@ Page({
       },
       fail: (err) => {
         console.log('chooseLocation fail:', err);
-        if (err.errMsg && err.errMsg.indexOf('auth deny') > -1) {
-          wx.showModal({
-            title: '需要位置权限',
-            content: '请在设置中允许小程序使用位置信息',
-            confirmText: '去设置',
-            success: (res) => {
-              if (res.confirm) wx.openSetting();
-            },
-          });
-        } else {
-          wx.showToast({ title: '选择位置失败，请重试', icon: 'none' });
-        }
-      }
+        wx.showToast({ title: '选择位置失败，请重试', icon: 'none' });
+      },
     });
   },
   onTagInput(e) { this.setData({ tagInput: e.detail.value }); },
