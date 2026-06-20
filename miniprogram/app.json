@@ -59,7 +59,8 @@
     ]
   },
   "requiredPrivateInfos": [
-    "getLocation"
+    "getLocation",
+    "chooseLocation"
   ],
   "permission": {
     "scope.userLocation": {

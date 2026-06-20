@@ -143,9 +143,8 @@ Page({
         });
       },
       fail: (err) => {
-        const msg = err && err.errMsg ? err.errMsg : JSON.stringify(err);
-        console.log('chooseLocation fail:', msg);
-        wx.showToast({ title: msg.slice(0, 30), icon: 'none', duration: 4000 });
+        console.log('chooseLocation fail:', err);
+        wx.showToast({ title: '选择位置失败', icon: 'none' });
       },
     });
   },
