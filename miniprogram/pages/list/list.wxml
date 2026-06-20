@@ -28,7 +28,7 @@
           <skeleton loading="{{true}}" count="{{4}}"/>
         </view>
         <view wx:elif="{{categoryData[item.key].items.length === 0}}" class="list-body">
-          <empty-state title="还没有收藏" description="{{item.key ? '该分类下暂无收藏' : '去添加你的第一个好吃好玩的地方吧'}}" bind:action="onGoAdd"/>
+          <empty-state title="还没有收藏" description="{{item.key === '__all__' ? '去添加你的第一个好吃好玩的地方吧' : '该分类下暂无收藏'}}" bind:action="onGoAdd"/>
         </view>
         <view wx:else class="list-body">
           <collection-card wx:for="{{categoryData[item.key].items}}" wx:for-item="card" wx:key="_id" item="{{card}}" index="{{index}}" bind:tap="onCardTap" bind:longpress="onCardLongPress" bind:tagtap="onCardTagTap"/>

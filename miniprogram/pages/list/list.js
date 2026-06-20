@@ -4,7 +4,7 @@ const { CATEGORIES } = require('../../utils/constants.js');
 Page({
   data: {
     categories: [],
-    activeCategory: '',
+    activeCategory: '__all__',
     activeStatus: '',
     keyword: '',
     showSearch: false,
@@ -24,7 +24,7 @@ Page({
       delete app.globalData.statusFilter;
     }
     this.calcSwiperHeight();
-    this.loadCategoryData('', true);
+    this.loadCategoryData('__all__', true);
   },
 
   onShow() {
@@ -34,7 +34,7 @@ Page({
     if (app.globalData.tagFilter) {
       const tag = app.globalData.tagFilter;
       delete app.globalData.tagFilter;
-      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '', activeStatus: '', swiperIndex: 0 });
+      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '__all__', activeStatus: '', swiperIndex: 0 });
       this.reloadAll();
       return;
     }
@@ -47,7 +47,7 @@ Page({
       return;
     }
     if (app.globalData.statusFilter && app.globalData.statusFilter !== this.data.activeStatus) {
-      this.setData({ activeStatus: app.globalData.statusFilter, activeCategory: '', keyword: '', searchValue: '', showSearch: false, swiperIndex: 0 });
+      this.setData({ activeStatus: app.globalData.statusFilter, activeCategory: '__all__', keyword: '', searchValue: '', showSearch: false, swiperIndex: 0 });
       delete app.globalData.statusFilter;
       this.reloadAll();
     }
@@ -84,7 +84,7 @@ Page({
     }
 
     const cats = app.globalData._sortedCategories || raw;
-    const full = [{ key: '', label: '全部' }, ...cats];
+    const full = [{ key: '__all__', label: '全部' }, ...cats];
     if (JSON.stringify(full.map(c => c.key)) !== JSON.stringify(this.data.categories.map(c => c.key))) {
       // 为新分类初始化空数据槽
       const initData = { ...this.data.categoryData };
@@ -119,7 +119,7 @@ Page({
     this.setData(setDataObj);
 
     const result = await getCollections({
-      category: key || undefined,
+      category: (key === '__all__' ? undefined : key) || undefined,
       status: this.data.activeStatus || undefined,
       keyword: this.data.keyword || undefined,
       skip: refresh ? 0 : prev.skip,
@@ -193,7 +193,7 @@ Page({
   onCardTagTap(e) {
     const tag = e.detail.tag;
     if (tag) {
-      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '', activeStatus: '', swiperIndex: 0 });
+      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '__all__', activeStatus: '', swiperIndex: 0 });
       this.reloadAll();
     }
   },
