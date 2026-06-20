@@ -1,6 +1,6 @@
 const { getCollections, getCollectionStats } = require('../../utils/cloud.js');
 const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
-const { getGreeting, classifyQWeatherIcon } = require('../../utils/weather-greeting.js');
+const { getGreeting, classifyWmoCode } = require('../../utils/weather-greeting.js');
 
 Page({
   data: {
@@ -49,22 +49,22 @@ Page({
       });
       console.log('[天气] 位置获取成功:', locRes.latitude, locRes.longitude);
 
-      // 直接调用和风天气 API
-      const API_KEY = 'cf0e3d6b987a4a7c806997656dc6b8ca';
-      const url = `https://api.qweather.com/v7/weather/now?location=${locRes.longitude},${locRes.latitude}&key=${API_KEY}`;
+      // Open-Meteo 免费天气 API（无需 Key，WMO 天气码）
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${locRes.latitude}&longitude=${locRes.longitude}&current_weather=true`;
       console.log('[天气] 请求URL:', url);
       const res = await new Promise((resolve, reject) => {
         wx.request({ url, method: 'GET', success: resolve, fail: reject });
       });
       console.log('[天气] wx.request返回:', JSON.stringify(res));
 
-      if (res.statusCode === 200 && res.data && String(res.data.code) === '200' && res.data.now) {
-        const weatherType = classifyQWeatherIcon(Number(res.data.now.icon));
-        console.log('[天气] 天气类型:', weatherType, '天气文字:', res.data.now.text);
+      if (res.statusCode === 200 && res.data && res.data.current_weather) {
+        const wmoCode = res.data.current_weather.weathercode;
+        const weatherType = classifyWmoCode(wmoCode);
+        console.log('[天气] WMO码:', wmoCode, '天气类型:', weatherType);
         app.globalData._weatherCache = { weatherType, ts: Date.now() };
         this.setData({ greeting: getGreeting(hour, weatherType) });
       } else {
-        console.log('[天气] 响应异常: statusCode=' + res.statusCode + ' code=' + (res.data && res.data.code));
+        console.log('[天气] 响应异常: statusCode=' + res.statusCode);
       }
     } catch (err) {
       console.log('[天气] 获取失败:', err && err.errMsg || err);

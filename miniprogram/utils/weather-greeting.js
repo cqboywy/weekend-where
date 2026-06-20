@@ -123,21 +123,19 @@ function getGreeting(hour, weatherType) {
 }
 
 /**
- * 和风天气 icon 码 → 简化天气类型
- *   100=晴 101=多云 102=少云 103=晴间多云 104=阴
- *   3xx=雨 4xx=雪 5xx=雾/霾 2xx=风
- * @param {number} iconCode
+ * WMO 天气码（Open-Meteo） → 简化天气类型
+ *   0=晴 1-3=多云 45,48=雾 51-67=雨 71-77=雪 80-99=雨/雷暴
+ * @param {number} code
  * @returns {string} sunny | cloudy | overcast | rain | snow | fog | windy
  */
-function classifyQWeatherIcon(iconCode) {
-  if (iconCode === 100 || iconCode === 102) return 'sunny';
-  if (iconCode === 101 || iconCode === 103) return 'cloudy';
-  if (iconCode === 104) return 'overcast';
-  if (iconCode >= 300 && iconCode < 400) return 'rain';
-  if (iconCode >= 400 && iconCode < 500) return 'snow';
-  if (iconCode >= 500 && iconCode < 600) return 'fog';
-  if (iconCode >= 200 && iconCode < 300) return 'windy';
+function classifyWmoCode(code) {
+  if (code === 0) return 'sunny';
+  if (code >= 1 && code <= 3) return 'cloudy';
+  if (code === 45 || code === 48) return 'fog';
+  if (code >= 51 && code <= 67) return 'rain';
+  if (code >= 71 && code <= 77) return 'snow';
+  if (code >= 80 && code <= 99) return 'rain';
   return 'sunny';
 }
 
-module.exports = { getGreeting, getTimeSlot, TIME_ONLY, classifyQWeatherIcon };
+module.exports = { getGreeting, getTimeSlot, TIME_ONLY, classifyWmoCode };
