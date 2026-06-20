@@ -112,19 +112,28 @@ Page({
     this.setData({ 'formData.category': e.currentTarget.dataset.category });
   },
   onChooseLocation() {
-    const that = this;
     wx.chooseLocation({
-      success(res) {
-        that.setData({
+      success: (res) => {
+        this.setData({
           'formData.locationName': res.name || '',
           'formData.locationAddress': res.address || '',
           'formData.latitude': res.latitude,
           'formData.longitude': res.longitude,
         });
       },
-      fail(err) {
-        if (err.errMsg.indexOf('auth deny') > -1) {
-          wx.showToast({ title: '请授权位置权限', icon: 'none' });
+      fail: (err) => {
+        console.log('chooseLocation fail:', err);
+        if (err.errMsg && err.errMsg.indexOf('auth deny') > -1) {
+          wx.showModal({
+            title: '需要位置权限',
+            content: '请在设置中允许小程序使用位置信息',
+            confirmText: '去设置',
+            success: (res) => {
+              if (res.confirm) wx.openSetting();
+            },
+          });
+        } else {
+          wx.showToast({ title: '选择位置失败，请重试', icon: 'none' });
         }
       }
     });
