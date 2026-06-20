@@ -2,6 +2,29 @@ const { getCollections, getCollectionStats } = require('../../utils/cloud.js');
 const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
 const { getGreeting, classifyWmoCode } = require('../../utils/weather-greeting.js');
 
+const CHINESE_NUMS = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'];
+const CHINESE_DAYS = ['日', '一', '二', '三', '四', '五', '六'];
+
+function formatChineseDate(date) {
+  const y = date.getFullYear();
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  const w = date.getDay();
+
+  const yearStr = String(y).split('').map(ch => '〇一二三四五六七八九'[Number(ch)]).join('');
+  const monthStr = CHINESE_NUMS[m];
+  let dayStr;
+  if (d <= 10) dayStr = CHINESE_NUMS[d];
+  else if (d < 20) dayStr = '十' + CHINESE_NUMS[d - 10];
+  else if (d === 20) dayStr = '二十';
+  else if (d < 30) dayStr = '二十' + CHINESE_NUMS[d - 20];
+  else if (d === 30) dayStr = '三十';
+  else dayStr = '三十一';
+  const weekStr = '星期' + CHINESE_DAYS[w];
+
+  return `${yearStr}年${monthStr}月${dayStr}日 · ${weekStr}`;
+}
+
 Page({
   data: {
     featuredItem: null,
@@ -21,8 +44,7 @@ Page({
 
     // 先设纯时间短语，天气拿到后更新
     const fallbackGreeting = getGreeting(hour, null);
-    const days = ['日', '一', '二', '三', '四', '五', '六'];
-    const dateStr = `${now.getMonth() + 1}月${now.getDate()}日 星期${days[now.getDay()]}`;
+    const dateStr = formatChineseDate(now);
     this.setData({ greeting: fallbackGreeting, currentDate: dateStr });
 
     // 异步获取天气

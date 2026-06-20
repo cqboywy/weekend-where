@@ -2,8 +2,11 @@
   <!-- Hero -->
   <view class="hero">
     <view class="hero-badge">WEEKEND · WHERE</view>
-    <view class="hero-title">{{greeting}}</view>
-    <view class="hero-sub">{{currentDate}}<text wx:if="{{weatherDetail}}" class="hero-temp"> · {{weatherDetail}}</text></view>
+    <view class="hero-headline">
+      <text class="hero-title">{{greeting}}</text>
+      <text wx:if="{{weatherDetail}}" class="hero-temp">{{weatherDetail}}</text>
+    </view>
+    <view class="hero-date">{{currentDate}}</view>
   </view>
 
   <!-- Featured daily pick -->
