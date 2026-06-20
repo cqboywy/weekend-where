@@ -53,6 +53,7 @@ cloudfunctions/
 | [设计系统](docs/design-system-editorial-journal.md) | 配色、字体、圆角、阴影、按钮、布局原则 |
 | [更新日志](docs/changelog.md) | v1.0 / v1.1 完整更新记录 |
 | [图标指南](docs/icon-guide.md) | 图标系统使用说明 |
+| [使用指南](docs/app-guide.md) | 给朋友的介绍文档，每页截图+简要说明 |
 
 ## 开始使用
 
