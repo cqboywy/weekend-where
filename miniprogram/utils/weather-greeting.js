@@ -129,8 +129,9 @@ function getGreeting(hour, weatherType) {
  * @returns {string} sunny | cloudy | overcast | rain | snow | fog | windy
  */
 function classifyWmoCode(code) {
-  if (code === 0) return 'sunny';
-  if (code >= 1 && code <= 3) return 'cloudy';
+  if (code === 0 || code === 1) return 'sunny';  // 晴、大部晴
+  if (code === 2) return 'cloudy';               // 少云→多云
+  if (code === 3) return 'overcast';              // 阴
   if (code === 45 || code === 48) return 'fog';
   if (code >= 51 && code <= 67) return 'rain';
   if (code >= 71 && code <= 77) return 'snow';

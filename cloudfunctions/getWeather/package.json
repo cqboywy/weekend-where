@@ -1,6 +1,0 @@
-{
-  "name": "getWeather",
-  "version": "1.0.0",
-  "description": "获取和风天气实时数据",
-  "main": "index.js"
-}
