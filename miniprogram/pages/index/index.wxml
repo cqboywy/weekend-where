@@ -23,6 +23,28 @@
     </view>
   </view>
 
+  <!-- Weekend Plan -->
+  <view wx:if="{{weekendPlanItems.length > 0}}" class="weekend-section">
+    <view class="section-head">
+      <view class="section-title">周末清单</view>
+      <view class="section-count">{{weekendPlanItems.length}} 个地方</view>
+    </view>
+    <scroll-view class="weekend-scroll" scroll-x enable-flex>
+      <view wx:for="{{weekendPlanItems}}" wx:key="_id" class="weekend-item">
+        <view class="weekend-card pressable" bindtap="onViewWeekendPlan" data-id="{{item._id}}">
+          <image src="{{item.displayCover}}" mode="aspectFill" class="weekend-cover"/>
+          <view class="weekend-info">
+            <view class="weekend-title ellipsis">{{item.title}}</view>
+            <view class="weekend-cat" style="color:{{item.catColor}};">{{item.catLabel}}</view>
+          </view>
+        </view>
+        <view class="weekend-remove pressable" catchtap="onRemoveWeekendPlan" data-id="{{item._id}}">
+          <lucide-icon name="x" size="28" color="#9E9688" />
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
   <!-- Past collections — masonry grid -->
   <view class="masonry-section">
     <view class="section-head">

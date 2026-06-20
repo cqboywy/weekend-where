@@ -40,7 +40,7 @@ async function addCollectionItem(data) {
   }
 }
 
-async function getCollections({ category, keyword, status, skip = 0, limit = 20 } = {}) {
+async function getCollections({ category, keyword, status, weekendPlan, skip = 0, limit = 20 } = {}) {
   try {
     const userId = await ensureOpenId();
     // Build all conditions into a single array and use _.and() to avoid the
@@ -52,6 +52,9 @@ async function getCollections({ category, keyword, status, skip = 0, limit = 20 
     }
     if (status) {
       conditions.push({ status });
+    }
+    if (weekendPlan !== undefined) {
+      conditions.push({ weekendPlan });
     }
     if (keyword) {
       conditions.push(
@@ -372,6 +375,36 @@ async function removeTagFromAllCollections(tag) {
   }
 }
 
+/**
+ * Add a collection to the weekend plan.
+ */
+async function addToWeekendPlan(id) {
+  try {
+    await collection('collection_items').doc(id).update({
+      data: { weekendPlan: true, weekendPlanAt: new Date().toISOString(), updatedAt: new Date().toISOString() }
+    });
+    return { success: true };
+  } catch (err) {
+    console.error('加入周末清单失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+/**
+ * Remove a collection from the weekend plan.
+ */
+async function removeFromWeekendPlan(id) {
+  try {
+    await collection('collection_items').doc(id).update({
+      data: { weekendPlan: false, updatedAt: new Date().toISOString() }
+    });
+    return { success: true };
+  } catch (err) {
+    console.error('移出周末清单失败:', err);
+    return { success: false, error: err };
+  }
+}
+
 module.exports = {
   db, _, collection,
   addCollectionItem, getCollections, getAllCollections,
@@ -381,4 +414,5 @@ module.exports = {
   seedDefaultCategories, getCategoryItemCount,
   uploadImage,
   renameTagInCollections, removeTagFromAllCollections,
+  addToWeekendPlan, removeFromWeekendPlan,
 };

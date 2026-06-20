@@ -1,4 +1,4 @@
-const { getCollections, getCollectionStats } = require('../../utils/cloud.js');
+const { getCollections, getCollectionStats, removeFromWeekendPlan } = require('../../utils/cloud.js');
 const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
 const { getGreeting, classifyWmoCode } = require('../../utils/weather-greeting.js');
 
@@ -29,6 +29,7 @@ Page({
   data: {
     featuredItem: null,
     recentItems: [],
+    weekendPlanItems: [],
     loading: true,
     greeting: '',
     currentDate: '',
@@ -97,9 +98,10 @@ Page({
       ? app.globalData.categories
       : CATEGORIES;
 
-    const [recentResult, statsResult] = await Promise.all([
+    const [recentResult, statsResult, weekendResult] = await Promise.all([
       getCollections({ limit: 30 }),
       getCollectionStats(),
+      getCollections({ weekendPlan: true, limit: 50 }),
     ]);
 
     if (recentResult.success && recentResult.data.length > 0) {
@@ -128,12 +130,14 @@ Page({
       this.setData({
         featuredItem: enrich(featuredItem),
         recentItems: rest.map(enrich),
+        weekendPlanItems: (weekendResult.success ? weekendResult.data : []).map(enrich),
         loading: false,
       });
     } else {
       this.setData({
         featuredItem: null,
         recentItems: [],
+        weekendPlanItems: (weekendResult.success ? weekendResult.data : []).map(enrich),
         loading: false,
       });
     }
@@ -150,6 +154,21 @@ Page({
     const id = e.currentTarget.dataset.id;
     if (id) {
       wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+    }
+  },
+
+  onViewWeekendPlan(e) {
+    const id = e.currentTarget.dataset.id;
+    if (id) wx.navigateTo({ url: `/pages/detail/detail?id=${id}` });
+  },
+
+  async onRemoveWeekendPlan(e) {
+    const id = e.currentTarget.dataset.id;
+    const res = await removeFromWeekendPlan(id);
+    if (res.success) {
+      wx.showToast({ title: '已移出', icon: 'success' });
+      const items = this.data.weekendPlanItems.filter(item => item._id !== id);
+      this.setData({ weekendPlanItems: items });
     }
   },
 

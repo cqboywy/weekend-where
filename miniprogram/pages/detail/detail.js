@@ -1,4 +1,4 @@
-const { getCollectionDetail, updateCollectionItem, deleteCollectionItem } = require('../../utils/cloud.js');
+const { getCollectionDetail, updateCollectionItem, deleteCollectionItem, addToWeekendPlan, removeFromWeekendPlan } = require('../../utils/cloud.js');
 const { CATEGORIES, STATUS, generateCategoryCover } = require('../../utils/constants.js');
 
 Page({
@@ -25,6 +25,17 @@ Page({
     } else {
       wx.showToast({ title: '加载失败', icon: 'none' });
       this.setData({ loading: false });
+    }
+  },
+
+  async onToggleWeekendPlan() {
+    const item = this.data.item;
+    const isInPlan = item.weekendPlan;
+    const res = isInPlan ? await removeFromWeekendPlan(item._id) : await addToWeekendPlan(item._id);
+    if (res.success) {
+      getApp().globalData.listNeedsRefresh = true;
+      this.setData({ 'item.weekendPlan': !isInPlan });
+      wx.showToast({ title: isInPlan ? '已移出' : '已加入周末清单', icon: 'success' });
     }
   },
 
