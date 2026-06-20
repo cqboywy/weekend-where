@@ -24,25 +24,25 @@ Page({
   onShow() {
     this.initCategories();
     const app = getApp();
-    // Handle tag filter from mine page
+    // Handle tag filter from mine page — reset other filters
     if (app.globalData.tagFilter) {
       const tag = app.globalData.tagFilter;
       delete app.globalData.tagFilter;
-      this.setData({ showSearch: true, searchValue: tag, keyword: tag });
+      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '', activeStatus: '' });
       this.loadData(true);
       return;
     }
-    // Handle category filter from category-manage page
+    // Handle category filter from category-manage page — reset other filters
     if (app.globalData.categoryFilter) {
       const catKey = app.globalData.categoryFilter;
       delete app.globalData.categoryFilter;
-      this.setData({ activeCategory: catKey });
+      this.setData({ activeCategory: catKey, keyword: '', searchValue: '', showSearch: false, activeStatus: '' });
       this.loadData(true);
       return;
     }
     // Re-check on each show in case user navigates back
     if (app.globalData.statusFilter && app.globalData.statusFilter !== this.data.activeStatus) {
-      this.setData({ activeStatus: app.globalData.statusFilter });
+      this.setData({ activeStatus: app.globalData.statusFilter, activeCategory: '', keyword: '', searchValue: '', showSearch: false });
       delete app.globalData.statusFilter;
       this.loadData(true);
     }
