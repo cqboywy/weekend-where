@@ -57,9 +57,12 @@
       }
     ]
   },
+  "requiredPrivateInfos": [
+    "getLocation"
+  ],
   "permission": {
     "scope.userLocation": {
-      "desc": "你的位置信息将用于地图展示附近收藏"
+      "desc": "你的位置信息将用于地图展示附近收藏和获取当地天气"
     }
   },
   "sitemapLocation": "sitemap.json"

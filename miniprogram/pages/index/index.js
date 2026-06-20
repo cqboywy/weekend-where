@@ -61,15 +61,9 @@ Page({
         const weatherType = classifyQWeatherIcon(Number(data.now.icon));
         app.globalData._weatherCache = { weatherType, ts: Date.now() };
         this.setData({ greeting: getGreeting(hour, weatherType) });
-        console.log('天气更新成功:', weatherType, data.now.text);
-      } else {
-        console.log('天气API返回异常:', statusCode, JSON.stringify(data));
-        wx.showToast({ title: '天气API: ' + (data && data.code || statusCode), icon: 'none', duration: 3000 });
       }
     } catch (err) {
-      const msg = err && (err.errMsg || err.message || JSON.stringify(err));
-      console.log('天气获取失败，使用纯时间短语:', msg);
-      wx.showToast({ title: '天气: ' + (msg || '未知').slice(0, 20), icon: 'none', duration: 3000 });
+      console.log('天气获取失败，使用纯时间短语:', err && err.errMsg || err);
     }
   },
 
