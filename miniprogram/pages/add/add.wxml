@@ -65,7 +65,9 @@
     <view wx:if="{{existingTags.length > 0}}" class="existing-tags">
       <view class="existing-tags-label">已有标签（点击添加）</view>
       <view class="existing-tags-row">
-        <text wx:for="{{existingTags}}" wx:key="*this" wx:if="{{formData.tags.indexOf(item) === -1}}" class="existing-tag-chip" data-tag="{{item}}" bindtap="onTapExistingTag">{{item}}</text>
+        <block wx:for="{{existingTags}}" wx:key="*this">
+          <text wx:if="{{formData.tags.indexOf(item) === -1}}" class="existing-tag-chip" data-tag="{{item}}" bindtap="onTapExistingTag">{{item}}</text>
+        </block>
       </view>
     </view>
     <view wx:if="{{formData.tags.length > 0}}" class="tag-list">
