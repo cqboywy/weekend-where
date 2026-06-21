@@ -16,7 +16,6 @@ Page({
   onLoad() {
     this.initCategories();
     this.loadMarkers();
-    this.generateClusterIcon();
   },
   onShow() {
     this.initCategories();
@@ -155,139 +154,48 @@ Page({
     });
   },
 
-  generateClusterIcon() {
-    return new Promise((resolve) => {
-      const query = wx.createSelectorQuery();
-      query.select('#markerCanvas').fields({ node: true, size: true }).exec((res) => {
-        if (!res || !res[0] || !res[0].node) { resolve(); return; }
-        const canvas = res[0].node;
-        const out = 64;
-        const dpr = Math.max(wx.getSystemInfoSync().pixelRatio, 3);
-        canvas.width = out * dpr;
-        canvas.height = out * dpr;
-        const ctx = canvas.getContext('2d');
-        ctx.scale(dpr, dpr);
-        ctx.clearRect(0, 0, out, out);
-
-        const cx = out / 2, cy = out / 2, r = 24;
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.fillStyle = '#C2674A';
-        ctx.fill();
-        ctx.strokeStyle = '#FFFFFF';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        wx.canvasToTempFilePath({
-          canvas, x: 0, y: 0, width: out, height: out,
-          destWidth: out, destHeight: out,
-          success: (result) => { this._clusterIconCache = result.tempFilePath; resolve(); },
-          fail: () => resolve(),
-        });
-      });
-    });
-  },
-
   async updateMarkers() {
     const { allItems, selectedCategory, selectedTag, categories } = this.data;
     let filteredItems = allItems;
     if (selectedCategory) { filteredItems = filteredItems.filter(item => item.category === selectedCategory); }
     if (selectedTag) { filteredItems = filteredItems.filter(item => item.tags && item.tags.includes(selectedTag)); }
 
-    // Pre-generate marker icons: category colors + visited gray
-    const VISITED_COLOR = '#A0A098';
+    // Collect unique colors
     const colors = new Set();
     filteredItems.forEach(item => {
-      if (item.status === 'visited') {
-        colors.add(VISITED_COLOR);
-      } else {
-        const cat = categories.find(c => c.key === item.category) || {};
-        colors.add(cat.color || '#E8876A');
-      }
+      const cat = categories.find(c => c.key === item.category) || {};
+      colors.add(cat.color || '#E8876A');
     });
+
+    // Pre-generate all needed marker icons
     await Promise.all([...colors].map(c => this.generateMarkerIcon(c)));
 
-    // Cluster nearby markers
-    const clustered = this.clusterMarkers(filteredItems, categories);
-
-    this.setData({ markers: clustered });
-  },
-
-  buildMarker(item, categories, allItems) {
-    const originalIndex = allItems.indexOf(item);
-    const isVisited = item.status === 'visited';
-    const cat = categories.find(c => c.key === item.category) || {};
-    const catColor = isVisited ? '#A0A098' : (cat.color || '#E8876A');
-    return {
-      id: originalIndex,
-      latitude: item.location.latitude,
-      longitude: item.location.longitude,
-      title: item.title,
-      iconPath: this._markerIconCache[catColor] || '/images/tab-map-active.png',
-      width: 44,
-      height: 44,
-      anchor: { x: 0.5, y: 0.5 },
-      alpha: isVisited ? 0.6 : 1,
-      callout: {
-        content: (isVisited ? '✓ ' : '') + item.title,
-        color: '#FFFFFF',
-        fontSize: 13,
-        borderRadius: 12,
-        bgColor: catColor,
-        padding: 12,
-        display: 'ALWAYS',
-        textAlign: 'center',
-      },
-    };
-  },
-
-  clusterMarkers(items, categories) {
-    const gridSize = 0.015; // ~1.5km
-    const groups = {};
-
-    items.forEach(item => {
-      const lat = Math.round(item.location.latitude / gridSize) * gridSize;
-      const lng = Math.round(item.location.longitude / gridSize) * gridSize;
-      const key = lat.toFixed(4) + ',' + lng.toFixed(4);
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(item);
+    const markers = filteredItems.map((item) => {
+      const originalIndex = allItems.indexOf(item);
+      const cat = categories.find(c => c.key === item.category) || {};
+      const catColor = cat.color || '#E8876A';
+      return {
+        id: originalIndex,
+        latitude: item.location.latitude,
+        longitude: item.location.longitude,
+        title: item.title,
+        iconPath: this._markerIconCache[catColor] || '/images/tab-map-active.png',
+        width: 44,
+        height: 44,
+        anchor: { x: 0.5, y: 0.5 },
+        callout: {
+          content: item.title,
+          color: '#FFFFFF',
+          fontSize: 13,
+          borderRadius: 12,
+          bgColor: catColor,
+          padding: 12,
+          display: 'ALWAYS',
+          textAlign: 'center',
+        },
+      };
     });
-
-    const markers = [];
-    Object.values(groups).forEach(group => {
-      if (group.length === 1) {
-        markers.push(this.buildMarker(group[0], categories, items));
-      } else {
-        // Cluster — show count badge
-        const lat = group.reduce((s, i) => s + i.location.latitude, 0) / group.length;
-        const lng = group.reduce((s, i) => s + i.location.longitude, 0) / group.length;
-        const hasUnvisited = group.some(i => i.status !== 'visited');
-        const bgColor = hasUnvisited ? '#C2674A' : '#A0A098';
-        markers.push({
-          id: 90000 + markers.length,
-          latitude: lat,
-          longitude: lng,
-          width: 56,
-          height: 56,
-          iconPath: this._clusterIconCache || '/images/tab-map-active.png',
-          alpha: hasUnvisited ? 1 : 0.6,
-          anchor: { x: 0.5, y: 0.5 },
-          callout: {
-            content: group.length + ' 个',
-            color: '#FFFFFF',
-            fontSize: 14,
-            borderRadius: 16,
-            bgColor: bgColor,
-            padding: 14,
-            display: 'ALWAYS',
-            textAlign: 'center',
-          },
-          // Store group for detail expansion (future)
-          _count: group.length,
-        });
-      }
-    });
-    return markers;
+    this.setData({ markers });
   },
 
   onSelectCategory(e) {
