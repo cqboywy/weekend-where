@@ -127,12 +127,19 @@ Page({
         };
       };
 
-      this.setData({
-        featuredItem: enrich(featuredItem),
-        recentItems: rest.map(enrich),
-        nextGoItems: (weekendResult.success ? weekendResult.data : []).map(enrich),
-        loading: false,
-      });
+      // 先清空再赋值，强制微信 image 组件重载，避免缓存串位
+      const newFeatured = enrich(featuredItem);
+      const enrichedRest = rest.map(enrich);
+      const enrichedNextGo = (weekendResult.success ? weekendResult.data : []).map(enrich);
+      this.setData({ featuredItem: null });
+      setTimeout(() => {
+        this.setData({
+          featuredItem: newFeatured,
+          recentItems: enrichedRest,
+          nextGoItems: enrichedNextGo,
+          loading: false,
+        });
+      }, 50);
     } else {
       this.setData({
         featuredItem: null,
