@@ -126,6 +126,13 @@
     letter-spacing: 2px;
   }
 
+  /* Splash 3-column row */
+  .splash-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+  }
+
   /* Full-width shot */
   .shot-full {
     border-radius: 28px;
@@ -179,15 +186,6 @@
     background: #C2674A;
     margin: 32px auto;
   }
-
-  /* Startup page — special */
-  .splash-showcase {
-    position: relative;
-    border-radius: 28px;
-    overflow: hidden;
-    box-shadow: 0 4px 24px rgba(44,36,22,0.10), 0 0 0 1px rgba(44,36,22,0.04);
-  }
-  .splash-showcase img { width: 100%; display: block; }
 </style>
 </head>
 <body>
@@ -203,13 +201,24 @@
   </div>
 </div>
 
-<!-- 启动页 -->
+<!-- 启动页 — 七日刊三幅 -->
 <div class="section section-dark">
   <div class="section-label">每天打开</div>
   <div class="section-title">七日刊杂志封面</div>
   <div class="section-desc">一周七天，每天不同的风格。打开小程序就像翻开一本新杂志。</div>
-  <div class="splash-showcase" style="max-width:320px; margin:0 auto;">
-    <img src="启动页.jpg" alt="启动页">
+  <div class="splash-row">
+    <div>
+      <div class="shot-card"><img src="启动页-周一.png" alt="周一刊"></div>
+      <div class="shot-label">周一刊</div>
+    </div>
+    <div>
+      <div class="shot-card"><img src="启动页-周五.png" alt="周五刊"></div>
+      <div class="shot-label">周五刊</div>
+    </div>
+    <div>
+      <div class="shot-card"><img src="启动页-周日.jpg" alt="周日刊"></div>
+      <div class="shot-label">周日刊</div>
+    </div>
   </div>
 </div>
 
