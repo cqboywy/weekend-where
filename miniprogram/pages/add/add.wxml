@@ -67,6 +67,13 @@
       <view class="existing-tags-row">
         <view wx:for="{{existingTags}}" wx:for-item="tag" wx:key="*this" class="existing-tag-chip" data-tag="{{tag}}" bindtap="onTapExistingTag">{{tag}}</view>
       </view>
+      <view wx:if="{{hasMoreTags && !tagInput}}" class="expand-row">
+        <view class="expand-btn" bindtap="onToggleExpand">
+          <text>{{tagsExpanded ? '收起' : '展开全部'}}</text>
+          <lucide-icon wx:if="{{!tagsExpanded}}" name="chevron-down" size="16" color="#9E9688" />
+          <lucide-icon wx:else name="chevron-up" size="16" color="#9E9688" />
+        </view>
+      </view>
     </view>
     <view wx:if="{{formData.tags.length > 0}}" class="tag-list">
       <view wx:for="{{formData.tags}}" wx:key="*this" class="tag-item">{{item}}<text class="tag-remove" data-index="{{index}}" bindtap="onRemoveTag">✕</text></view>

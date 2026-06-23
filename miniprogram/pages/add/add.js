@@ -15,6 +15,8 @@ Page({
     tagInput: '',
     existingTags: [],
     allTags: [],
+    tagsExpanded: false,
+    hasMoreTags: false,
     submitting: false,
     isEditing: false,
     editId: '',
@@ -57,12 +59,26 @@ Page({
     }
   },
 
-  onShow() {
-    // Refresh categories from globalData (fallback to constants)
+  async onShow() {
+    // Refresh categories from globalData (fallback to constants), sorted by count
     const app = getApp();
-    const cats = (app.globalData.categories && app.globalData.categories.length > 0)
+    const raw = (app.globalData.categories && app.globalData.categories.length > 0)
       ? app.globalData.categories
       : CATEGORIES;
+
+    // Sort categories by collection count (use cached if available)
+    if (!app.globalData._sortedCategories) {
+      try {
+        const { getCollectionStats } = require('../../utils/cloud.js');
+        const statsRes = await getCollectionStats();
+        if (statsRes.success) {
+          const counts = statsRes.data.byCategory || {};
+          const sorted = [...raw].sort((a, b) => (counts[b.key] || 0) - (counts[a.key] || 0));
+          app.globalData._sortedCategories = sorted;
+        }
+      } catch (e) { /* fallback */ }
+    }
+    const cats = app.globalData._sortedCategories || raw;
     this.setData({ categories: cats });
 
     // Load existing tags for quick-add suggestions
@@ -170,8 +186,9 @@ Page({
     const res = await getTagStats();
     if (res.success && res.data.length > 0) {
       const allTags = res.data.map(t => t.tag);
-      // 默认只显示高频前10个，输入时动态过滤
-      this.setData({ allTags, existingTags: allTags.slice(0, 10) });
+      // 默认折叠显示前10个，超过10个显示展开按钮
+      const hasMore = allTags.length > 10;
+      this.setData({ allTags, existingTags: allTags.slice(0, 11), hasMoreTags: hasMore, tagsExpanded: false });
     }
   },
 
@@ -179,11 +196,29 @@ Page({
     const added = this.data.formData.tags;
     let pool = this.data.allTags.filter(t => added.indexOf(t) === -1);
     if (keyword) {
+      // 搜索模式：显示所有匹配
       pool = pool.filter(t => t.indexOf(keyword) !== -1);
+      this.setData({ existingTags: pool, hasMoreTags: false });
     } else {
-      pool = pool.slice(0, 10); // 无输入时只显示前10个高频标签
+      // 默认模式：折叠显示前10个，可展开
+      const hasMore = pool.length > 11;
+      const display = this.data.tagsExpanded ? pool : pool.slice(0, 11);
+      this.setData({ existingTags: display, hasMoreTags: hasMore });
     }
-    this.setData({ existingTags: pool });
+  },
+
+  onToggleExpand() {
+    const expanded = !this.data.tagsExpanded;
+    this.setData({ tagsExpanded: expanded });
+    // 展开/收起时重新计算显示列表（无搜索关键词时）
+    if (!this.data.tagInput.trim()) {
+      const added = this.data.formData.tags;
+      const pool = this.data.allTags.filter(t => added.indexOf(t) === -1);
+      this.setData({
+        existingTags: expanded ? pool : pool.slice(0, 11),
+        hasMoreTags: pool.length > 11,
+      });
+    }
   },
 
   onTapExistingTag(e) {
