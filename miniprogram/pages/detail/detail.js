@@ -27,8 +27,17 @@ Page({
       if (displayCover && displayCover.startsWith('cloud://')) {
         try {
           const tmpRes = await wx.cloud.getTempFileURL({ fileList: [displayCover] });
-          displayCover = (tmpRes.fileList && tmpRes.fileList[0] && tmpRes.fileList[0].tempFileURL) || displayCover;
-        } catch (e) { /* keep original */ }
+          if (tmpRes.fileList && tmpRes.fileList[0]) {
+            const f = tmpRes.fileList[0];
+            if (f.status === 0 && f.tempFileURL) {
+              displayCover = f.tempFileURL;
+            } else {
+              console.warn('getTempFileURL 失败:', f);
+            }
+          }
+        } catch (e) {
+          console.error('getTempFileURL 异常:', e);
+        }
       }
       if (!displayCover) {
         displayCover = generateCategoryCover(categoryInfo.color || '#B5A595');
