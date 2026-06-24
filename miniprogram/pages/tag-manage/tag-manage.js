@@ -24,26 +24,26 @@ Page({
     const res = await getTagStats();
     if (res.success) {
       this._allTags = res.data;
-      this.setData({ tags: this.applySearch(res.data), loading: false });
+      this.setData({ tags: res.data, loading: false });
     } else {
       this.setData({ loading: false });
       wx.showToast({ title: '加载失败', icon: 'none' });
     }
   },
 
-  applySearch(list) {
-    const kw = this.data.searchValue.trim().toLowerCase();
+  applySearch(list, keyword) {
+    const kw = (keyword || '').trim().toLowerCase();
     if (!kw) return list;
     return list.filter(t => t.tag.toLowerCase().indexOf(kw) > -1);
   },
 
   onSearchInput(e) {
     const val = e.detail.value;
-    this.setData({ searchValue: val, tags: this.applySearch(this._allTags || []) });
+    this.setData({ searchValue: val, tags: this.applySearch(this._allTags || [], val) });
   },
 
   onClearSearch() {
-    this.setData({ searchValue: '', tags: this.applySearch(this._allTags || []) });
+    this.setData({ searchValue: '', tags: [...(this._allTags || [])] });
   },
 
   // ── Edit ──

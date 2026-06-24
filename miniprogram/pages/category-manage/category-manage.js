@@ -31,7 +31,7 @@ Page({
       }));
       cats.sort((a, b) => b.itemCount - a.itemCount);
       this._allCategories = cats;
-      this.setData({ categories: this.applySearch(cats), loading: false });
+      this.setData({ categories: cats, loading: false });
       // Sync to globalData and invalidate sorted cache so pages pick up new categories
       const app = getApp();
       app.globalData.categories = res.data;
@@ -42,19 +42,19 @@ Page({
     }
   },
 
-  applySearch(list) {
-    const kw = this.data.searchValue.trim().toLowerCase();
+  applySearch(list, keyword) {
+    const kw = (keyword || '').trim().toLowerCase();
     if (!kw) return list;
     return list.filter(c => c.label.toLowerCase().indexOf(kw) > -1);
   },
 
   onSearchInput(e) {
     const val = e.detail.value;
-    this.setData({ searchValue: val, categories: this.applySearch(this._allCategories || []) });
+    this.setData({ searchValue: val, categories: this.applySearch(this._allCategories || [], val) });
   },
 
   onClearSearch() {
-    this.setData({ searchValue: '', categories: this.applySearch(this._allCategories || []) });
+    this.setData({ searchValue: '', categories: [...(this._allCategories || [])] });
   },
 
   onTapCategory(e) {
