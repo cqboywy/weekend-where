@@ -13,7 +13,7 @@
   </view>
 
   <!-- Category list -->
-  <view class="card category-list">
+  <view wx:if="{{categories.length > 0}}" class="card category-list">
     <block wx:for="{{categories}}" wx:key="_id">
       <view class="cat-row pressable" data-category="{{item.key}}" bindtap="onTapCategory">
         <view class="cat-left">
@@ -39,8 +39,8 @@
   <!-- Empty state -->
   <view wx:if="{{!loading && categories.length === 0}}" class="empty-state">
     <lucide-icon name="tag" size="64" color="#E8E0D5" />
-    <view class="empty-text">还没有分类</view>
-    <view class="empty-sub">点击下方按钮添加你的第一个分类</view>
+    <view class="empty-text">{{searchValue ? '没有找到匹配的分类' : '还没有分类'}}</view>
+    <view class="empty-sub">{{searchValue ? '换个关键词试试' : '点击下方按钮添加你的第一个分类'}}</view>
   </view>
 
   <!-- Loading -->

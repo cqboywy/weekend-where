@@ -11,7 +11,7 @@
     <view wx:if="{{searchValue}}" class="search-clear pressable" catchtap="onClearSearch">✕</view>
   </view>
 
-  <view class="card tag-list" wx:if="{{!loading && tags.length > 0}}">
+  <view wx:if="{{!loading && tags.length > 0}}" class="card tag-list">
     <block wx:for="{{tags}}" wx:key="tag">
       <view class="tag-row pressable" data-tag="{{item.tag}}" bindtap="onTapTag">
         <view class="tag-left">
@@ -33,8 +33,8 @@
 
   <view wx:if="{{!loading && tags.length === 0}}" class="empty-state">
     <lucide-icon name="tag" size="64" color="#E8E0D5" />
-    <view class="empty-text">还没有标签</view>
-    <view class="empty-sub">添加收藏时打上标签后这里就会出现</view>
+    <view class="empty-text">{{searchValue ? '没有找到匹配的标签' : '还没有标签'}}</view>
+    <view class="empty-sub">{{searchValue ? '换个关键词试试' : '添加收藏时打上标签后这里就会出现'}}</view>
   </view>
 
   <view wx:if="{{loading}}" class="loading-state">
