@@ -189,8 +189,11 @@ Page({
 
     // Cache items with distances for the sort view
     this._distanceCache = filteredItems.map((item, i) => {
-      const cat = categories.find(c => c.key === item.category) || {};
-      return { item, distanceText: distanceTexts[i] || '', catLabel: cat.label || item.category };
+      const cat = categories.find(c => c.key === item.category);
+      // If not found in known categories, try using the key directly (might be a custom key)
+      // or fall back to empty string to avoid showing ugly internal IDs
+      const catLabel = cat ? cat.label : '';
+      return { item, distanceText: distanceTexts[i] || '', catLabel };
     });
 
     const markers = filteredItems.map((item, i) => {
@@ -248,7 +251,8 @@ Page({
   async onMarkerTap(e) {
     const item = this.data.allItems[e.detail.markerId];
     if (item) {
-      const cat = this.data.categories.find(c => c.key === item.category) || {};
+      const cat = this.data.categories.find(c => c.key === item.category);
+      const catLabel = cat ? cat.label : '';
       let distanceText = '';
       if (item.location && item.location.latitude && item.location.longitude) {
         const userLoc = await getUserLocation();
@@ -261,7 +265,7 @@ Page({
       }
       this.setData({
         selectedItem: item,
-        selectedCategoryLabel: cat.label || item.category,
+        selectedCategoryLabel: catLabel,
         selectedDistance: distanceText,
         showDetailCard: true,
       });
