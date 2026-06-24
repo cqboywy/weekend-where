@@ -296,15 +296,18 @@ Page({
       wx.showToast({ title: '暂无带位置的收藏', icon: 'none' });
       return;
     }
-    // Filter to items with valid distance, sort by numeric distance
+    const parseDistToMeters = (text) => {
+      if (!text) return Infinity;
+      if (text === '<10米') return 5;
+      if (text === '>100km') return 100001;
+      if (text.endsWith('km')) return parseFloat(text) * 1000;
+      if (text.endsWith('m')) return parseFloat(text);
+      return Infinity;
+    };
+    // Filter to items with valid distance, sort by meters
     const sorted = [...cache]
       .filter(d => d.distanceText)
-      .sort((a, b) => {
-        const mA = parseFloat(a.distanceText);
-        const mB = parseFloat(b.distanceText);
-        if (!isNaN(mA) && !isNaN(mB)) return mA - mB;
-        return a.distanceText.localeCompare(b.distanceText);
-      });
+      .sort((a, b) => parseDistToMeters(a.distanceText) - parseDistToMeters(b.distanceText));
     this.setData({ sortedItems: sorted, showDistanceSort: true });
   },
 

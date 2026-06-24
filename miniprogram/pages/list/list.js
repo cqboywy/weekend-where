@@ -182,19 +182,21 @@ Page({
     const distanceTexts = await getRouteDistances(userLoc.latitude, userLoc.longitude, toCoords);
 
     // Merge distance into items and sort
+    const parseDistToMeters = (text) => {
+      if (!text) return Infinity;
+      if (text === '<10米') return 5;
+      if (text === '>100km') return 100001;
+      if (text.endsWith('km')) return parseFloat(text) * 1000;
+      if (text.endsWith('m')) return parseFloat(text);
+      return Infinity;
+    };
     const withDistance = itemsWithLocation.map((item, i) => ({
       ...item,
       _distanceText: distanceTexts[i] || '',
-      _distanceMeters: parseFloat(distanceTexts[i]) || Infinity,
+      _distanceMeters: parseDistToMeters(distanceTexts[i]),
     }));
 
-    // Sort: try numeric first, then by distance string as fallback
-    withDistance.sort((a, b) => {
-      const mA = a._distanceMeters;
-      const mB = b._distanceMeters;
-      if (!isNaN(mA) && !isNaN(mB)) return mA - mB;
-      return (a._distanceText || '').localeCompare(b._distanceText || '');
-    });
+    withDistance.sort((a, b) => a._distanceMeters - b._distanceMeters);
 
     this.setData({ nearbyItems: withDistance, nearbyLoading: false });
   },

@@ -87,7 +87,7 @@ async function getAllCollections() {
     const maxLimit = 200;
     const res = await collection('collection_items')
       .where({ userId })
-      .field({ title: true, 'location.latitude': true, 'location.longitude': true, category: true, coverImage: true, tags: true })
+      .field({ title: true, 'location.latitude': true, 'location.longitude': true, 'location.name': true, 'location.address': true, category: true, coverImage: true, tags: true, createdAt: true, rating: true, nextGo: true, status: true })
       .limit(maxLimit)
       .get();
     return { success: true, data: res.data, hasMore: res.data.length === maxLimit };
