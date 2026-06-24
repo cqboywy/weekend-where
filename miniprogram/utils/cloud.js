@@ -137,7 +137,7 @@ async function getCollectionStats() {
     const totalRes = await coll.where({ userId }).count();
     const wantRes = await coll.where({ userId, status: 'want_to_go' }).count();
     const visitedRes = await coll.where({ userId, status: 'visited' }).count();
-    const categoryRes = await coll.where({ userId }).field({ category: true }).limit(200).get();
+    const categoryRes = await coll.where({ userId }).field({ category: true }).orderBy('createdAt', 'desc').limit(1000).get();
     const categoryCount = {};
     categoryRes.data.forEach(item => {
       const cat = item.category || '未分类';
