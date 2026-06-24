@@ -30,9 +30,10 @@ Page({
       }));
       cats.sort((a, b) => b.itemCount - a.itemCount);
       this.setData({ categories: cats, loading: false });
-      // Sync to globalData
+      // Sync to globalData and invalidate sorted cache so pages pick up new categories
       const app = getApp();
       app.globalData.categories = res.data;
+      delete app.globalData._sortedCategories;
     } else {
       this.setData({ loading: false });
       wx.showToast({ title: '加载失败', icon: 'none' });
