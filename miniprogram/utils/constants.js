@@ -53,7 +53,7 @@ const COLORS = {
  */
 // 腾讯位置服务 key — 用于路线距离 API（免费额度，每日调用量有限）
 // 注册地址：https://lbs.qq.com/ → 控制台 → 应用管理 → 创建应用 → 添加 Key → WebServiceAPI
-const TENCENT_MAP_KEY = '';
+const TENCENT_MAP_KEY = 'EQ7BZ-IA767-HJSX5-PJUDR-IGNIJ-MHFJ5';
 
 function darkenHex(hex, amount) {
   const r = parseInt(hex.slice(1, 3), 16);

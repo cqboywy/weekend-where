@@ -13,7 +13,9 @@
 
   <!-- Distance sort button -->
   <view wx:if="{{!showDistanceSort}}" class="sort-btn pressable" bindtap="onOpenDistanceSort">
+    <lucide-icon name="navigation" size="28" color="#fff" />
     <text>距我最近</text>
+    <view class="sort-btn-badge">从近到远</view>
   </view>
 
   <view class="locate-btn pressable" bindtap="onMoveToCurrent">
