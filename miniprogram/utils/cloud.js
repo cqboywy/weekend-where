@@ -181,26 +181,33 @@ async function getCollectionStats() {
 async function getTagStats() {
   try {
     const userId = await ensureOpenId();
-    // Paginate through ALL items to ensure no tags are missed
+    // Use cloud function to aggregate — bypasses client-side limit/field quirks
+    const res = await wx.cloud.callFunction({
+      name: 'getTagStats',
+      data: { userId },
+    });
+    if (res.result && res.result.success) {
+      return { success: true, data: res.result.data };
+    }
+    // Fallback: aggregate on client side
     const freq = {};
     const pageSize = 100;
     let offset = 0;
     let hasMore = true;
     while (hasMore) {
-      const res = await collection('collection_items')
+      const page = await collection('collection_items')
         .where({ userId })
-        .field({ tags: true })
         .skip(offset)
         .limit(pageSize)
         .get();
-      res.data.forEach(item => {
+      page.data.forEach(item => {
         if (item.tags && item.tags.length > 0) {
           item.tags.forEach(tag => {
             freq[tag] = (freq[tag] || 0) + 1;
           });
         }
       });
-      hasMore = res.data.length === pageSize;
+      hasMore = page.data.length === pageSize;
       offset += pageSize;
     }
     const data = Object.entries(freq)
