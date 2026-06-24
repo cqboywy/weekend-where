@@ -137,12 +137,19 @@ async function getCollectionStats() {
     const totalRes = await coll.where({ userId }).count();
     const wantRes = await coll.where({ userId, status: 'want_to_go' }).count();
     const visitedRes = await coll.where({ userId, status: 'visited' }).count();
-    const categoryRes = await coll.where({ userId }).field({ category: true }).orderBy('createdAt', 'desc').limit(1000).get();
+
+    // Count items per category using individual .count() queries (always accurate, no index needed)
+    const categories = getApp().globalData.categories;
     const categoryCount = {};
-    categoryRes.data.forEach(item => {
-      const cat = item.category || '未分类';
-      categoryCount[cat] = (categoryCount[cat] || 0) + 1;
-    });
+    if (categories && categories.length > 0) {
+      await Promise.all(categories.map(async (cat) => {
+        try {
+          const res = await coll.where({ userId, category: cat.key }).count();
+          categoryCount[cat.key] = res.total;
+        } catch (e) { categoryCount[cat.key] = 0; }
+      }));
+    }
+
     return {
       success: true,
       data: {
