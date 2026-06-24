@@ -52,6 +52,99 @@ function calcDistance(lat1, lon1, lat2, lon2) {
 }
 
 /**
+ * Format meters to a human-readable distance string.
+ * @param {number} meters
+ * @returns {string} e.g. "320m" / "1.2km"
+ */
+function formatDistance(meters) {
+  if (meters < 10) return '<10米';
+  if (meters < 1000) return Math.round(meters) + 'm';
+  if (meters < 100000) return (meters / 1000).toFixed(1) + 'km';
+  return '>100km';
+}
+
+// In-memory route cache (survives within a single page session)
+const _routeCache = {};
+
+/**
+ * Get real driving route distance from Tencent Map API.
+ * Falls back to Haversine on any error.
+ * @returns {Promise<string>} formatted distance
+ */
+function getRouteDistance(fromLat, fromLng, toLat, toLng) {
+  const cacheKey = `${fromLat.toFixed(4)},${fromLng.toFixed(4)}_${toLat.toFixed(4)},${toLng.toFixed(4)}`;
+  if (_routeCache[cacheKey]) return Promise.resolve(_routeCache[cacheKey]);
+
+  const { TENCENT_MAP_KEY } = require('./constants.js');
+  if (!TENCENT_MAP_KEY) {
+    // No key configured — fallback to Haversine
+    return Promise.resolve(calcDistance(fromLat, fromLng, toLat, toLng));
+  }
+
+  return new Promise((resolve) => {
+    wx.request({
+      url: 'https://apis.map.qq.com/ws/distance/v1/',
+      data: {
+        mode: 'driving',
+        from: `${fromLat},${fromLng}`,
+        to: `${toLat},${toLng}`,
+        key: TENCENT_MAP_KEY,
+      },
+      success: (res) => {
+        if (res.data && res.data.status === 0 && res.data.result && res.data.result.elements) {
+          const el = res.data.result.elements[0];
+          if (el && typeof el.distance === 'number') {
+            const dist = formatDistance(el.distance);
+            _routeCache[cacheKey] = dist;
+            resolve(dist);
+            return;
+          }
+        }
+        resolve(calcDistance(fromLat, fromLng, toLat, toLng));
+      },
+      fail: () => resolve(calcDistance(fromLat, fromLng, toLat, toLng)),
+    });
+  });
+}
+
+/**
+ * Batch route distances — one API call for many destinations.
+ * Falls back to Haversine per-item on error.
+ * @param {number} fromLat
+ * @param {number} fromLng
+ * @param {Array<{lat:number, lng:number}>} toCoords
+ * @returns {Promise<string[]>} formatted distance strings, same order as toCoords
+ */
+function getRouteDistances(fromLat, fromLng, toCoords) {
+  const { TENCENT_MAP_KEY } = require('./constants.js');
+  if (!TENCENT_MAP_KEY || toCoords.length === 0) {
+    return Promise.resolve(toCoords.map(c => calcDistance(fromLat, fromLng, c.lat, c.lng)));
+  }
+
+  const toStr = toCoords.map(c => `${c.lat},${c.lng}`).join(';');
+
+  return new Promise((resolve) => {
+    wx.request({
+      url: 'https://apis.map.qq.com/ws/distance/v1/',
+      data: { mode: 'driving', from: `${fromLat},${fromLng}`, to: toStr, key: TENCENT_MAP_KEY },
+      success: (res) => {
+        if (res.data && res.data.status === 0 && res.data.result && res.data.result.elements) {
+          const dists = res.data.result.elements.map((el, i) => {
+            if (el && typeof el.distance === 'number') return formatDistance(el.distance);
+            const c = toCoords[i];
+            return c ? calcDistance(fromLat, fromLng, c.lat, c.lng) : '';
+          });
+          resolve(dists);
+        } else {
+          resolve(toCoords.map(c => calcDistance(fromLat, fromLng, c.lat, c.lng)));
+        }
+      },
+      fail: () => resolve(toCoords.map(c => calcDistance(fromLat, fromLng, c.lat, c.lng))),
+    });
+  });
+}
+
+/**
  * Get user's current location with 5-min cache. Returns null silently on failure.
  * @returns {Promise<{latitude:number, longitude:number}|null>}
  */
@@ -74,4 +167,4 @@ function getUserLocation() {
   });
 }
 
-module.exports = { formatTime, debounce, throttle, getDayOfWeek, calcDistance, getUserLocation };
+module.exports = { formatTime, debounce, throttle, getDayOfWeek, calcDistance, formatDistance, getUserLocation, getRouteDistance, getRouteDistances };

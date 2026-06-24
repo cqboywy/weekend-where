@@ -1,6 +1,6 @@
 const { getCollectionDetail, updateCollectionItem, deleteCollectionItem, addToNextGo, removeFromNextGo } = require('../../utils/cloud.js');
 const { CATEGORIES, STATUS, generateCategoryCover } = require('../../utils/constants.js');
-const { calcDistance, getUserLocation } = require('../../utils/util.js');
+const { getRouteDistance, getUserLocation } = require('../../utils/util.js');
 
 Page({
   data: { item: null, loading: true, categoryInfo: null, statusLabel: '', displayCover: '', distanceText: '' },
@@ -28,7 +28,7 @@ Page({
       if (item.location && item.location.latitude && item.location.longitude) {
         const userLoc = await getUserLocation();
         if (userLoc) {
-          distanceText = calcDistance(
+          distanceText = await getRouteDistance(
             userLoc.latitude, userLoc.longitude,
             item.location.latitude, item.location.longitude
           );

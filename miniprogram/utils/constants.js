@@ -51,6 +51,10 @@ const COLORS = {
  * @param {number} amount - 0.3 = darken by 30%
  * @returns {string} darkened hex color
  */
+// 腾讯位置服务 key — 用于路线距离 API（免费额度，每日调用量有限）
+// 注册地址：https://lbs.qq.com/ → 控制台 → 应用管理 → 创建应用 → 添加 Key → WebServiceAPI
+const TENCENT_MAP_KEY = '';
+
 function darkenHex(hex, amount) {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
@@ -105,4 +109,4 @@ function generateCategoryCover(color) {
   return 'data:image/svg+xml,' + encodeURIComponent(svg);
 }
 
-module.exports = { CATEGORIES, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex };
+module.exports = { CATEGORIES, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex, TENCENT_MAP_KEY };

@@ -1,5 +1,5 @@
 const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
-const { calcDistance, getUserLocation } = require('../../utils/util.js');
+const { getRouteDistance, getUserLocation } = require('../../utils/util.js');
 
 Component({
   properties: {
@@ -73,7 +73,7 @@ Component({
       if (!item.location || !item.location.latitude) return;
       const userLoc = await getUserLocation();
       if (userLoc) {
-        const dist = calcDistance(
+        const dist = await getRouteDistance(
           userLoc.latitude, userLoc.longitude,
           item.location.latitude, item.location.longitude
         );

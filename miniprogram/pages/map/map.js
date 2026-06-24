@@ -1,6 +1,6 @@
 const { getAllCollections } = require('../../utils/cloud.js');
 const { CATEGORIES } = require('../../utils/constants.js');
-const { calcDistance, getUserLocation } = require('../../utils/util.js');
+const { getRouteDistance, getRouteDistances, getUserLocation } = require('../../utils/util.js');
 
 Page({
   data: {
@@ -164,6 +164,16 @@ Page({
     // Fetch user location once for distance display on callouts
     const userLoc = await getUserLocation();
 
+    // Batch fetch real route distances (falls back to Haversine)
+    let distanceTexts = [];
+    if (userLoc) {
+      const toCoords = filteredItems.map(item => ({
+        lat: item.location.latitude,
+        lng: item.location.longitude,
+      }));
+      distanceTexts = await getRouteDistances(userLoc.latitude, userLoc.longitude, toCoords);
+    }
+
     // Collect unique colors
     const colors = new Set();
     filteredItems.forEach(item => {
@@ -174,18 +184,14 @@ Page({
     // Pre-generate all needed marker icons
     await Promise.all([...colors].map(c => this.generateMarkerIcon(c)));
 
-    const markers = filteredItems.map((item) => {
+    const markers = filteredItems.map((item, i) => {
       const originalIndex = allItems.indexOf(item);
       const cat = categories.find(c => c.key === item.category) || {};
       const catColor = cat.color || '#E8876A';
-      // Compute distance for callout
+      // Use route distance for callout
       let calloutContent = item.title;
-      if (userLoc && item.location && item.location.latitude) {
-        const dist = calcDistance(
-          userLoc.latitude, userLoc.longitude,
-          item.location.latitude, item.location.longitude
-        );
-        calloutContent = item.title + ' · 距你' + dist;
+      if (distanceTexts[i]) {
+        calloutContent = item.title + ' · 距你' + distanceTexts[i];
       }
       return {
         id: originalIndex,
@@ -238,7 +244,7 @@ Page({
       if (item.location && item.location.latitude && item.location.longitude) {
         const userLoc = await getUserLocation();
         if (userLoc) {
-          distanceText = calcDistance(
+          distanceText = await getRouteDistance(
             userLoc.latitude, userLoc.longitude,
             item.location.latitude, item.location.longitude
           );
