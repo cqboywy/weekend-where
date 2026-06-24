@@ -323,6 +323,17 @@ Page({
 
   noop() {},
   onCloseAction() { this.setData({ showActionSheet: false }); },
+
+  onShareAppMessage() {
+    const item = this.data.actionItem;
+    if (!item) return { title: '周末去哪儿', path: '/pages/index/index' };
+    return {
+      title: `周末去哪儿 — ${item.title}`,
+      path: `/pages/detail/detail?id=${item._id}`,
+      imageUrl: item.coverImage || '',
+    };
+  },
+
   onClearStatus() {
     this.setData({ activeStatus: '' });
     this.reloadAll();

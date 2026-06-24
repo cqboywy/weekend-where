@@ -45,5 +45,7 @@
 .action-sheet { width: 100%; background: var(--color-white); border-radius: var(--radius-xl) var(--radius-xl) 0 0; padding: 8rpx 16rpx 16rpx; animation: fadeInUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .action-item { padding: 28rpx; text-align: center; font-size: var(--text-base); color: var(--color-text); border-bottom: 1rpx solid var(--color-border); }
 .action-item:last-child { border-bottom: none; }
+.share-item { background: transparent; border: none; width: 100%; border-radius: 0; line-height: 1.5; margin: 0; }
+.share-item::after { border: none; }
 .action-danger { color: var(--color-danger); font-weight: 600; }
 .action-cancel { padding: 28rpx; text-align: center; font-size: var(--text-base); color: var(--color-primary); margin-top: 8rpx; background: var(--color-surface); border-radius: var(--radius-md); font-weight: 600; }
