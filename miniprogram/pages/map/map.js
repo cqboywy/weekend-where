@@ -36,20 +36,17 @@ Page({
       ? app.globalData.categories
       : CATEGORIES;
 
-    // 按收藏数排序（复用缓存）
-    if (!app.globalData._sortedCategories) {
-      try {
-        const { getCollectionStats } = require('../../utils/cloud.js');
-        const statsRes = await getCollectionStats();
-        if (statsRes.success) {
-          const counts = statsRes.data.byCategory || {};
-          const sorted = [...raw].sort((a, b) => (counts[b.key] || 0) - (counts[a.key] || 0));
-          app.globalData._sortedCategories = sorted;
-        }
-      } catch (e) { /* fallback */ }
-    }
+    // Sort categories by item count (always fetch fresh)
+    let sorted = [...raw];
+    try {
+      const { getCollectionStats } = require('../../utils/cloud.js');
+      const statsRes = await getCollectionStats();
+      if (statsRes.success) {
+        const counts = statsRes.data.byCategory || {};
+        sorted.sort((a, b) => (counts[b.key] || 0) - (counts[a.key] || 0));
+      }
+    } catch (e) { /* keep default order */ }
 
-    const sorted = app.globalData._sortedCategories || raw;
     this.setData({ categories: [{ key: '', label: '全部' }, ...sorted] });
   },
 
