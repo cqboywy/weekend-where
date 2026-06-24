@@ -11,11 +11,17 @@
     </scroll-view>
   </view>
 
+  <view class="locate-btn pressable" bindtap="onMoveToCurrent">
+    <lucide-icon name="navigation" size="36" color="#E8876A" />
+  </view>
+
+  <view wx:if="{{!showDistanceSort}}" class="sort-btn pressable" bindtap="onOpenDistanceSort">
+    <text>最近</text>
+  </view>
+
   <!-- Distance sort button -->
   <view wx:if="{{!showDistanceSort}}" class="sort-btn pressable" bindtap="onOpenDistanceSort">
-    <lucide-icon name="navigation" size="28" color="#fff" />
-    <text>距我最近</text>
-    <view class="sort-btn-badge">从近到远</view>
+    <lucide-icon name="navigation" size="36" color="#E8876A" />
   </view>
 
   <view class="locate-btn pressable" bindtap="onMoveToCurrent">

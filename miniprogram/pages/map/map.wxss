@@ -24,21 +24,13 @@
   box-shadow: var(--shadow-button);
 }
 
-/* Distance sort button */
+/* Distance sort button — compact companion to locate */
 .sort-btn {
-  position: absolute; left: 120rpx; right: 120rpx; bottom: 280rpx;
-  height: 88rpx; padding: 0 28rpx;
-  background: linear-gradient(135deg, #E8876A, #F0A050);
-  border-radius: var(--radius-xl);
-  display: flex; align-items: center; gap: 12rpx;
-  box-shadow: 0 8rpx 32rpx rgba(232,135,106,0.35); z-index: 10;
-  font-size: var(--text-md); color: #fff; font-weight: 700;
-}
-.sort-btn-badge {
-  margin-left: auto;
-  font-size: var(--text-xs); font-weight: 400;
-  opacity: 0.8; background: rgba(255,255,255,0.2);
-  padding: 4rpx 16rpx; border-radius: var(--radius-full);
+  position: absolute; right: 132rpx; bottom: 292rpx;
+  width: 64rpx; height: 64rpx; background: var(--color-white);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-float); z-index: 10;
+  font-size: 22rpx; color: var(--color-primary); font-weight: 600;
 }
 
 /* Distance sort bottom sheet */
