@@ -88,7 +88,6 @@ async function getAllCollections() {
     const res = await collection('collection_items')
       .where({ userId })
       .field({ title: true, 'location.latitude': true, 'location.longitude': true, 'location.name': true, 'location.address': true, category: true, coverImage: true, tags: true, createdAt: true, rating: true, nextGo: true, status: true })
-      .orderBy('createdAt', 'desc')
       .limit(maxLimit)
       .get();
     return { success: true, data: res.data, hasMore: res.data.length === maxLimit };
@@ -175,7 +174,6 @@ async function getTagStats() {
     const res = await collection('collection_items')
       .where({ userId })
       .field({ tags: true })
-      .orderBy('createdAt', 'desc')
       .limit(1000)
       .get();
     const freq = {};
