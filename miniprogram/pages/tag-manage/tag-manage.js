@@ -24,7 +24,7 @@ Page({
     const res = await getTagStats();
     if (res.success) {
       this._allTags = res.data;
-      this.setData({ tags: res.data, loading: false });
+      this.setData({ tags: this.applySearch(res.data, this.data.searchValue), loading: false });
     } else {
       this.setData({ loading: false });
       wx.showToast({ title: '加载失败', icon: 'none' });
