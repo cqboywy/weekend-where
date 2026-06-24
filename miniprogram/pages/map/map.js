@@ -19,11 +19,11 @@ Page({
 
   async onLoad() {
     await this.initCategories();
-    this.loadMarkers();
+    await this.loadMarkers();
   },
   async onShow() {
     await this.initCategories();
-    this.loadMarkers();
+    await this.loadMarkers();
   },
 
   async initCategories() {
