@@ -92,10 +92,6 @@ Page({
     this.setData({ formColor: e.currentTarget.dataset.color });
   },
 
-  onSearchInput(e) {
-    this.setData({ searchValue: e.detail.value });
-  },
-
   onNameInput(e) {
     this.setData({ formName: e.detail.value });
   },
