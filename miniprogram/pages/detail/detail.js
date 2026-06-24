@@ -21,7 +21,18 @@ Page({
         : CATEGORIES;
       const categoryInfo = cats.find(c => c.key === item.category) || cats.find(c => c.key === 'other') || { key: 'other', label: '其他', color: '#B5A595' };
       const statusLabel = STATUS.find(s => s.key === item.status)?.label || '';
-      const displayCover = item.coverImage || generateCategoryCover(categoryInfo.color || '#B5A595');
+
+      // Convert cloud file ID to temp URL so it's accessible to shared visitors
+      let displayCover = item.coverImage || '';
+      if (displayCover && displayCover.startsWith('cloud://')) {
+        try {
+          const tmpRes = await wx.cloud.getTempFileURL({ fileList: [displayCover] });
+          displayCover = (tmpRes.fileList && tmpRes.fileList[0] && tmpRes.fileList[0].tempFileURL) || displayCover;
+        } catch (e) { /* keep original */ }
+      }
+      if (!displayCover) {
+        displayCover = generateCategoryCover(categoryInfo.color || '#B5A595');
+      }
 
       // Compute distance from current location
       let distanceText = '';
@@ -102,6 +113,11 @@ Page({
   },
 
   onShareAppMessage() {
-    return { title: `周末去哪儿 — ${this.data.item.title}`, path: `/pages/detail/detail?id=${this.data.item._id}`, imageUrl: this.data.item.coverImage || '' };
+    const { item, displayCover } = this.data;
+    return {
+      title: `周末去哪儿 — ${item.title}`,
+      path: `/pages/detail/detail?id=${item._id}`,
+      imageUrl: displayCover || '',
+    };
   },
 });
