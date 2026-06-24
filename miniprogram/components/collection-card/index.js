@@ -1,4 +1,5 @@
 const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
+const { calcDistance, getUserLocation } = require('../../utils/util.js');
 
 Component({
   properties: {
@@ -8,6 +9,7 @@ Component({
       observer: function (newVal) {
         if (newVal) {
           this.processItem(newVal);
+          this.computeDistance(newVal);
         }
       }
     },
@@ -31,6 +33,7 @@ Component({
     displayCover: '',
     displayTags: [],
     overflowCount: 0,
+    distanceText: '',
   },
 
   methods: {
@@ -64,6 +67,18 @@ Component({
 
     onLongPress() {
       this.triggerEvent('longpress', { item: this.properties.item });
+    },
+
+    async computeDistance(item) {
+      if (!item.location || !item.location.latitude) return;
+      const userLoc = await getUserLocation();
+      if (userLoc) {
+        const dist = calcDistance(
+          userLoc.latitude, userLoc.longitude,
+          item.location.latitude, item.location.longitude
+        );
+        this.setData({ distanceText: dist });
+      }
     },
 
     onTagTap(e) {

@@ -161,6 +161,9 @@ Page({
     if (selectedCategory) { filteredItems = filteredItems.filter(item => item.category === selectedCategory); }
     if (selectedTag) { filteredItems = filteredItems.filter(item => item.tags && item.tags.includes(selectedTag)); }
 
+    // Fetch user location once for distance display on callouts
+    const userLoc = await getUserLocation();
+
     // Collect unique colors
     const colors = new Set();
     filteredItems.forEach(item => {
@@ -175,6 +178,15 @@ Page({
       const originalIndex = allItems.indexOf(item);
       const cat = categories.find(c => c.key === item.category) || {};
       const catColor = cat.color || '#E8876A';
+      // Compute distance for callout
+      let calloutContent = item.title;
+      if (userLoc && item.location && item.location.latitude) {
+        const dist = calcDistance(
+          userLoc.latitude, userLoc.longitude,
+          item.location.latitude, item.location.longitude
+        );
+        calloutContent = item.title + ' · 距你' + dist;
+      }
       return {
         id: originalIndex,
         latitude: item.location.latitude,
@@ -185,7 +197,7 @@ Page({
         height: 44,
         anchor: { x: 0.5, y: 0.5 },
         callout: {
-          content: item.title,
+          content: calloutContent,
           color: '#FFFFFF',
           fontSize: 13,
           borderRadius: 12,

@@ -40,6 +40,10 @@
       <view wx:if="{{item.location && item.location.name}}" class="card-location ellipsis">
         <lucide-icon name="map-pin" size="24" /> {{item.location.name}}
       </view>
+      <view wx:if="{{distanceText}}" class="card-distance">
+        <lucide-icon name="navigation" size="20" color="#9E9688" />
+        <text>距你 {{distanceText}}</text>
+      </view>
 
       <view class="card-footer">
         <text class="card-date">{{formattedDate}}</text>
