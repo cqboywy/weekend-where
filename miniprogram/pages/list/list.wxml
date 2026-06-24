@@ -24,17 +24,35 @@
   <swiper class="list-swiper" current="{{swiperIndex}}" bindchange="onSwiperChange" duration="250" style="height:{{swiperHeight}}px;">
     <swiper-item wx:for="{{categories}}" wx:key="key">
       <scroll-view class="swiper-scroll" scroll-y enhanced show-scrollbar="{{false}}" refresher-enabled bindrefresherrefresh="onPullDownRefresh">
-        <view wx:if="{{categoryData[item.key].loading}}" class="list-body">
-          <skeleton loading="{{true}}" count="{{4}}"/>
-        </view>
-        <view wx:elif="{{categoryData[item.key].items.length === 0}}" class="list-body">
-          <empty-state title="还没有收藏" description="{{item.key === '__all__' ? '去添加你的第一个好吃好玩的地方吧' : '该分类下暂无收藏'}}" bind:action="onGoAdd"/>
-        </view>
-        <view wx:else class="list-body">
-          <collection-card wx:for="{{categoryData[item.key].items}}" wx:for-item="card" wx:key="_id" item="{{card}}" index="{{index}}" bind:tap="onCardTap" bind:longpress="onCardLongPress" bind:tagtap="onCardTagTap"/>
-          <view wx:if="{{categoryData[item.key].loadingMore}}" class="loading-more"><skeleton loading="{{true}}" count="{{2}}"/></view>
-          <view wx:elif="{{!categoryData[item.key].hasMore && categoryData[item.key].items.length > 0}}" class="no-more">— 已经到底了 —</view>
-        </view>
+        <!-- 附近：按距离排序 -->
+        <block wx:if="{{item.key === '__nearby__'}}">
+          <view wx:if="{{nearbyLoading}}" class="list-body">
+            <skeleton loading="{{true}}" count="{{4}}"/>
+          </view>
+          <view wx:elif="{{nearbyError}}" class="list-body">
+            <empty-state title="需要位置权限" description="请在设置中允许小程序使用位置信息，以查看附近的收藏" icon-name="map-pin"/>
+          </view>
+          <view wx:elif="{{nearbyItems.length === 0}}" class="list-body">
+            <empty-state title="暂无附近收藏" description="添加收藏时设置位置信息，即可按距离查看"/>
+          </view>
+          <view wx:else class="list-body">
+            <collection-card wx:for="{{nearbyItems}}" wx:for-item="card" wx:key="_id" item="{{card}}" index="{{index}}" bind:tap="onCardTap" bind:longpress="onCardLongPress" bind:tagtap="onCardTagTap"/>
+          </view>
+        </block>
+        <!-- 其他分类：正常分页 -->
+        <block wx:else>
+          <view wx:if="{{categoryData[item.key].loading}}" class="list-body">
+            <skeleton loading="{{true}}" count="{{4}}"/>
+          </view>
+          <view wx:elif="{{categoryData[item.key].items.length === 0}}" class="list-body">
+            <empty-state title="还没有收藏" description="{{item.key === '__all__' ? '去添加你的第一个好吃好玩的地方吧' : '该分类下暂无收藏'}}" bind:action="onGoAdd"/>
+          </view>
+          <view wx:else class="list-body">
+            <collection-card wx:for="{{categoryData[item.key].items}}" wx:for-item="card" wx:key="_id" item="{{card}}" index="{{index}}" bind:tap="onCardTap" bind:longpress="onCardLongPress" bind:tagtap="onCardTagTap"/>
+            <view wx:if="{{categoryData[item.key].loadingMore}}" class="loading-more"><skeleton loading="{{true}}" count="{{2}}"/></view>
+            <view wx:elif="{{!categoryData[item.key].hasMore && categoryData[item.key].items.length > 0}}" class="no-more">— 已经到底了 —</view>
+          </view>
+        </block>
       </scroll-view>
     </swiper-item>
   </swiper>

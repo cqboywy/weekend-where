@@ -10,9 +10,12 @@ Page({
     categories: CATEGORIES, allTags: [],
     filterMode: 'category',
     selectedItem: null, selectedCategoryLabel: '', selectedDistance: '', showDetailCard: false,
+    showDistanceSort: false,
+    sortedItems: [],
   },
 
   _markerIconCache: {},
+  _distanceCache: [],  // [{item, distanceText, catLabel}] from latest updateMarkers
 
   onLoad() {
     this.initCategories();
@@ -184,6 +187,12 @@ Page({
     // Pre-generate all needed marker icons
     await Promise.all([...colors].map(c => this.generateMarkerIcon(c)));
 
+    // Cache items with distances for the sort view
+    this._distanceCache = filteredItems.map((item, i) => {
+      const cat = categories.find(c => c.key === item.category) || {};
+      return { item, distanceText: distanceTexts[i] || '', catLabel: cat.label || item.category };
+    });
+
     const markers = filteredItems.map((item, i) => {
       const originalIndex = allItems.indexOf(item);
       const cat = categories.find(c => c.key === item.category) || {};
@@ -270,8 +279,62 @@ Page({
   onMoveToCurrent() {
     wx.getLocation({
       type: 'gcj02',
-      success: (res) => { this.setData({ latitude: res.latitude, longitude: res.longitude, scale: 14 }); },
+      success: (res) => {
+        const loc = { latitude: res.latitude, longitude: res.longitude, ts: Date.now() };
+        getApp().globalData._userLocation = loc;
+        this.setData({ latitude: res.latitude, longitude: res.longitude, scale: 14 });
+      },
       fail: () => { wx.showToast({ title: '请授权位置权限', icon: 'none' }); }
     });
   },
+
+  // ── Distance sort bottom sheet ──
+
+  onOpenDistanceSort() {
+    const cache = this._distanceCache || [];
+    if (cache.length === 0) {
+      wx.showToast({ title: '暂无带位置的收藏', icon: 'none' });
+      return;
+    }
+    // Filter to items with valid distance, sort by numeric distance
+    const sorted = [...cache]
+      .filter(d => d.distanceText)
+      .sort((a, b) => {
+        const mA = parseFloat(a.distanceText);
+        const mB = parseFloat(b.distanceText);
+        if (!isNaN(mA) && !isNaN(mB)) return mA - mB;
+        return a.distanceText.localeCompare(b.distanceText);
+      });
+    this.setData({ sortedItems: sorted, showDistanceSort: true });
+  },
+
+  onTapDistanceItem(e) {
+    const idx = e.currentTarget.dataset.index;
+    const entry = this.data.sortedItems[idx];
+    if (!entry) return;
+    const item = entry.item;
+    // Close the sort sheet
+    this.setData({ showDistanceSort: false });
+    // Center map on this item
+    if (item.location && item.location.latitude) {
+      this.setData({
+        latitude: item.location.latitude,
+        longitude: item.location.longitude,
+        scale: 15,
+      });
+    }
+    // Simulate marker tap — show detail card
+    this.setData({
+      selectedItem: item,
+      selectedCategoryLabel: entry.catLabel,
+      selectedDistance: entry.distanceText,
+      showDetailCard: true,
+    });
+  },
+
+  onCloseDistanceSort() {
+    this.setData({ showDistanceSort: false });
+  },
+
+  noop() {},
 });

@@ -1,5 +1,6 @@
-const { getCollections, deleteCollectionItem, updateCollectionItem, addToNextGo, removeFromNextGo } = require('../../utils/cloud.js');
+const { getCollections, getAllCollections, deleteCollectionItem, updateCollectionItem, addToNextGo, removeFromNextGo } = require('../../utils/cloud.js');
 const { CATEGORIES } = require('../../utils/constants.js');
+const { getRouteDistances, getUserLocation } = require('../../utils/util.js');
 
 Page({
   data: {
@@ -14,6 +15,9 @@ Page({
     swiperIndex: 0,
     swiperHeight: 600,
     categoryData: {},  // { [key]: { items, loading, loadingMore, hasMore, skip } }
+    nearbyItems: [],
+    nearbyLoading: false,
+    nearbyError: false,
   },
 
   onLoad() {
@@ -24,6 +28,8 @@ Page({
       delete app.globalData.statusFilter;
     }
     this.calcSwiperHeight();
+    const idx = this.data.categories.findIndex(c => c.key === '__all__');
+    this.setData({ activeCategory: '__all__', swiperIndex: Math.max(0, idx) });
     this.loadCategoryData('__all__', true);
   },
 
@@ -34,7 +40,8 @@ Page({
     if (app.globalData.tagFilter) {
       const tag = app.globalData.tagFilter;
       delete app.globalData.tagFilter;
-      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '__all__', activeStatus: '', swiperIndex: 0 });
+      const idx = this.data.categories.findIndex(c => c.key === '__all__');
+      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '__all__', activeStatus: '', swiperIndex: Math.max(0, idx) });
       this.reloadAll();
       return;
     }
@@ -47,7 +54,8 @@ Page({
       return;
     }
     if (app.globalData.statusFilter && app.globalData.statusFilter !== this.data.activeStatus) {
-      this.setData({ activeStatus: app.globalData.statusFilter, activeCategory: '__all__', keyword: '', searchValue: '', showSearch: false, swiperIndex: 0 });
+      const idx = this.data.categories.findIndex(c => c.key === '__all__');
+      this.setData({ activeStatus: app.globalData.statusFilter, activeCategory: '__all__', keyword: '', searchValue: '', showSearch: false, swiperIndex: Math.max(0, idx) });
       delete app.globalData.statusFilter;
       this.reloadAll();
     }
@@ -84,7 +92,7 @@ Page({
     }
 
     const cats = app.globalData._sortedCategories || raw;
-    const full = [{ key: '__all__', label: '全部' }, ...cats];
+    const full = [{ key: '__nearby__', label: '附近' }, { key: '__all__', label: '全部' }, ...cats];
     if (JSON.stringify(full.map(c => c.key)) !== JSON.stringify(this.data.categories.map(c => c.key))) {
       // 为新分类初始化空数据槽
       const initData = { ...this.data.categoryData };
@@ -99,6 +107,10 @@ Page({
   // ── Category data ──
 
   async loadCategoryData(catKey, refresh = false) {
+    if (catKey === '__nearby__') {
+      this.loadNearbyItems();
+      return;
+    }
     const key = catKey || '';
     const prev = this.data.categoryData[key] || { items: [], loading: false, loadingMore: false, hasMore: true, skip: 0 };
 
@@ -136,6 +148,55 @@ Page({
     patch[`categoryData.${key}.loading`] = false;
     patch[`categoryData.${key}.loadingMore`] = false;
     this.setData(patch);
+  },
+
+  // ── Nearby distance-sorted ──
+
+  async loadNearbyItems() {
+    if (this.data.nearbyLoading) return;
+    this.setData({ nearbyLoading: true, nearbyError: false, nearbyItems: [] });
+
+    const userLoc = await getUserLocation();
+    if (!userLoc) {
+      this.setData({ nearbyLoading: false, nearbyError: true });
+      return;
+    }
+
+    const result = await getAllCollections();
+    if (!result.success || !result.data || result.data.length === 0) {
+      this.setData({ nearbyLoading: false });
+      return;
+    }
+
+    const itemsWithLocation = result.data.filter(item => item.location && item.location.latitude);
+    if (itemsWithLocation.length === 0) {
+      this.setData({ nearbyLoading: false });
+      return;
+    }
+
+    // Batch compute route distances
+    const toCoords = itemsWithLocation.map(item => ({
+      lat: item.location.latitude,
+      lng: item.location.longitude,
+    }));
+    const distanceTexts = await getRouteDistances(userLoc.latitude, userLoc.longitude, toCoords);
+
+    // Merge distance into items and sort
+    const withDistance = itemsWithLocation.map((item, i) => ({
+      ...item,
+      _distanceText: distanceTexts[i] || '',
+      _distanceMeters: parseFloat(distanceTexts[i]) || Infinity,
+    }));
+
+    // Sort: try numeric first, then by distance string as fallback
+    withDistance.sort((a, b) => {
+      const mA = a._distanceMeters;
+      const mB = b._distanceMeters;
+      if (!isNaN(mA) && !isNaN(mB)) return mA - mB;
+      return (a._distanceText || '').localeCompare(b._distanceText || '');
+    });
+
+    this.setData({ nearbyItems: withDistance, nearbyLoading: false });
   },
 
   reloadAll() {
@@ -193,7 +254,8 @@ Page({
   onCardTagTap(e) {
     const tag = e.detail.tag;
     if (tag) {
-      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '__all__', activeStatus: '', swiperIndex: 0 });
+      const idx = this.data.categories.findIndex(c => c.key === '__all__');
+      this.setData({ showSearch: true, searchValue: tag, keyword: tag, activeCategory: '__all__', activeStatus: '', swiperIndex: Math.max(0, idx) });
       this.reloadAll();
     }
   },

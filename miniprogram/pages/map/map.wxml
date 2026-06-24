@@ -11,12 +11,39 @@
     </scroll-view>
   </view>
 
+  <!-- Distance sort button -->
+  <view wx:if="{{!showDistanceSort}}" class="sort-btn pressable" bindtap="onOpenDistanceSort">
+    <text>距我最近</text>
+  </view>
+
   <view class="locate-btn pressable" bindtap="onMoveToCurrent">
     <lucide-icon name="navigation" size="36" color="#E8876A" />
   </view>
 
   <!-- Hidden canvas for generating marker icons -->
   <canvas type="2d" id="markerCanvas" style="position:fixed;left:-9999px;width:64px;height:64px;"></canvas>
+
+  <!-- Distance sort bottom sheet -->
+  <view wx:if="{{showDistanceSort}}" class="sort-overlay" bindtap="onCloseDistanceSort">
+    <view class="sort-sheet safe-area-bottom" catchtap="noop">
+      <view class="sort-sheet-head">
+        <text>距我最近</text>
+        <view class="sort-close pressable" bindtap="onCloseDistanceSort">
+          <lucide-icon name="x" size="32" color="#9E9688" />
+        </view>
+      </view>
+      <scroll-view class="sort-list" scroll-y>
+        <view wx:for="{{sortedItems}}" wx:key="_id" class="sort-item pressable" data-index="{{index}}" bindtap="onTapDistanceItem">
+          <view class="sort-rank">{{index + 1}}</view>
+          <view class="sort-info">
+            <view class="sort-title ellipsis">{{item.item.title}}</view>
+            <view class="sort-meta">{{item.catLabel}}<text wx:if="{{item.item.rating > 0}}"> · {'★'.repeat(item.item.rating)}</text></view>
+          </view>
+          <view class="sort-dist">{{item.distanceText}}</view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
 
   <view wx:if="{{showDetailCard}}" class="map-detail-card safe-area-bottom">
     <view class="map-detail-header">
