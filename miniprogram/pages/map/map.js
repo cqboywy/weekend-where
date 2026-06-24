@@ -28,6 +28,10 @@ Page({
 
   async initCategories() {
     const app = getApp();
+    // Wait for async category loading if not ready yet (first launch)
+    if ((!app.globalData.categories || app.globalData.categories.length === 0) && app.categoriesReady) {
+      await app.categoriesReady;
+    }
     const raw = (app.globalData.categories && app.globalData.categories.length > 0)
       ? app.globalData.categories
       : CATEGORIES;
