@@ -1,5 +1,5 @@
 <view class="page map-page">
-  <map id="myMap" class="map-container" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" markers="{{markers}}" bindmarkertap="onMarkerTap" show-location="{{true}}"/>
+  <map id="myMap" class="map-container" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" markers="{{markers}}" bindmarkertap="onMarkerTap" bindcallouttap="onMarkerTap" show-location="{{true}}"/>
 
   <view class="map-filter-bar">
     <scroll-view class="map-filter-scroll" scroll-x>
@@ -27,7 +27,11 @@
     </view>
     <view class="map-detail-body">
       <view class="map-detail-title">{{selectedItem.title}}</view>
-      <view class="map-detail-cat">{{selectedItem.category}}</view>
+      <view wx:if="{{selectedDistance}}" class="map-detail-distance">
+        <lucide-icon name="navigation" size="20" color="#E8876A" />
+        <text>距你 {{selectedDistance}}</text>
+      </view>
+      <view class="map-detail-cat">{{selectedCategoryLabel || selectedItem.category}}</view>
     </view>
     <view class="map-detail-action pressable" bindtap="onViewDetail">查看详情 →</view>
   </view>

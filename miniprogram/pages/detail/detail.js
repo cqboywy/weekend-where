@@ -1,8 +1,9 @@
 const { getCollectionDetail, updateCollectionItem, deleteCollectionItem, addToNextGo, removeFromNextGo } = require('../../utils/cloud.js');
 const { CATEGORIES, STATUS, generateCategoryCover } = require('../../utils/constants.js');
+const { calcDistance, getUserLocation } = require('../../utils/util.js');
 
 Page({
-  data: { item: null, loading: true, categoryInfo: null, statusLabel: '', displayCover: '' },
+  data: { item: null, loading: true, categoryInfo: null, statusLabel: '', displayCover: '', distanceText: '' },
 
   onLoad(options) {
     if (options.id) { this.loadDetail(options.id); }
@@ -21,7 +22,20 @@ Page({
       const categoryInfo = cats.find(c => c.key === item.category) || cats.find(c => c.key === 'other') || { key: 'other', label: '其他', color: '#B5A595' };
       const statusLabel = STATUS.find(s => s.key === item.status)?.label || '';
       const displayCover = item.coverImage || generateCategoryCover(categoryInfo.color || '#B5A595');
-      this.setData({ item, categoryInfo, statusLabel, displayCover, loading: false });
+
+      // Compute distance from current location
+      let distanceText = '';
+      if (item.location && item.location.latitude && item.location.longitude) {
+        const userLoc = await getUserLocation();
+        if (userLoc) {
+          distanceText = calcDistance(
+            userLoc.latitude, userLoc.longitude,
+            item.location.latitude, item.location.longitude
+          );
+        }
+      }
+
+      this.setData({ item, categoryInfo, statusLabel, displayCover, distanceText, loading: false });
     } else {
       wx.showToast({ title: '加载失败', icon: 'none' });
       this.setData({ loading: false });

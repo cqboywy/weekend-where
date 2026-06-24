@@ -46,6 +46,11 @@
 }
 .map-detail-body { padding: 28rpx; }
 .map-detail-title { font-family: var(--font-heading); font-size: var(--text-lg); font-weight: 700; line-height: var(--leading-tight); }
+.map-detail-distance {
+  display: flex; align-items: center; gap: 6rpx;
+  margin-top: 10rpx;
+  font-size: var(--text-sm); color: var(--color-primary); font-weight: 500;
+}
 .map-detail-cat { font-size: var(--text-sm); color: var(--color-muted); margin-top: 8rpx; }
 .map-detail-action {
   padding: 22rpx 28rpx; border-top: 1rpx solid var(--color-border);

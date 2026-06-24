@@ -1,5 +1,6 @@
 const { getAllCollections } = require('../../utils/cloud.js');
 const { CATEGORIES } = require('../../utils/constants.js');
+const { calcDistance, getUserLocation } = require('../../utils/util.js');
 
 Page({
   data: {
@@ -8,7 +9,7 @@ Page({
     selectedCategory: '', selectedTag: '',
     categories: CATEGORIES, allTags: [],
     filterMode: 'category',
-    selectedItem: null, showDetailCard: false,
+    selectedItem: null, selectedCategoryLabel: '', selectedDistance: '', showDetailCard: false,
   },
 
   _markerIconCache: {},
@@ -217,9 +218,27 @@ Page({
     this.updateMarkers();
   },
 
-  onMarkerTap(e) {
+  async onMarkerTap(e) {
     const item = this.data.allItems[e.detail.markerId];
-    if (item) { this.setData({ selectedItem: item, showDetailCard: true }); }
+    if (item) {
+      const cat = this.data.categories.find(c => c.key === item.category) || {};
+      let distanceText = '';
+      if (item.location && item.location.latitude && item.location.longitude) {
+        const userLoc = await getUserLocation();
+        if (userLoc) {
+          distanceText = calcDistance(
+            userLoc.latitude, userLoc.longitude,
+            item.location.latitude, item.location.longitude
+          );
+        }
+      }
+      this.setData({
+        selectedItem: item,
+        selectedCategoryLabel: cat.label || item.category,
+        selectedDistance: distanceText,
+        showDetailCard: true,
+      });
+    }
   },
 
   onViewDetail() {

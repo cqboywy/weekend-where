@@ -38,15 +38,12 @@
   padding-bottom: 16rpx; border-bottom: 1px solid var(--color-border);
 }
 .location-name { font-family: var(--font-heading); font-size: var(--text-md); font-weight: 600; margin-bottom: 6rpx; }
-.location-addr { font-size: var(--text-sm); color: var(--color-muted); margin-bottom: 20rpx; }
-.location-nav-btn {
-  display: flex; align-items: center; justify-content: center; gap: 8rpx;
-  padding: 20rpx; background: transparent;
-  border-radius: var(--radius-full); color: var(--color-primary);
-  font-size: var(--text-sm); font-weight: 500;
-  border: 1.5px solid var(--color-border);
+.detail-distance {
+  display: flex; align-items: center; gap: 6rpx;
+  margin-bottom: 6rpx;
+  font-size: var(--text-sm); color: var(--color-primary); font-weight: 500;
 }
-.location-nav-btn:active { background: var(--color-primary-soft); }
+.location-addr { font-size: var(--text-sm); color: var(--color-muted); }
 
 .note-content { font-size: var(--text-sm); line-height: var(--leading-relaxed); color: var(--color-text); }
 .note-copy { margin-left: auto; font-size: var(--text-xs); color: var(--color-primary); font-weight: 500; padding: 4rpx 12rpx; }
@@ -55,40 +52,47 @@
 .link-url { font-size: var(--text-sm); color: var(--color-primary); flex: 1; }
 .link-arrow { font-size: 24rpx; color: var(--color-accent); margin-left: 12rpx; }
 
-/* Delete */
-.delete-section {
-  display: flex; align-items: center; justify-content: center; gap: 8rpx;
-  margin: 32rpx 28rpx 20rpx; padding: 20rpx;
-  border-radius: var(--radius-full); background: transparent;
-  border: 1.5px solid var(--color-border);
+/* Secondary action row — edit / share / delete */
+.detail-aux-row {
+  display: flex; justify-content: center; gap: 32rpx;
+  padding: 0 28rpx 12rpx;
 }
-.delete-section text { font-size: var(--text-sm); color: var(--color-danger); font-weight: 500; }
-.delete-section:active { background: rgba(196,106,90,0.06); }
+.aux-btn {
+  display: flex; align-items: center; gap: 6rpx;
+  padding: 8rpx 12rpx;
+  font-size: var(--text-xs); color: var(--color-muted);
+  font-weight: 400;
+}
+.aux-btn.plain-btn {
+  background: transparent; border: none; padding: 8rpx 12rpx;
+  font-size: var(--text-xs); color: var(--color-muted);
+  line-height: 1; margin: 0;
+}
+.aux-btn.plain-btn::after { border: none; }
 
-/* Bottom actions */
+/* Primary bottom bar — 3 buttons */
 .detail-actions {
-  position: fixed; bottom: 0; left: 0; right: 0; display: flex; gap: 10rpx;
-  padding: 20rpx 28rpx 44rpx; background: rgba(250,248,245,0.94);
+  position: fixed; bottom: 0; left: 0; right: 0; display: flex; gap: 12rpx;
+  padding: 16rpx 28rpx 44rpx; background: rgba(250,248,245,0.94);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-top: 1rpx solid var(--color-border); z-index: 100;
 }
 .action-btn {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 4rpx;
-  background: var(--color-white); color: var(--color-text);
-  border-radius: var(--radius-full); font-size: var(--text-xs);
-  padding: 20rpx 4rpx; border: 1.5px solid var(--color-border); font-weight: 500;
-  line-height: 1;
+  display: flex; align-items: center; justify-content: center; gap: 6rpx;
+  background: var(--color-white); color: #6E6658;
+  border-radius: var(--radius-full); font-size: var(--text-sm);
+  padding: 22rpx 0; border: 1.5px solid var(--color-border); font-weight: 500;
+  line-height: 1; flex: 1;
 }
-/* Reset WeChat button default styles for share button */
 .action-btn.plain-btn {
-  background: var(--color-white); color: var(--color-text);
-  padding: 20rpx 4rpx; border: 1.5px solid var(--color-border);
-  font-size: var(--text-xs); font-weight: 500; line-height: 1;
+  background: var(--color-white); color: #6E6658;
+  padding: 22rpx 0; border: 1.5px solid var(--color-border);
+  font-size: var(--text-sm); font-weight: 500; line-height: 1;
   border-radius: var(--radius-full);
 }
 .action-btn.plain-btn::after { border: none; }
 .action-btn.primary {
   background: var(--color-primary); color: #fff;
   border-color: var(--color-primary); font-weight: 600;
-  box-shadow: none;
+  flex: 2;
 }

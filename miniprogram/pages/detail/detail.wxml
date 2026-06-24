@@ -26,10 +26,11 @@
   <view wx:if="{{item.location && item.location.name}}" class="detail-section card">
     <view class="section-label"><lucide-icon name="map-pin" size="24" color="#E8876A" /> 位置</view>
     <view class="location-name">{{item.location.name}}</view>
-    <view wx:if="{{item.location.address}}" class="location-addr">{{item.location.address}}</view>
-    <view class="location-nav-btn pressable" bindtap="onNavigate">
-      <lucide-icon name="navigation" size="32" color="#E8876A" /> 点击导航到此处
+    <view wx:if="{{distanceText}}" class="detail-distance">
+      <lucide-icon name="navigation" size="20" color="#E8876A" />
+      <text>距你 {{distanceText}}</text>
     </view>
+    <view wx:if="{{item.location.address}}" class="location-addr">{{item.location.address}}</view>
   </view>
 
   <view wx:if="{{item.note}}" class="detail-section card">
@@ -48,19 +49,36 @@
     </view>
   </view>
 
-  <!-- Delete -->
-  <view class="delete-section" bindtap="onDelete">
-    <lucide-icon name="x" size="32" color="#D4735E" />
-    <text>删除这个收藏</text>
+  <!-- Secondary actions -->
+  <view class="detail-aux-row">
+    <view class="aux-btn pressable" bindtap="onEdit">
+      <lucide-icon name="pencil" size="20" color="#9E9688" />
+      <text>编辑</text>
+    </view>
+    <button class="aux-btn pressable plain-btn" open-type="share">
+      <lucide-icon name="share" size="20" color="#9E9688" />
+      <text>分享</text>
+    </button>
+    <view class="aux-btn pressable" bindtap="onDelete">
+      <lucide-icon name="trash-2" size="20" color="#D4735E" />
+      <text>删除</text>
+    </view>
   </view>
 
   <!-- Bottom actions -->
   <view class="detail-actions safe-area-bottom">
-    <view class="action-btn pressable" bindtap="onToggleNextGo"><lucide-icon name="bookmark" size="28" color="{{item.nextGo ? '#C2674A' : '#9E9688'}}" /> {{item.nextGo ? '✓' : '计划去'}}</view>
-    <view class="action-btn pressable" bindtap="onToggleStatus"><lucide-icon name="check" size="28" color="{{item.status === 'want_to_go' ? '#7C9A7E' : '#9E9688'}}" /> {{item.status === 'want_to_go' ? '去过' : '想去'}}</view>
-    <button class="action-btn pressable plain-btn" open-type="share"><lucide-icon name="share" size="28" color="#9E9688" /> 分享</button>
-    <view class="action-btn pressable" bindtap="onEdit"><lucide-icon name="pencil" size="28" color="#9E9688" /> 编辑</view>
-    <view class="action-btn primary pressable" bindtap="onNavigate"><lucide-icon name="navigation" size="28" color="#fff" /> 导航</view>
+    <view class="action-btn pressable" bindtap="onToggleStatus">
+      <lucide-icon name="check" size="26" color="{{item.status === 'visited' ? '#7C9A7E' : '#6E6658'}}" />
+      <text>{{item.status === 'visited' ? '想去' : '去过'}}</text>
+    </view>
+    <view class="action-btn pressable" bindtap="onToggleNextGo">
+      <lucide-icon name="bookmark" size="26" color="{{item.nextGo ? '#C2674A' : '#6E6658'}}" />
+      <text>{{item.nextGo ? '已计划' : '计划去'}}</text>
+    </view>
+    <view class="action-btn primary pressable" bindtap="onNavigate">
+      <lucide-icon name="navigation" size="26" color="#fff" />
+      <text>导航到此处</text>
+    </view>
   </view>
 </view>
 
