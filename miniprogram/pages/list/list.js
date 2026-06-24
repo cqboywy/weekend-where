@@ -20,8 +20,8 @@ Page({
     nearbyError: false,
   },
 
-  onLoad() {
-    this.initCategories();
+  async onLoad() {
+    await this.initCategories();
     const app = getApp();
     if (app.globalData.statusFilter) {
       this.setData({ activeStatus: app.globalData.statusFilter });
