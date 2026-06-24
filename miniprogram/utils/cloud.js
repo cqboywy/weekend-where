@@ -84,13 +84,23 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
 async function getAllCollections() {
   try {
     const userId = await ensureOpenId();
-    const maxLimit = 200;
-    const res = await collection('collection_items')
-      .where({ userId })
-      .field({ title: true, 'location.latitude': true, 'location.longitude': true, 'location.name': true, 'location.address': true, category: true, coverImage: true, tags: true, createdAt: true, rating: true, nextGo: true, status: true })
-      .limit(maxLimit)
-      .get();
-    return { success: true, data: res.data, hasMore: res.data.length === maxLimit };
+    // Paginate through all items to get complete data
+    const allData = [];
+    const pageSize = 100;
+    let offset = 0;
+    let hasMore = true;
+    while (hasMore) {
+      const res = await collection('collection_items')
+        .where({ userId })
+        .field({ title: true, 'location.latitude': true, 'location.longitude': true, 'location.name': true, 'location.address': true, category: true, coverImage: true, tags: true, createdAt: true, rating: true, nextGo: true, status: true })
+        .skip(offset)
+        .limit(pageSize)
+        .get();
+      allData.push(...res.data);
+      hasMore = res.data.length === pageSize;
+      offset += pageSize;
+    }
+    return { success: true, data: allData, hasMore: false };
   } catch (err) {
     console.error('获取全部收藏失败:', err);
     return { success: false, error: err, data: [], hasMore: false };
@@ -171,19 +181,28 @@ async function getCollectionStats() {
 async function getTagStats() {
   try {
     const userId = await ensureOpenId();
-    const res = await collection('collection_items')
-      .where({ userId })
-      .field({ tags: true })
-      .limit(1000)
-      .get();
+    // Paginate through ALL items to ensure no tags are missed
     const freq = {};
-    res.data.forEach(item => {
-      if (item.tags && item.tags.length > 0) {
-        item.tags.forEach(tag => {
-          freq[tag] = (freq[tag] || 0) + 1;
-        });
-      }
-    });
+    const pageSize = 100;
+    let offset = 0;
+    let hasMore = true;
+    while (hasMore) {
+      const res = await collection('collection_items')
+        .where({ userId })
+        .field({ tags: true })
+        .skip(offset)
+        .limit(pageSize)
+        .get();
+      res.data.forEach(item => {
+        if (item.tags && item.tags.length > 0) {
+          item.tags.forEach(tag => {
+            freq[tag] = (freq[tag] || 0) + 1;
+          });
+        }
+      });
+      hasMore = res.data.length === pageSize;
+      offset += pageSize;
+    }
     const data = Object.entries(freq)
       .map(([tag, count]) => ({ tag, count }))
       .sort((a, b) => b.count - a.count);
