@@ -37,7 +37,7 @@
           <view class="sort-rank">{{index + 1}}</view>
           <view class="sort-info">
             <view class="sort-title ellipsis">{{item.item.title}}</view>
-            <view class="sort-meta">{{item.catLabel}}<text wx:if="{{item.item.rating > 0}}"> · {'★'.repeat(item.item.rating)}</text></view>
+            <view class="sort-meta">{{item.catLabel}}{{item._stars ? ' · ' + item._stars : ''}}</view>
           </view>
           <view class="sort-dist">{{item.distanceText}}</view>
         </view>

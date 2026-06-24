@@ -307,6 +307,10 @@ Page({
     // Filter to items with valid distance, sort by meters
     const sorted = [...cache]
       .filter(d => d.distanceText)
+      .map(d => ({
+        ...d,
+        _stars: d.item && d.item.rating > 0 ? '★'.repeat(d.item.rating) : '',
+      }))
       .sort((a, b) => parseDistToMeters(a.distanceText) - parseDistToMeters(b.distanceText));
     this.setData({ sortedItems: sorted, showDistanceSort: true });
   },
