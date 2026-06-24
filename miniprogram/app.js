@@ -39,6 +39,7 @@ App({
       .then(res => {
         if (res.success) {
           this.globalData.categories = res.data;
+          delete this.globalData._sortedCategories; // Force re-sort with fresh data
           console.log(`已加载 ${res.data.length} 个分类到全局缓存`);
         }
       })
