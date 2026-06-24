@@ -5,6 +5,13 @@
     <view class="header-desc">管理你的收藏分类，自定义颜色与名称</view>
   </view>
 
+  <!-- Search -->
+  <view class="search-bar">
+    <lucide-icon name="search" size="28" color="#B8A89A" />
+    <input class="search-input" placeholder="搜索分类..." value="{{searchValue}}" bindinput="onSearchInput" />
+    <view wx:if="{{searchValue}}" class="search-clear pressable" catchtap="onClearSearch">✕</view>
+  </view>
+
   <!-- Category list -->
   <view class="card category-list">
     <block wx:for="{{categories}}" wx:key="_id">

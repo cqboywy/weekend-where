@@ -4,6 +4,13 @@
     <view class="header-desc">重命名或删除标签，改动会同步到所有收藏</view>
   </view>
 
+  <!-- Search -->
+  <view class="search-bar">
+    <lucide-icon name="search" size="28" color="#B8A89A" />
+    <input class="search-input" placeholder="搜索标签..." value="{{searchValue}}" bindinput="onSearchInput" />
+    <view wx:if="{{searchValue}}" class="search-clear pressable" catchtap="onClearSearch">✕</view>
+  </view>
+
   <view class="card tag-list" wx:if="{{!loading && tags.length > 0}}">
     <block wx:for="{{tags}}" wx:key="tag">
       <view class="tag-row pressable" data-tag="{{item.tag}}" bindtap="onTapTag">

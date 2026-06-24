@@ -4,6 +4,7 @@ const { CATEGORY_COLORS } = require('../../utils/constants.js');
 Page({
   data: {
     categories: [],
+    searchValue: '',
     loading: true,
     // Modal state
     showModal: false,
@@ -29,7 +30,8 @@ Page({
         return { ...cat, itemCount: countRes.success ? countRes.count : 0 };
       }));
       cats.sort((a, b) => b.itemCount - a.itemCount);
-      this.setData({ categories: cats, loading: false });
+      this._allCategories = cats;
+      this.setData({ categories: this.applySearch(cats), loading: false });
       // Sync to globalData and invalidate sorted cache so pages pick up new categories
       const app = getApp();
       app.globalData.categories = res.data;
@@ -38,6 +40,21 @@ Page({
       this.setData({ loading: false });
       wx.showToast({ title: '加载失败', icon: 'none' });
     }
+  },
+
+  applySearch(list) {
+    const kw = this.data.searchValue.trim().toLowerCase();
+    if (!kw) return list;
+    return list.filter(c => c.label.toLowerCase().indexOf(kw) > -1);
+  },
+
+  onSearchInput(e) {
+    const val = e.detail.value;
+    this.setData({ searchValue: val, categories: this.applySearch(this._allCategories || []) });
+  },
+
+  onClearSearch() {
+    this.setData({ searchValue: '', categories: this.applySearch(this._allCategories || []) });
   },
 
   onTapCategory(e) {
@@ -71,6 +88,10 @@ Page({
 
   onPickColor(e) {
     this.setData({ formColor: e.currentTarget.dataset.color });
+  },
+
+  onSearchInput(e) {
+    this.setData({ searchValue: e.detail.value });
   },
 
   onNameInput(e) {

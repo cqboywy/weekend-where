@@ -4,6 +4,16 @@
 .header-title { font-family: var(--font-heading); font-size: var(--text-2xl); font-weight: 700; }
 .header-desc { font-size: var(--text-base); color: var(--color-muted); margin-top: 8rpx; font-style: italic; }
 
+/* Search */
+.search-bar {
+  display: flex; align-items: center; gap: 12rpx;
+  margin: 0 28rpx 14rpx; padding: 16rpx 24rpx;
+  background: var(--color-white); border-radius: var(--radius-full);
+  box-shadow: var(--shadow-card);
+}
+.search-input { flex: 1; font-size: var(--text-sm); line-height: 1.5; }
+.search-clear { padding: 4rpx 8rpx; font-size: 24rpx; color: var(--color-muted); }
+
 /* Tag list */
 .tag-list { margin: 14rpx 28rpx; padding: 0 28rpx; }
 .tag-row { display: flex; align-items: center; justify-content: space-between; padding: 28rpx 0; }

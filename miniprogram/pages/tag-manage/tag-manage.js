@@ -3,6 +3,7 @@ const { getTagStats, renameTagInCollections, removeTagFromAllCollections } = req
 Page({
   data: {
     tags: [],
+    searchValue: '',
     loading: true,
     // Modal
     showModal: false,
@@ -22,11 +23,27 @@ Page({
     this.setData({ loading: true });
     const res = await getTagStats();
     if (res.success) {
-      this.setData({ tags: res.data, loading: false });
+      this._allTags = res.data;
+      this.setData({ tags: this.applySearch(res.data), loading: false });
     } else {
       this.setData({ loading: false });
       wx.showToast({ title: '加载失败', icon: 'none' });
     }
+  },
+
+  applySearch(list) {
+    const kw = this.data.searchValue.trim().toLowerCase();
+    if (!kw) return list;
+    return list.filter(t => t.tag.toLowerCase().indexOf(kw) > -1);
+  },
+
+  onSearchInput(e) {
+    const val = e.detail.value;
+    this.setData({ searchValue: val, tags: this.applySearch(this._allTags || []) });
+  },
+
+  onClearSearch() {
+    this.setData({ searchValue: '', tags: this.applySearch(this._allTags || []) });
   },
 
   // ── Edit ──
