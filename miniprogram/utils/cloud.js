@@ -84,10 +84,10 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
 async function getAllCollections() {
   try {
     const userId = await ensureOpenId();
+    // Query all items without field projection to avoid any projection quirks
     const maxLimit = 1000;
     const res = await collection('collection_items')
       .where({ userId })
-      .field({ title: true, 'location.latitude': true, 'location.longitude': true, 'location.name': true, 'location.address': true, category: true, coverImage: true, tags: true, createdAt: true, rating: true, nextGo: true, status: true })
       .limit(maxLimit)
       .get();
     return { success: true, data: res.data, hasMore: res.data.length === maxLimit };
