@@ -83,9 +83,21 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
 
 async function getAllCollections() {
   try {
-    // Reuse the working getCollections query path — no category/status/keyword filter,
-    // just pull all items with a high limit
-    return await getCollections({ limit: 100 });
+    // Paginate through all items using getCollections with list-proven limit of 20
+    const allData = [];
+    let skip = 0;
+    let hasMore = true;
+    while (hasMore) {
+      const result = await getCollections({ limit: 20, skip });
+      if (result.success && result.data) {
+        allData.push(...result.data);
+        hasMore = result.hasMore;
+        skip += result.data.length;
+      } else {
+        hasMore = false;
+      }
+    }
+    return { success: true, data: allData, hasMore: false };
   } catch (err) {
     console.error('获取全部收藏失败:', err);
     return { success: false, error: err, data: [], hasMore: false };
