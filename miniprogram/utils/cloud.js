@@ -84,13 +84,22 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
 async function getAllCollections() {
   try {
     const userId = await ensureOpenId();
-    // Query all items without field projection to avoid any projection quirks
-    const maxLimit = 1000;
-    const res = await collection('collection_items')
-      .where({ userId })
-      .limit(maxLimit)
-      .get();
-    return { success: true, data: res.data, hasMore: res.data.length === maxLimit };
+    // CloudBase limit max is 100 — use pagination for larger datasets
+    const pageSize = 100;
+    const allData = [];
+    let offset = 0;
+    let hasMore = true;
+    while (hasMore) {
+      const res = await collection('collection_items')
+        .where({ userId })
+        .skip(offset)
+        .limit(pageSize)
+        .get();
+      allData.push(...res.data);
+      hasMore = res.data.length === pageSize;
+      offset += pageSize;
+    }
+    return { success: true, data: allData, hasMore: false };
   } catch (err) {
     console.error('获取全部收藏失败:', err);
     return { success: false, error: err, data: [], hasMore: false };
