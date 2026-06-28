@@ -84,9 +84,10 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
 async function getAllCollections() {
   try {
     const userId = await ensureOpenId();
-    // CloudBase max limit is 100; simple single-query approach
+    const _ = db.command;
+    // Match getCollections pattern — use _.and to trigger same query path
     const res = await collection('collection_items')
-      .where({ userId })
+      .where(_.and([{ userId }]))
       .limit(100)
       .get();
     return { success: true, data: res.data, hasMore: res.data.length === 100 };
