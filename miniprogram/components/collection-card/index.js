@@ -47,8 +47,8 @@ Component({
       const categoryColor = categoryInfo.color || '#B5A595';
       const displayCover = item.coverImage || generateCategoryCover(categoryColor);
       const tags = item.tags || [];
-      const displayTags = tags.slice(0, 3);
-      const overflowCount = tags.length - 3;
+      const displayTags = tags.slice(0, 5);
+      const overflowCount = tags.length - 5;
       const date = new Date(item.createdAt);
       const now = new Date();
       const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
