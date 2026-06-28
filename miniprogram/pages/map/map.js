@@ -68,6 +68,7 @@ Page({
       const allTags = [{ tag: '', label: '全部' }];
       sortedTags.forEach(t => allTags.push({ tag: t, label: t }));
 
+      console.log('[map] count结果:', result.total, 'getAllCollections返回:', result.data.length, '有定位:', items.length);
       this.setData({ allItems: items, allTags });
       await this.updateMarkers();
     }
