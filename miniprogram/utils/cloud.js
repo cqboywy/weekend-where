@@ -84,23 +84,13 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
 async function getAllCollections() {
   try {
     const userId = await ensureOpenId();
-    // Paginate through all items to get complete data
-    const allData = [];
-    const pageSize = 100;
-    let offset = 0;
-    let hasMore = true;
-    while (hasMore) {
-      const res = await collection('collection_items')
-        .where({ userId })
-        .field({ title: true, 'location.latitude': true, 'location.longitude': true, 'location.name': true, 'location.address': true, category: true, coverImage: true, tags: true, createdAt: true, rating: true, nextGo: true, status: true })
-        .skip(offset)
-        .limit(pageSize)
-        .get();
-      allData.push(...res.data);
-      hasMore = res.data.length === pageSize;
-      offset += pageSize;
-    }
-    return { success: true, data: allData, hasMore: false };
+    const maxLimit = 1000;
+    const res = await collection('collection_items')
+      .where({ userId })
+      .field({ title: true, 'location.latitude': true, 'location.longitude': true, 'location.name': true, 'location.address': true, category: true, coverImage: true, tags: true, createdAt: true, rating: true, nextGo: true, status: true })
+      .limit(maxLimit)
+      .get();
+    return { success: true, data: res.data, hasMore: res.data.length === maxLimit };
   } catch (err) {
     console.error('获取全部收藏失败:', err);
     return { success: false, error: err, data: [], hasMore: false };
