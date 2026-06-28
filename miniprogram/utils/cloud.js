@@ -84,22 +84,12 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
 async function getAllCollections() {
   try {
     const userId = await ensureOpenId();
-    const pageSize = 100;
-    const allData = [];
-    let offset = 0;
-    let hasMore = true;
-    while (hasMore) {
-      const res = await collection('collection_items')
-        .where({ userId })
-        .orderBy('createdAt', 'desc')
-        .skip(offset)
-        .limit(pageSize)
-        .get();
-      allData.push(...res.data);
-      offset += res.data.length;
-      hasMore = res.data.length === pageSize;
-    }
-    return { success: true, data: allData, hasMore: false };
+    // CloudBase max limit is 100; simple single-query approach
+    const res = await collection('collection_items')
+      .where({ userId })
+      .limit(100)
+      .get();
+    return { success: true, data: res.data, hasMore: res.data.length === 100 };
   } catch (err) {
     console.error('获取全部收藏失败:', err);
     return { success: false, error: err, data: [], hasMore: false };
