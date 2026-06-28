@@ -17,18 +17,16 @@ Page({
   _markerIconCache: {},
   _distanceCache: [],  // [{item, distanceText, catLabel}] from latest updateMarkers
 
-  async onLoad() {
-    await this.initCategories();
-    await this.loadMarkers();
+  onLoad() {
+    this.initCategories();
+    this.loadMarkers();
   },
-  async onShow() {
-    await this.initCategories();
-    await this.loadMarkers();
+  onShow() {
+    this.loadMarkers();
   },
 
   async initCategories() {
     const app = getApp();
-    // Wait for async category loading if not ready yet (first launch)
     if ((!app.globalData.categories || app.globalData.categories.length === 0) && app.categoriesReady) {
       await app.categoriesReady;
     }
@@ -36,7 +34,6 @@ Page({
       ? app.globalData.categories
       : CATEGORIES;
 
-    // Sort categories by item count (always fetch fresh)
     let sorted = [...raw];
     try {
       const { getCollectionStats } = require('../../utils/cloud.js');
