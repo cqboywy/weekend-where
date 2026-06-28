@@ -83,14 +83,9 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
 
 async function getAllCollections() {
   try {
-    const userId = await ensureOpenId();
-    const _ = db.command;
-    // Match getCollections pattern — use _.and to trigger same query path
-    const res = await collection('collection_items')
-      .where(_.and([{ userId }]))
-      .limit(100)
-      .get();
-    return { success: true, data: res.data, hasMore: res.data.length === 100 };
+    // Reuse the working getCollections query path — no category/status/keyword filter,
+    // just pull all items with a high limit
+    return await getCollections({ limit: 100 });
   } catch (err) {
     console.error('获取全部收藏失败:', err);
     return { success: false, error: err, data: [], hasMore: false };
