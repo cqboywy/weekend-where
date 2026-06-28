@@ -68,7 +68,6 @@ Page({
       const allTags = [{ tag: '', label: '全部' }];
       sortedTags.forEach(t => allTags.push({ tag: t, label: t }));
 
-      console.log('[map] getAllCollections返回:', result.data.length, '有定位:', items.length);
       this.setData({ allItems: items, allTags });
       await this.updateMarkers();
     }
