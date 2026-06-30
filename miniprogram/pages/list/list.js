@@ -21,6 +21,8 @@ Page({
   },
 
   async onLoad() {
+    this._loadingKeys = {};
+    this._showTriggeredLoad = false;
     await this.initCategories();
     const app = getApp();
     if (app.globalData.statusFilter) {
@@ -28,6 +30,8 @@ Page({
       delete app.globalData.statusFilter;
     }
     this.calcSwiperHeight();
+    // If onShow has already triggered a load (tag/category filter), skip to avoid duplicate loads
+    if (this._showTriggeredLoad) return;
     const idx = this.data.categories.findIndex(c => c.key === '__all__');
     this.setData({ activeCategory: '__all__', swiperIndex: Math.max(0, idx) });
     this.loadCategoryData('__all__', true);
@@ -38,6 +42,7 @@ Page({
     const app = getApp();
 
     if (app.globalData.tagFilter) {
+      this._showTriggeredLoad = true;
       const tag = app.globalData.tagFilter;
       delete app.globalData.tagFilter;
       const idx = this.data.categories.findIndex(c => c.key === '__all__');
@@ -46,6 +51,7 @@ Page({
       return;
     }
     if (app.globalData.categoryFilter) {
+      this._showTriggeredLoad = true;
       const catKey = app.globalData.categoryFilter;
       delete app.globalData.categoryFilter;
       const idx = this.data.categories.findIndex(c => c.key === catKey);
@@ -54,6 +60,7 @@ Page({
       return;
     }
     if (app.globalData.statusFilter && app.globalData.statusFilter !== this.data.activeStatus) {
+      this._showTriggeredLoad = true;
       const idx = this.data.categories.findIndex(c => c.key === '__all__');
       this.setData({ activeStatus: app.globalData.statusFilter, activeCategory: '__all__', keyword: '', searchValue: '', showSearch: false, swiperIndex: Math.max(0, idx) });
       delete app.globalData.statusFilter;
@@ -113,6 +120,19 @@ Page({
       return;
     }
     const key = catKey || '';
+
+    // Prevent concurrent loads for the same category — avoids duplicates from race conditions
+    if (this._loadingKeys[key]) return;
+    this._loadingKeys[key] = true;
+
+    try {
+      await this._doLoadCategoryData(key, refresh);
+    } finally {
+      this._loadingKeys[key] = false;
+    }
+  },
+
+  async _doLoadCategoryData(key, refresh) {
     const prev = this.data.categoryData[key] || { items: [], loading: false, loadingMore: false, hasMore: true, skip: 0 };
 
     if (refresh) {
