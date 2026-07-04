@@ -62,14 +62,66 @@ Page({
   data: {
     issue: null,
     fadeIn: false,
+    authorized: true,
+    saving: false,
   },
 
   onLoad() {
     const dow = new Date().getDay(); // 0=Sun, 1=Mon, ...
     const issue = DAILY.find(d => d.day === dow) || DAILY[6];
-    this.setData({ issue });
 
+    // Check if user has already authorized
+    const authed = wx.getStorageSync('userAuthorized');
+    this.setData({ issue, authorized: !!authed });
     setTimeout(() => this.setData({ fadeIn: true }), 100);
-    setTimeout(() => wx.switchTab({ url: '/pages/index/index' }), 2200);
+
+    if (authed) {
+      // Returning user — auto-navigate after splash
+      setTimeout(() => this.goHome(), 2200);
+    }
+  },
+
+  goHome() {
+    wx.switchTab({ url: '/pages/index/index' });
+  },
+
+  onGetUserInfo(e) {
+    if (this.data.saving) return;
+
+    const userInfo = (e.detail && e.detail.userInfo) || {};
+    const { nickName, avatarUrl } = userInfo;
+
+    if (!nickName && !avatarUrl) {
+      // User denied — let them in anyway, mark as authorized
+      wx.setStorageSync('userAuthorized', true);
+      this.setData({ authorized: true });
+      this.goHome();
+      return;
+    }
+
+    this.setData({ saving: true });
+    const app = getApp();
+
+    const doSave = () => {
+      if (!app.globalData.openid) {
+        setTimeout(doSave, 300);
+        return;
+      }
+      wx.cloud.callFunction({
+        name: 'saveUser',
+        data: { userId: app.globalData.openid, nickname: nickName, avatarUrl },
+        success: () => {
+          wx.setStorageSync('userAuthorized', true);
+          this.setData({ authorized: true, saving: false });
+          this.goHome();
+        },
+        fail: () => {
+          wx.setStorageSync('userAuthorized', true);
+          this.setData({ authorized: true, saving: false });
+          this.goHome();
+        },
+      });
+    };
+    doSave();
   },
 });

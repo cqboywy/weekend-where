@@ -19,7 +19,7 @@
     <view class="user-card card"
           wx:for="{{users}}" wx:key="userId">
       <image class="user-avatar"
-             src="/images/app-icon.png"
+             src="{{item.avatarUrl || '/images/app-icon.png'}}"
              mode="aspectFill" />
       <view class="user-info">
         <view class="user-name">{{item.nickname || item.shortId}}</view>

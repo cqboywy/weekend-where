@@ -35,5 +35,13 @@
     <view class="splash-cn" style="color: {{issue.accent}};">周末去哪儿</view>
     <view class="splash-en" style="color: {{issue.accent}};">WEEKEND · WHERE</view>
     <view class="splash-tagline" style="color: {{issue.accent}};">{{issue.tagline}}</view>
+
+    <!-- Auth area (first-time only) -->
+    <view wx:if="{{!authorized}}" class="splash-auth" style="color: {{issue.accent}};">
+      <view class="auth-text">授权获取微信信息，方便识别身份</view>
+      <button class="auth-btn" style="background:{{issue.accent}}; color:{{issue.bg[0]}};" open-type="getUserInfo" bindgetuserinfo="onGetUserInfo" loading="{{saving}}" disabled="{{saving}}">
+        授权并开始使用
+      </button>
+    </view>
   </view>
 </view>

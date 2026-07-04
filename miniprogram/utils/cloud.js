@@ -492,6 +492,7 @@ async function getAllUsers() {
       return {
         userId: u.userId,
         nickname: u.nickname || '',
+        avatarUrl: u.avatarUrl || '',
         firstLoginAt: u.firstLoginAt,
         lastLoginAt: u.lastLoginAt,
         collectionCount,

@@ -77,3 +77,22 @@
 /* three dots */
 .mark-dots { display: flex; gap: 16rpx; }
 .mark-dots view { width: 8rpx; height: 8rpx; border-radius: 50%; }
+
+/* ============================================
+   Auth area (first-time authorization)
+   ============================================ */
+.splash-auth {
+  display: flex; flex-direction: column; align-items: center;
+  margin-top: 64rpx; gap: 28rpx;
+}
+.auth-text {
+  font-size: var(--text-sm); opacity: 0.6;
+  letter-spacing: 2rpx;
+}
+.auth-btn {
+  padding: 24rpx 64rpx; border-radius: var(--radius-full);
+  font-size: var(--text-base); font-weight: 600;
+  letter-spacing: 2rpx;
+  border: none; line-height: 1.4;
+}
+.auth-btn::after { border: none; }
