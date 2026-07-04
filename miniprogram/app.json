@@ -9,6 +9,7 @@
     "pages/category-manage/category-manage",
     "pages/tag-manage/tag-manage",
     "pages/mine/mine",
+    "pages/access/access",
     "pages/user-list/user-list"
   ],
   "usingComponents": {

@@ -1,7 +1,17 @@
 <view class="page user-list-page">
   <!-- Summary bar -->
   <view class="summary-bar card">
-    <text class="summary-text">共 <text class="summary-num">{{users.length}}</text> 位用户</text>
+    <view class="summary-row">
+      <view class="summary-item">
+        <view class="summary-num">{{totalCount}}</view>
+        <view class="summary-label">总用户</view>
+      </view>
+      <view class="summary-divider"></view>
+      <view class="summary-item">
+        <view class="summary-num">{{activeCount}}</view>
+        <view class="summary-label">30天活跃</view>
+      </view>
+    </view>
   </view>
 
   <!-- Loading -->
@@ -17,25 +27,15 @@
   <!-- User list -->
   <view wx:else class="user-list">
     <view class="user-card card"
-          wx:for="{{users}}" wx:key="userId">
-      <image class="user-avatar"
-             src="{{item.avatarUrl || '/images/app-icon.png'}}"
-             mode="aspectFill" />
+          wx:for="{{users}}" wx:key="label">
       <view class="user-info">
-        <view class="user-name">{{item.nickname || item.shortId}}</view>
+        <view class="user-name">{{item.label}}</view>
         <view class="user-meta">
-          <view class="meta-row">
-            <text class="meta-label">首次登录</text>
-            <text class="meta-value">{{item.firstLogin}}</text>
-          </view>
-          <view class="meta-row">
-            <text class="meta-label">最近登录</text>
-            <text class="meta-value">{{item.lastLogin}}</text>
-          </view>
+          <text>首次 {{item.firstLogin}} · 最近 {{item.lastLogin}}</text>
         </view>
       </view>
       <view class="user-count">
-        <view class="count-num">{{item.collectionCount || 0}}</view>
+        <view class="count-num">{{item.collectionCount}}</view>
         <view class="count-label">收藏</view>
       </view>
     </view>

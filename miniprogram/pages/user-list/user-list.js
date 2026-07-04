@@ -8,7 +8,6 @@ Page({
   },
 
   onShow() {
-    // Admin gate — only allow the configured admin openid
     const app = getApp();
     if (app.globalData.openid !== ADMIN_OPENID) {
       wx.showToast({ title: '无权限访问', icon: 'none' });
@@ -22,13 +21,20 @@ Page({
     this.setData({ loading: true });
     const res = await getAllUsers();
     if (res.success) {
-      const users = res.data.map(u => ({
-        ...u,
-        shortId: u.userId ? (u.userId.slice(0, 6) + '…' + u.userId.slice(-4)) : '--',
-        firstLogin: this.formatTime(u.firstLoginAt),
-        lastLogin: this.formatTime(u.lastLoginAt),
-      }));
-      this.setData({ users, loading: false });
+      const now = new Date();
+      const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      const activeCount = res.data.filter(u => u.lastLoginAt && new Date(u.lastLoginAt) > monthAgo).length;
+
+      const users = res.data
+        .sort((a, b) => new Date(a.firstLoginAt) - new Date(b.firstLoginAt))
+        .map((u, i) => ({
+          label: '用户 ' + (i + 1),
+          collectionCount: u.collectionCount || 0,
+          lastLogin: this.formatTime(u.lastLoginAt),
+          firstLogin: this.formatTime(u.firstLoginAt),
+        }));
+
+      this.setData({ users, totalCount: users.length, activeCount, loading: false });
     } else {
       this.setData({ loading: false });
       wx.showToast({ title: '加载失败', icon: 'none' });
@@ -39,6 +45,6 @@ Page({
     if (!isoString) return '--';
     const d = new Date(isoString);
     const pad = (n) => String(n).padStart(2, '0');
-    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   },
 });
