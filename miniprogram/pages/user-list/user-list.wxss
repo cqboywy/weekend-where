@@ -1,0 +1,108 @@
+.user-list-page {
+  min-height: 100vh;
+  background: var(--color-bg);
+  padding-bottom: 48rpx;
+}
+
+/* Summary */
+.summary-bar {
+  margin: 28rpx;
+  padding: 28rpx 32rpx;
+  text-align: center;
+}
+.summary-text {
+  font-size: var(--text-base);
+  color: var(--color-muted);
+  font-weight: 400;
+}
+.summary-num {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: var(--text-lg);
+  font-family: var(--font-heading);
+}
+
+/* Center states */
+.center-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+.muted-text {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+/* User cards */
+.user-list {
+  padding: 0 28rpx;
+}
+.user-card {
+  display: flex;
+  align-items: center;
+  padding: 28rpx;
+  margin-bottom: 16rpx;
+}
+.user-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  margin-right: 24rpx;
+  background: var(--color-surface);
+}
+.user-info {
+  flex: 1;
+  min-width: 0;
+}
+.user-name {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.user-meta {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+.meta-row {
+  display: flex;
+  align-items: center;
+  margin-top: 4rpx;
+}
+.meta-label {
+  min-width: 96rpx;
+  font-weight: 500;
+  color: var(--color-muted);
+}
+.meta-value {
+  color: var(--color-text);
+  font-weight: 300;
+}
+
+/* Collection count badge */
+.user-count {
+  flex-shrink: 0;
+  text-align: center;
+  margin-left: 16rpx;
+  padding: 16rpx 20rpx;
+  border-radius: var(--radius-md);
+  background: var(--color-primary-soft);
+}
+.count-num {
+  font-family: var(--font-heading);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-primary);
+  line-height: 1;
+}
+.count-label {
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  font-weight: 500;
+  margin-top: 4rpx;
+}

@@ -1,8 +1,13 @@
 const { getCollectionStats, getTagStats } = require('../../utils/cloud.js');
+const { ADMIN_OPENID } = require('../../utils/constants.js');
 
 Page({
-  data: { stats: null, loading: true, tagStats: [], displayTagStats: [], showAllTags: false },
-  onShow() { this.loadStats(); this.loadTagStats(); },
+  data: { stats: null, loading: true, tagStats: [], displayTagStats: [], showAllTags: false, isAdmin: false },
+  onShow() {
+    const app = getApp();
+    this.setData({ isAdmin: app.globalData.openid === ADMIN_OPENID });
+    this.loadStats(); this.loadTagStats();
+  },
   async loadStats() {
     this.setData({ loading: true });
     const result = await getCollectionStats();
@@ -19,6 +24,7 @@ Page({
   onAbout() {
     wx.showModal({ title: '周末去哪儿', content: 'v1.2\n聚合你的美食与游玩灵感\n告别周末选择困难', showCancel: false });
   },
+  onUserManagement() { wx.navigateTo({ url: '/pages/user-list/user-list' }); },
   onManageCategories() { wx.navigateTo({ url: '/pages/category-manage/category-manage' }); },
   onManageTags() { wx.navigateTo({ url: '/pages/tag-manage/tag-manage' }); },
   onFeedback() { wx.showToast({ title: '功能开发中，敬请期待', icon: 'none' }); },

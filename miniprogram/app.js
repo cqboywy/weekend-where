@@ -29,7 +29,13 @@ App({
 
     // Seed default categories (async, non-blocking) then load into globalData
     // NOTE: require cloud.js AFTER wx.cloud.init() — it calls wx.cloud.database() at module level
-    const { seedDefaultCategories, getCategories } = require('./utils/cloud.js');
+    const { seedDefaultCategories, getCategories, saveUser } = require('./utils/cloud.js');
+
+    // Track every user who opens the app (fire-and-forget, non-blocking)
+    this.getOpenIdPromise.then(openid => {
+      saveUser(openid).catch(() => {});
+    });
+
     this.categoriesReady = this.getOpenIdPromise
       .then(() => seedDefaultCategories(CATEGORIES))
       .then(seedRes => {

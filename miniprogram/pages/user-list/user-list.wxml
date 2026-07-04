@@ -1,0 +1,43 @@
+<view class="page user-list-page">
+  <!-- Summary bar -->
+  <view class="summary-bar card">
+    <text class="summary-text">共 <text class="summary-num">{{users.length}}</text> 位用户</text>
+  </view>
+
+  <!-- Loading -->
+  <view wx:if="{{loading}}" class="center-wrap">
+    <text class="muted-text">加载中…</text>
+  </view>
+
+  <!-- Empty -->
+  <view wx:elif="{{users.length === 0}}" class="center-wrap">
+    <text class="muted-text">暂无用户数据</text>
+  </view>
+
+  <!-- User list -->
+  <view wx:else class="user-list">
+    <view class="user-card card"
+          wx:for="{{users}}" wx:key="userId">
+      <image class="user-avatar"
+             src="/images/app-icon.png"
+             mode="aspectFill" />
+      <view class="user-info">
+        <view class="user-name">{{item.shortId}}</view>
+        <view class="user-meta">
+          <view class="meta-row">
+            <text class="meta-label">首次登录</text>
+            <text class="meta-value">{{item.firstLogin}}</text>
+          </view>
+          <view class="meta-row">
+            <text class="meta-label">最近登录</text>
+            <text class="meta-value">{{item.lastLogin}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="user-count">
+        <view class="count-num">{{item.collectionCount || 0}}</view>
+        <view class="count-label">收藏</view>
+      </view>
+    </view>
+  </view>
+</view>

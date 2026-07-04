@@ -109,4 +109,7 @@ function generateCategoryCover(color) {
   return 'data:image/svg+xml,' + encodeURIComponent(svg);
 }
 
-module.exports = { CATEGORIES, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex, TENCENT_MAP_KEY };
+// 管理员 openid — 用于标识小程序所有者，显示用户管理入口
+const ADMIN_OPENID = 'o2m5R6yPbXNOk1PVhqxHylU_Su80';
+
+module.exports = { CATEGORIES, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex, TENCENT_MAP_KEY, ADMIN_OPENID };

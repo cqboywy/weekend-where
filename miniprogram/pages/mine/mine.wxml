@@ -32,6 +32,7 @@
   </view>
 
   <view class="menu-section card">
+    <view wx:if="{{isAdmin}}" class="menu-item pressable" bindtap="onUserManagement"><view class="menu-icon"><lucide-icon name="user" size="32" color="#9E9688" /></view><view class="menu-text">用户管理</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="24" color="#C8BFB2" /></view></view>
     <view class="menu-item pressable" bindtap="onManageCategories"><view class="menu-icon"><lucide-icon name="tag" size="32" color="#9E9688" /></view><view class="menu-text">分类管理</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="24" color="#C8BFB2" /></view></view>
     <view class="menu-item pressable" bindtap="onManageTags"><view class="menu-icon"><lucide-icon name="bookmark" size="32" color="#9E9688" /></view><view class="menu-text">标签管理</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="24" color="#C8BFB2" /></view></view>
     <view class="menu-item pressable" bindtap="onExport"><view class="menu-icon"><lucide-icon name="download" size="32" color="#9E9688" /></view><view class="menu-text">导出收藏</view><view class="menu-arrow"><lucide-icon name="chevron-right" size="24" color="#C8BFB2" /></view></view>

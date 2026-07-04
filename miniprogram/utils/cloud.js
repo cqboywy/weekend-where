@@ -443,6 +443,71 @@ async function removeFromNextGo(id) {
   }
 }
 
+// ============================================================
+// User tracking — record every user who opens the mini program
+// ============================================================
+
+/**
+ * Upsert user login record. Called on every app launch.
+ * @param {string} userId - WeChat openid
+ */
+async function saveUser(userId) {
+  try {
+    const now = new Date().toISOString();
+    const existing = await collection('users').where({ userId }).get();
+    if (existing.data && existing.data.length > 0) {
+      // Update last login time
+      await collection('users').doc(existing.data[0]._id).update({
+        data: { lastLoginAt: now },
+      });
+    } else {
+      // New user — create record
+      await collection('users').add({
+        data: { userId, firstLoginAt: now, lastLoginAt: now },
+      });
+    }
+    return { success: true };
+  } catch (err) {
+    console.error('保存用户记录失败:', err);
+    return { success: false, error: err };
+  }
+}
+
+/**
+ * Get all users with their collection counts. Admin only.
+ * @returns {Promise<{success: boolean, data: Array}>}
+ */
+async function getAllUsers() {
+  try {
+    const res = await collection('users')
+      .orderBy('lastLoginAt', 'desc')
+      .limit(200)
+      .get();
+
+    // Enrich each user with their collection count
+    const users = await Promise.all(res.data.map(async (u) => {
+      let collectionCount = 0;
+      try {
+        const countRes = await collection('collection_items')
+          .where({ userId: u.userId })
+          .count();
+        collectionCount = countRes.total;
+      } catch (e) { /* keep 0 */ }
+      return {
+        userId: u.userId,
+        firstLoginAt: u.firstLoginAt,
+        lastLoginAt: u.lastLoginAt,
+        collectionCount,
+      };
+    }));
+
+    return { success: true, data: users };
+  } catch (err) {
+    console.error('获取用户列表失败:', err);
+    return { success: false, error: err, data: [] };
+  }
+}
+
 module.exports = {
   db, _, collection,
   addCollectionItem, getCollections, getAllCollections,
@@ -453,4 +518,5 @@ module.exports = {
   uploadImage,
   renameTagInCollections, removeTagFromAllCollections,
   addToNextGo, removeFromNextGo,
+  saveUser, getAllUsers,
 };

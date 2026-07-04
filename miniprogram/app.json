@@ -8,7 +8,8 @@
     "pages/detail/detail",
     "pages/category-manage/category-manage",
     "pages/tag-manage/tag-manage",
-    "pages/mine/mine"
+    "pages/mine/mine",
+    "pages/user-list/user-list"
   ],
   "usingComponents": {
     "lucide-icon": "/components/lucide-icon/index"
