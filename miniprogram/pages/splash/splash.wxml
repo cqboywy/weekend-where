@@ -38,8 +38,8 @@
 
     <!-- Auth area (first-time only) -->
     <view wx:if="{{!authorized}}" class="splash-auth" style="color: {{issue.accent}};">
-      <view class="auth-text">请设置一个昵称方便识别</view>
-      <input type="nickname" class="auth-nickname" style="color:{{issue.accent}};" placeholder="点击选择微信昵称" bindblur="onNicknameBlur" bindconfirm="onNicknameConfirm" value="{{nickName}}" maxlength="20"/>
+      <view class="auth-text">确认你的微信昵称后即可使用</view>
+      <input type="nickname" class="auth-nickname" style="color:{{issue.accent}};" placeholder="点击选择微信昵称" bindblur="onNicknameBlur" bindconfirm="onNicknameConfirm" value="{{nickName}}" maxlength="20" focus="{{true}}" adjust-position="{{false}}"/>
       <button class="auth-btn" style="background:{{issue.accent}}; color:{{issue.bg[0]}};" bindtap="onConfirmStart" loading="{{saving}}" disabled="{{saving}}">开始使用</button>
     </view>
   </view>

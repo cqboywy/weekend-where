@@ -87,11 +87,16 @@ Page({
   },
 
   onNicknameBlur(e) {
-    this.setData({ nickName: e.detail.value || '' });
+    const val = e.detail.value || '';
+    this.setData({ nickName: val });
+    // Auto-confirm on blur — nickname picker auto-fills WeChat nickname
+    if (val) this.onConfirmStart();
   },
 
   onNicknameConfirm(e) {
-    this.setData({ nickName: e.detail.value || '' });
+    const val = e.detail.value || '';
+    this.setData({ nickName: val });
+    if (val) this.onConfirmStart();
   },
 
   onConfirmStart() {
