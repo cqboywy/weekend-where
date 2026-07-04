@@ -18,12 +18,6 @@
   font-family: var(--font-heading); font-size: 48rpx; font-weight: 600;
   letter-spacing: 8rpx; position: relative;
 }
-.nickname-input {
-  font-family: var(--font-heading); font-size: 48rpx; font-weight: 600;
-  letter-spacing: 8rpx; color: var(--color-text); text-align: center;
-  border-bottom: 2rpx dashed var(--color-border);
-  padding-bottom: 4rpx; max-width: 560rpx;
-}
 .nickname::after {
   content: ''; display: block;
   width: 48rpx; height: 1.5px;

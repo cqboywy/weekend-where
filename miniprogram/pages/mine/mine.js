@@ -1,8 +1,8 @@
-const { getCollectionStats, getTagStats, updateUserNickname, getAllUsers } = require('../../utils/cloud.js');
+const { getCollectionStats, getTagStats } = require('../../utils/cloud.js');
 const { ADMIN_OPENID } = require('../../utils/constants.js');
 
 Page({
-  data: { stats: null, loading: true, tagStats: [], displayTagStats: [], showAllTags: false, isAdmin: false, userNickname: '', nicknameEditing: false },
+  data: { stats: null, loading: true, tagStats: [], displayTagStats: [], showAllTags: false, isAdmin: false },
   async onShow() {
     const app = getApp();
 
@@ -12,32 +12,7 @@ Page({
     }
     this.setData({ isAdmin: app.globalData.openid === ADMIN_OPENID });
     console.log('[mine] admin check: current=' + app.globalData.openid + ' configured=' + ADMIN_OPENID + ' match=' + (app.globalData.openid === ADMIN_OPENID));
-    this.loadNickname();
     this.loadStats(); this.loadTagStats();
-  },
-  async loadNickname() {
-    // Check if we have a stored nickname for this user
-    const all = await getAllUsers();
-    if (all.success) {
-      const me = all.data.find(u => u.userId === getApp().globalData.openid);
-      if (me && me.nickname) {
-        this.setData({ userNickname: me.nickname });
-      }
-    }
-  },
-  onNicknameTap() {
-    this.setData({ nicknameEditing: true });
-  },
-  async onNicknameBlur(e) {
-    const nick = (e.detail && e.detail.value || '').trim();
-    this.setData({ nicknameEditing: false });
-    if (nick && nick !== this.data.userNickname) {
-      this.setData({ userNickname: nick });
-      const app = getApp();
-      if (app.globalData.openid) {
-        await updateUserNickname(app.globalData.openid, nick);
-      }
-    }
   },
   async loadStats() {
     this.setData({ loading: true });
