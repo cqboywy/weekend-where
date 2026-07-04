@@ -8,11 +8,24 @@ exports.main = async (event) => {
 
   const now = new Date().toISOString();
   const coll = db.collection('users');
+  let existingRecord = null;
 
   try {
     const existing = await coll.where({ userId }).get();
     if (existing.data && existing.data.length > 0) {
-      await coll.doc(existing.data[0]._id).update({
+      existingRecord = existing.data[0];
+    }
+  } catch (err) {
+    // -502005 = collection not exists — fine, .add() below will create it
+    if (err.errCode !== -502005) {
+      console.error('saveUser query error:', err);
+      return { success: false, error: err.message };
+    }
+  }
+
+  try {
+    if (existingRecord) {
+      await coll.doc(existingRecord._id).update({
         data: { lastLoginAt: now },
       });
     } else {
@@ -22,7 +35,7 @@ exports.main = async (event) => {
     }
     return { success: true };
   } catch (err) {
-    console.error('saveUser error:', err);
+    console.error('saveUser write error:', err);
     return { success: false, error: err.message };
   }
 };
