@@ -17,8 +17,8 @@ Page({
   _markerIconCache: {},
   _distanceCache: [],  // [{item, distanceText, catLabel}] from latest updateMarkers
 
-  onLoad() {
-    this.initCategories();
+  async onLoad() {
+    await this.initCategories();
     this.loadMarkers();
   },
   onShow() {
