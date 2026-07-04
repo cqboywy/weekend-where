@@ -11,7 +11,6 @@ Page({
       await app.getOpenIdPromise;
     }
     this.setData({ isAdmin: app.globalData.openid === ADMIN_OPENID });
-    console.log('[mine] admin check: current=' + app.globalData.openid + ' configured=' + ADMIN_OPENID + ' match=' + (app.globalData.openid === ADMIN_OPENID));
     this.loadStats(); this.loadTagStats();
   },
   async loadStats() {
