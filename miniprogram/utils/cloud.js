@@ -479,8 +479,8 @@ async function saveUser(userId) {
  */
 async function getAllUsers() {
   try {
+    // Avoid orderBy which requires a database index — sort in JS instead
     const res = await collection('users')
-      .orderBy('lastLoginAt', 'desc')
       .limit(200)
       .get();
 
@@ -500,6 +500,13 @@ async function getAllUsers() {
         collectionCount,
       };
     }));
+
+    // Sort by lastLoginAt descending (newest first)
+    users.sort((a, b) => {
+      const da = a.lastLoginAt ? new Date(a.lastLoginAt) : 0;
+      const db = b.lastLoginAt ? new Date(b.lastLoginAt) : 0;
+      return db - da;
+    });
 
     return { success: true, data: users };
   } catch (err) {
