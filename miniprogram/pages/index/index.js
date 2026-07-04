@@ -34,6 +34,10 @@ Page({
     greeting: '',
     currentDate: '',
     weatherDetail: '',
+    // Pagination
+    recentSkip: 20,
+    recentHasMore: true,
+    recentLoadingMore: false,
   },
 
   onLoad() { this.setGreeting(); this.loadData(); },
@@ -99,7 +103,7 @@ Page({
       : CATEGORIES;
 
     const [recentResult, statsResult, weekendResult] = await Promise.all([
-      getCollections({ limit: 30 }),
+      getCollections({ limit: 20 }),
       getCollectionStats(),
       getCollections({ nextGo: true, limit: 50 }),
     ]);
@@ -111,8 +115,8 @@ Page({
       const featuredIdx = Math.floor(Math.random() * all.length);
       const featuredItem = all[featuredIdx];
 
-      // Rest for masonry (exclude featured, limit 20)
-      const rest = all.filter((_, i) => i !== featuredIdx).slice(0, 20);
+      // Rest for masonry (exclude featured)
+      const rest = all.filter((_, i) => i !== featuredIdx);
 
       // Attach category color/label + pre-computed cover to each item
       const enrich = (item) => {
@@ -138,6 +142,9 @@ Page({
           recentItems: enrichedRest,
           nextGoItems: enrichedNextGo,
           loading: false,
+          recentSkip: 20,
+          recentHasMore: recentResult.hasMore,
+          recentLoadingMore: false,
         });
       }, 50);
     } else {
@@ -146,8 +153,49 @@ Page({
         recentItems: [],
         nextGoItems: (weekendResult.success ? weekendResult.data : []).map(enrich),
         loading: false,
+        recentSkip: 20,
+        recentHasMore: false,
+        recentLoadingMore: false,
       });
     }
+  },
+
+  async loadMoreRecent() {
+    if (!this.data.recentHasMore || this.data.recentLoadingMore) return;
+    this.setData({ recentLoadingMore: true });
+
+    const result = await getCollections({ limit: 20, skip: this.data.recentSkip });
+
+    if (result.success && result.data.length > 0) {
+      const app = getApp();
+      const cats = (app.globalData.categories && app.globalData.categories.length > 0)
+        ? app.globalData.categories
+        : CATEGORIES;
+      const enrich = (item) => {
+        const cat = cats.find(c => c.key === item.category) || cats.find(c => c.key === 'other') || {};
+        const color = cat.color || '#E8876A';
+        return {
+          ...item,
+          catColor: color,
+          catBg: color + '1A',
+          catLabel: cat.label || '其他',
+          displayCover: item.coverImage || generateCategoryCover(color),
+        };
+      };
+      const enriched = result.data.map(enrich);
+      this.setData({
+        recentItems: [...this.data.recentItems, ...enriched],
+        recentSkip: this.data.recentSkip + result.data.length,
+        recentHasMore: result.hasMore,
+        recentLoadingMore: false,
+      });
+    } else {
+      this.setData({ recentLoadingMore: false, recentHasMore: false });
+    }
+  },
+
+  onReachBottom() {
+    this.loadMoreRecent();
   },
 
   onViewFeatured() {

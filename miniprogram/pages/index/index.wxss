@@ -160,3 +160,35 @@
 .skeleton-line { height: 24rpx; background: var(--color-border); border-radius: 6rpx; margin-bottom: 12rpx; }
 .w-80 { width: 80%; }
 .w-50 { width: 50%; }
+
+/* ============================================
+   Load more
+   ============================================ */
+.load-more-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32rpx 0 16rpx;
+}
+.load-more-loading {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+.load-more-spinner {
+  width: 32rpx;
+  height: 32rpx;
+  border: 3rpx solid var(--color-border);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.load-more-end {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
