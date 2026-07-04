@@ -22,7 +22,7 @@
              src="/images/app-icon.png"
              mode="aspectFill" />
       <view class="user-info">
-        <view class="user-name">{{item.shortId}}</view>
+        <view class="user-name">{{item.nickname || item.shortId}}</view>
         <view class="user-meta">
           <view class="meta-row">
             <text class="meta-label">首次登录</text>

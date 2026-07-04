@@ -3,7 +3,7 @@ cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV });
 const db = cloud.database();
 
 exports.main = async (event) => {
-  const { userId } = event;
+  const { userId, nickname } = event;
   if (!userId) return { success: false, error: 'userId required' };
 
   const now = new Date().toISOString();
@@ -25,12 +25,12 @@ exports.main = async (event) => {
 
   try {
     if (existingRecord) {
-      await coll.doc(existingRecord._id).update({
-        data: { lastLoginAt: now },
-      });
+      const updateData = { lastLoginAt: now };
+      if (nickname) updateData.nickname = nickname;
+      await coll.doc(existingRecord._id).update({ data: updateData });
     } else {
       await coll.add({
-        data: { userId, firstLoginAt: now, lastLoginAt: now },
+        data: { userId, firstLoginAt: now, lastLoginAt: now, nickname: nickname || '' },
       });
     }
     return { success: true };

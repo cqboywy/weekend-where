@@ -24,7 +24,6 @@ Page({
     if (res.success) {
       const users = res.data.map(u => ({
         ...u,
-        // Short display id from openid (first 4 + last 4 chars)
         shortId: u.userId ? (u.userId.slice(0, 6) + '…' + u.userId.slice(-4)) : '--',
         firstLogin: this.formatTime(u.firstLoginAt),
         lastLogin: this.formatTime(u.lastLoginAt),

@@ -491,6 +491,7 @@ async function getAllUsers() {
       } catch (e) { /* keep 0 */ }
       return {
         userId: u.userId,
+        nickname: u.nickname || '',
         firstLoginAt: u.firstLoginAt,
         lastLoginAt: u.lastLoginAt,
         collectionCount,
@@ -515,6 +516,24 @@ async function getAllUsers() {
   }
 }
 
+/**
+ * Update a user's display nickname via cloud function.
+ * @param {string} userId
+ * @param {string} nickname
+ */
+async function updateUserNickname(userId, nickname) {
+  try {
+    const res = await wx.cloud.callFunction({
+      name: 'saveUser',
+      data: { userId, nickname },
+    });
+    return { success: !!(res.result && res.result.success) };
+  } catch (err) {
+    console.error('更新用户昵称失败:', err);
+    return { success: false, error: err };
+  }
+}
+
 module.exports = {
   db, _, collection,
   addCollectionItem, getCollections, getAllCollections,
@@ -525,5 +544,5 @@ module.exports = {
   uploadImage,
   renameTagInCollections, removeTagFromAllCollections,
   addToNextGo, removeFromNextGo,
-  saveUser, getAllUsers,
+  saveUser, getAllUsers, updateUserNickname,
 };

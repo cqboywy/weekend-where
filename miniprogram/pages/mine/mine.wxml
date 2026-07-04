@@ -2,7 +2,10 @@
   <view class="mine-header">
     <image class="avatar" src="/images/app-icon.png" mode="aspectFill" />
     <view class="header-issue">WEEKEND · WHERE</view>
-    <view class="nickname">周末去哪儿</view>
+    <view class="nickname" catchtap="onNicknameTap">
+      <input wx:if="{{nicknameEditing}}" type="nickname" value="{{userNickname}}" focus="{{true}}" bindblur="onNicknameBlur" bindconfirm="onNicknameBlur" class="nickname-input"/>
+      <text wx:else>{{userNickname || '点击设置昵称'}}</text>
+    </view>
     <view class="bio">收藏 {{stats ? stats.total : '...'}} 个好吃好玩的地方</view>
   </view>
 
