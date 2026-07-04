@@ -40,7 +40,7 @@ async function addCollectionItem(data) {
   }
 }
 
-async function getCollections({ category, keyword, status, nextGo, skip = 0, limit = 20 } = {}) {
+async function getCollections({ category, keyword, status, nextGo, skip = 0, limit = 20, before } = {}) {
   try {
     const userId = await ensureOpenId();
     // Build all conditions into a single array and use _.and() to avoid the
@@ -66,13 +66,21 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
         ])
       );
     }
+    // Cursor-based pagination: fetch items created before the given timestamp.
+    // Used instead of skip when available, to avoid index-dependent ordering issues.
+    if (before) {
+      conditions.push({ createdAt: _.lt(before) });
+    }
 
-    const res = await collection('collection_items')
+    const query = collection('collection_items')
       .where(_.and(conditions))
-      .orderBy('createdAt', 'desc')
-      .skip(skip)
-      .limit(limit)
-      .get();
+      .orderBy('createdAt', 'desc');
+
+    // Only use skip when there's no cursor — cursor + skip together is redundant
+    if (!before) {
+      query.skip(skip);
+    }
+    const res = await query.limit(limit).get();
 
     return { success: true, data: res.data, hasMore: res.data.length === limit };
   } catch (err) {

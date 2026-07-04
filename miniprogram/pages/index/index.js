@@ -35,7 +35,6 @@ Page({
     currentDate: '',
     weatherDetail: '',
     // Pagination
-    recentSkip: 20,
     recentHasMore: true,
     recentLoadingMore: false,
   },
@@ -135,6 +134,13 @@ Page({
       const newFeatured = enrich(featuredItem);
       const enrichedRest = rest.map(enrich);
       const enrichedNextGo = (weekendResult.success ? weekendResult.data : []).map(enrich);
+
+      // Save cursor for next page: use createdAt of the oldest item in this batch
+      const lastInBatch = all[all.length - 1];
+      if (lastInBatch && lastInBatch.createdAt) {
+        this._lastCreatedAt = lastInBatch.createdAt;
+      }
+
       this.setData({ featuredItem: null });
       setTimeout(() => {
         this.setData({
@@ -142,7 +148,6 @@ Page({
           recentItems: enrichedRest,
           nextGoItems: enrichedNextGo,
           loading: false,
-          recentSkip: 20,
           recentHasMore: recentResult.hasMore,
           recentLoadingMore: false,
         });
@@ -153,7 +158,6 @@ Page({
         recentItems: [],
         nextGoItems: (weekendResult.success ? weekendResult.data : []).map(enrich),
         loading: false,
-        recentSkip: 20,
         recentHasMore: false,
         recentLoadingMore: false,
       });
@@ -164,7 +168,8 @@ Page({
     if (!this.data.recentHasMore || this.data.recentLoadingMore) return;
     this.setData({ recentLoadingMore: true });
 
-    const result = await getCollections({ limit: 20, skip: this.data.recentSkip });
+    // Cursor-based pagination: fetch items older than the last item we have
+    const result = await getCollections({ limit: 20, before: this._lastCreatedAt });
 
     if (result.success && result.data.length > 0) {
       const app = getApp();
@@ -183,9 +188,15 @@ Page({
         };
       };
       const enriched = result.data.map(enrich);
+
+      // Update cursor to oldest item in this batch
+      const lastInBatch = result.data[result.data.length - 1];
+      if (lastInBatch && lastInBatch.createdAt) {
+        this._lastCreatedAt = lastInBatch.createdAt;
+      }
+
       this.setData({
         recentItems: [...this.data.recentItems, ...enriched],
-        recentSkip: this.data.recentSkip + result.data.length,
         recentHasMore: result.hasMore,
         recentLoadingMore: false,
       });
