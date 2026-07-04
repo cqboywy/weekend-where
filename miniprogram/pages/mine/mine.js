@@ -3,9 +3,15 @@ const { ADMIN_OPENID } = require('../../utils/constants.js');
 
 Page({
   data: { stats: null, loading: true, tagStats: [], displayTagStats: [], showAllTags: false, isAdmin: false },
-  onShow() {
+  async onShow() {
     const app = getApp();
+
+    // Wait for openid if not yet resolved (app just launched)
+    if (!app.globalData.openid && app.getOpenIdPromise) {
+      await app.getOpenIdPromise;
+    }
     this.setData({ isAdmin: app.globalData.openid === ADMIN_OPENID });
+    console.log('[mine] admin check: current=' + app.globalData.openid + ' configured=' + ADMIN_OPENID + ' match=' + (app.globalData.openid === ADMIN_OPENID));
     this.loadStats(); this.loadTagStats();
   },
   async loadStats() {
