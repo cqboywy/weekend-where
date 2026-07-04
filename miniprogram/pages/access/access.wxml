@@ -13,7 +13,7 @@
     <!-- Form card -->
     <view class="access-card card">
       <view class="card-icon">
-        <lucide-icon name="star" size="48" color="#C2674A" />
+        <lucide-icon name="lock" size="48" color="#C2674A" />
       </view>
       <view class="card-text">请输入授权码以继续使用</view>
       <view class="card-hint">请向管理员获取授权码</view>
