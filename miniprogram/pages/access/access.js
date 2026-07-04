@@ -22,7 +22,7 @@ Page({
 
       if (res.data && res.data.length > 0 && res.data[0].value === code) {
         wx.setStorageSync('accessGranted', true);
-        wx.navigateBack({ delta: 1 });
+        wx.reLaunch({ url: '/pages/index/index' });
       } else {
         this.setData({ error: '授权码不正确', checking: false });
       }
