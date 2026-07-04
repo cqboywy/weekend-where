@@ -72,15 +72,12 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
       conditions.push({ createdAt: _.lt(before) });
     }
 
-    const query = collection('collection_items')
+    const res = await collection('collection_items')
       .where(_.and(conditions))
-      .orderBy('createdAt', 'desc');
-
-    // Only use skip when there's no cursor — cursor + skip together is redundant
-    if (!before) {
-      query.skip(skip);
-    }
-    const res = await query.limit(limit).get();
+      .orderBy('createdAt', 'desc')
+      .skip(before ? 0 : skip)
+      .limit(limit)
+      .get();
 
     return { success: true, data: res.data, hasMore: res.data.length === limit };
   } catch (err) {
