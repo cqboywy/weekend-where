@@ -453,27 +453,16 @@ async function removeFromNextGo(id) {
  */
 async function saveUser(userId) {
   try {
-    const now = new Date().toISOString();
-    let existingRecord = null;
-    try {
-      const existing = await collection('users').where({ userId }).get();
-      if (existing.data && existing.data.length > 0) {
-        existingRecord = existing.data[0];
-      }
-    } catch (e) {
-      // Collection might not exist yet — proceed to .add() which auto-creates it
+    // Use cloud function to ensure collection is created with server-side permissions
+    const res = await wx.cloud.callFunction({
+      name: 'saveUser',
+      data: { userId },
+    });
+    if (res.result && res.result.success) {
+      return { success: true };
     }
-
-    if (existingRecord) {
-      await collection('users').doc(existingRecord._id).update({
-        data: { lastLoginAt: now },
-      });
-    } else {
-      await collection('users').add({
-        data: { userId, firstLoginAt: now, lastLoginAt: now },
-      });
-    }
-    return { success: true };
+    console.error('saveUser 云函数返回失败:', res.result);
+    return { success: false, error: res.result && res.result.error };
   } catch (err) {
     console.error('保存用户记录失败:', err);
     return { success: false, error: err };
