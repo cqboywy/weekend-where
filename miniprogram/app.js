@@ -33,7 +33,9 @@ App({
 
     // Track every user who opens the app (fire-and-forget, non-blocking)
     this.getOpenIdPromise.then(openid => {
-      saveUser(openid).catch(() => {});
+      saveUser(openid)
+        .then(res => console.log('[app] saveUser成功:', openid, res))
+        .catch(err => console.error('[app] saveUser失败:', openid, err));
     });
 
     this.categoriesReady = this.getOpenIdPromise
