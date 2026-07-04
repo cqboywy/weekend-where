@@ -1,15 +1,30 @@
 <view class="page access-page">
-  <view class="access-card">
-    <view class="access-icon">🔑</view>
-    <view class="access-title">需要授权码才能使用</view>
-    <view class="access-desc">周末去哪儿是私人收藏工具，请向管理员获取授权码</view>
+  <view class="access-content">
+    <!-- Badge -->
+    <view class="access-badge">PRIVATE · INVITE</view>
 
-    <input class="access-input" placeholder="输入授权码" value="{{code}}" bindinput="onInput" bindconfirm="onSubmit" maxlength="20" focus="{{true}}"/>
+    <!-- Main -->
+    <view class="access-title">周末去哪儿</view>
+    <view class="access-sub">WEEKEND · WHERE</view>
 
-    <view wx:if="{{error}}" class="access-error">{{error}}</view>
+    <!-- Divider ornament -->
+    <view class="access-ornament"></view>
 
-    <button class="access-btn" bindtap="onSubmit" loading="{{checking}}" disabled="{{checking}}">
-      进入
-    </button>
+    <!-- Form card -->
+    <view class="access-card card">
+      <view class="card-icon">
+        <lucide-icon name="star" size="48" color="#C2674A" />
+      </view>
+      <view class="card-text">请输入授权码以继续使用</view>
+      <view class="card-hint">请向管理员获取授权码</view>
+
+      <input class="access-input" placeholder="输入授权码" value="{{code}}" bindinput="onInput" bindconfirm="onSubmit" maxlength="20" focus="{{true}}"/>
+
+      <view wx:if="{{error}}" class="access-error">{{error}}</view>
+
+      <button class="access-btn" bindtap="onSubmit" loading="{{checking}}" disabled="{{checking}}">
+        进入
+      </button>
+    </view>
   </view>
 </view>

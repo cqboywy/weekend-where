@@ -1,4 +1,7 @@
 {
-  "navigationBarTitleText": "访问授权",
-  "navigationBarBackgroundColor": "#FAF8F5"
+  "usingComponents": {
+    "lucide-icon": "/components/lucide-icon/index"
+  },
+  "navigationBarTitleText": "",
+  "navigationStyle": "custom"
 }

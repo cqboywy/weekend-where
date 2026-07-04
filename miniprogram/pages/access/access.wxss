@@ -7,48 +7,92 @@
   padding: 48rpx;
 }
 
-.access-card {
+.access-content {
   width: 100%; max-width: 600rpx;
-  background: var(--color-white);
-  border-radius: var(--radius-lg);
-  padding: 64rpx 48rpx 48rpx;
   display: flex; flex-direction: column; align-items: center;
-  box-shadow: 0 2rpx 16rpx rgba(44,36,22,0.06);
 }
 
-.access-icon {
-  font-size: 72rpx; margin-bottom: 28rpx;
+/* Brand header */
+.access-badge {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--color-primary);
+  font-weight: 500;
+  letter-spacing: 6rpx;
+  text-transform: uppercase;
+  margin-bottom: 28rpx;
+  padding: 6rpx 0;
+  border-bottom: 1.5px solid var(--color-primary);
 }
-
 .access-title {
   font-family: var(--font-heading);
-  font-size: var(--text-lg); font-weight: 700;
-  color: var(--color-text); margin-bottom: 12rpx;
+  font-size: 64rpx; font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: 6rpx; line-height: 1.1;
+}
+.access-sub {
+  font-family: var(--font-body);
+  font-size: 22rpx; color: var(--color-muted);
+  letter-spacing: 10rpx; text-transform: uppercase;
+  margin-top: 8rpx; opacity: 0.5;
 }
 
-.access-desc {
-  font-size: var(--text-sm); color: var(--color-muted);
-  text-align: center; line-height: 1.6; margin-bottom: 40rpx;
+/* Ornament — thin line */
+.access-ornament {
+  width: 48rpx; height: 1px;
+  background: var(--color-primary); opacity: 0.4;
+  margin: 48rpx 0;
 }
 
-.access-input {
-  width: 100%; padding: 24rpx 28rpx;
+/* Card */
+.access-card {
+  width: 100%; padding: 48rpx 36rpx 40rpx;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center;
+}
+.card-icon {
+  width: 96rpx; height: 96rpx;
+  border-radius: 50%;
+  background: var(--color-primary-soft);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 24rpx;
+}
+.card-text {
   font-size: var(--text-base); font-weight: 600;
-  background: var(--color-bg); border-radius: var(--radius-md);
-  text-align: center; letter-spacing: 4rpx;
+  color: var(--color-text); margin-bottom: 6rpx;
+}
+.card-hint {
+  font-size: var(--text-sm); color: var(--color-muted);
+  margin-bottom: 32rpx;
 }
 
+/* Input */
+.access-input {
+  width: 100%; padding: 22rpx 0;
+  font-size: 36rpx; font-weight: 600;
+  text-align: center; letter-spacing: 8rpx;
+  border: none; border-bottom: 2rpx solid var(--color-border);
+  background: transparent;
+  transition: border-color 0.2s;
+}
+.access-input:focus {
+  border-bottom-color: var(--color-primary);
+}
+
+/* Error */
 .access-error {
   font-size: var(--text-sm); color: var(--color-danger);
   margin-top: 16rpx;
 }
 
+/* Button */
 .access-btn {
-  width: 100%; margin-top: 32rpx;
-  padding: 24rpx; border-radius: var(--radius-full);
+  width: 100%; margin-top: 40rpx;
+  padding: 24rpx 0; border-radius: var(--radius-full);
   background: var(--color-primary); color: #fff;
   font-size: var(--text-base); font-weight: 600;
-  border: none; text-align: center; line-height: 1.4;
+  letter-spacing: 6rpx; border: none;
+  text-align: center; line-height: 1.4;
 }
 .access-btn::after { border: none; }
 
