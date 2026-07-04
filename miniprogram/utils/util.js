@@ -155,14 +155,25 @@ function getUserLocation() {
     return Promise.resolve({ latitude: cache.latitude, longitude: cache.longitude });
   }
   return new Promise((resolve) => {
+    let settled = false;
+    // GPS may hang indefinitely in simulator — timeout after 8s
+    const timer = setTimeout(() => {
+      if (!settled) { settled = true; resolve(null); }
+    }, 8000);
     wx.getLocation({
       type: 'gcj02',
       success: (res) => {
+        if (settled) return;
+        settled = true; clearTimeout(timer);
         const loc = { latitude: res.latitude, longitude: res.longitude, ts: Date.now() };
         app.globalData._userLocation = loc;
         resolve({ latitude: loc.latitude, longitude: loc.longitude });
       },
-      fail: () => resolve(null),
+      fail: () => {
+        if (settled) return;
+        settled = true; clearTimeout(timer);
+        resolve(null);
+      },
     });
   });
 }
