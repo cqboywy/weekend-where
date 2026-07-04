@@ -64,6 +64,7 @@ Page({
     fadeIn: false,
     authorized: true,
     saving: false,
+    nickName: '',
   },
 
   onLoad() {
@@ -85,19 +86,17 @@ Page({
     wx.switchTab({ url: '/pages/index/index' });
   },
 
-  onGetUserInfo(e) {
+  onNicknameBlur(e) {
+    this.setData({ nickName: e.detail.value || '' });
+  },
+
+  onNicknameConfirm(e) {
+    this.setData({ nickName: e.detail.value || '' });
+  },
+
+  onConfirmStart() {
     if (this.data.saving) return;
-
-    const userInfo = (e.detail && e.detail.userInfo) || {};
-    const { nickName, avatarUrl } = userInfo;
-
-    if (!nickName && !avatarUrl) {
-      // User denied — let them in anyway, mark as authorized
-      wx.setStorageSync('userAuthorized', true);
-      this.setData({ authorized: true });
-      this.goHome();
-      return;
-    }
+    const nick = this.data.nickName.trim();
 
     this.setData({ saving: true });
     const app = getApp();
@@ -109,7 +108,7 @@ Page({
       }
       wx.cloud.callFunction({
         name: 'saveUser',
-        data: { userId: app.globalData.openid, nickname: nickName, avatarUrl },
+        data: { userId: app.globalData.openid, nickname: nick },
         success: () => {
           wx.setStorageSync('userAuthorized', true);
           this.setData({ authorized: true, saving: false });
