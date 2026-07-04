@@ -454,14 +454,21 @@ async function removeFromNextGo(id) {
 async function saveUser(userId) {
   try {
     const now = new Date().toISOString();
-    const existing = await collection('users').where({ userId }).get();
-    if (existing.data && existing.data.length > 0) {
-      // Update last login time
-      await collection('users').doc(existing.data[0]._id).update({
+    let existingRecord = null;
+    try {
+      const existing = await collection('users').where({ userId }).get();
+      if (existing.data && existing.data.length > 0) {
+        existingRecord = existing.data[0];
+      }
+    } catch (e) {
+      // Collection might not exist yet — proceed to .add() which auto-creates it
+    }
+
+    if (existingRecord) {
+      await collection('users').doc(existingRecord._id).update({
         data: { lastLoginAt: now },
       });
     } else {
-      // New user — create record
       await collection('users').add({
         data: { userId, firstLoginAt: now, lastLoginAt: now },
       });
@@ -510,6 +517,10 @@ async function getAllUsers() {
 
     return { success: true, data: users };
   } catch (err) {
+    // Collection hasn't been created yet — return empty
+    if (err.errCode === -502005) {
+      return { success: true, data: [] };
+    }
     console.error('获取用户列表失败:', err);
     return { success: false, error: err, data: [] };
   }
