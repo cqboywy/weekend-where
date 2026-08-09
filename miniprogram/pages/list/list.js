@@ -1,5 +1,5 @@
 const { getCollections, getAllCollections, deleteCollectionItem, updateCollectionItem, addToNextGo, removeFromNextGo } = require('../../utils/cloud.js');
-const { CATEGORIES } = require('../../utils/constants.js');
+const { CATEGORIES, META_CATEGORIES } = require('../../utils/constants.js');
 const { getRouteDistances, getUserLocation } = require('../../utils/util.js');
 
 Page({
@@ -100,7 +100,13 @@ Page({
         cats.sort((a, b) => (counts[b.key] || 0) - (counts[a.key] || 0));
       }
     } catch (e) { /* keep default order */ }
-    const full = [{ key: '__nearby__', label: '附近' }, { key: '__all__', label: '全部' }, ...cats];
+    const full = [
+      { key: '__nearby__', label: '附近' },
+      { key: '__all__', label: '全部' },
+      { key: '__play__', label: '玩的' },
+      { key: '__food__', label: '吃的' },
+      ...cats,
+    ];
     if (JSON.stringify(full.map(c => c.key)) !== JSON.stringify(this.data.categories.map(c => c.key))) {
       // 为新分类初始化空数据槽
       const initData = { ...this.data.categoryData };
@@ -151,8 +157,12 @@ Page({
     }
     this.setData(setDataObj);
 
+    // Resolve meta-category (e.g. __food__) to its array of child category keys
+    const metaInfo = META_CATEGORIES[key];
+    const categoryParam = key === '__all__' ? undefined : (metaInfo ? metaInfo.categories : key);
+
     const result = await getCollections({
-      category: (key === '__all__' ? undefined : key) || undefined,
+      category: categoryParam,
       status: this.data.activeStatus || undefined,
       keyword: this.data.keyword || undefined,
       skip: refresh ? 0 : prev.skip,

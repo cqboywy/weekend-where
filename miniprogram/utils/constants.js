@@ -25,6 +25,13 @@ const CATEGORY_COLORS = [
   '#B5A595', '#6EB5C0', '#D4A070', '#8899AA', '#C09B6E',
 ];
 
+// Meta-categories aggregate multiple specific categories into browsing groups.
+// Used on list & map pages to provide coarser filters ("吃的" / "玩的").
+const META_CATEGORIES = {
+  __food__: { key: '__food__', label: '吃的', categories: ['hotpot', 'barbecue', 'chinese', 'japanese', 'korean', 'western', 'cafe', 'dessert', 'street', 'bar'] },
+  __play__: { key: '__play__', label: '玩的', categories: ['park', 'museum', 'shopping', 'sports', 'entertainment'] },
+};
+
 const STATUS = [
   { key: 'want_to_go', label: '想去' },
   { key: 'visited', label: '去过' },
@@ -112,4 +119,4 @@ function generateCategoryCover(color) {
 // 管理员 openid — 用于标识小程序所有者，显示用户管理入口
 const ADMIN_OPENID = 'ohspT101_LRsJg3hAdxlsJfDFDTE';
 
-module.exports = { CATEGORIES, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex, TENCENT_MAP_KEY, ADMIN_OPENID };
+module.exports = { CATEGORIES, META_CATEGORIES, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex, TENCENT_MAP_KEY, ADMIN_OPENID };

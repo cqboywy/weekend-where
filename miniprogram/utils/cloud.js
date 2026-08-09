@@ -48,7 +48,12 @@ async function getCollections({ category, keyword, status, nextGo, skip = 0, lim
     const conditions = [{ userId }];
 
     if (category) {
-      conditions.push({ category });
+      if (Array.isArray(category)) {
+        // Meta-category: query items matching ANY of the child category keys
+        conditions.push({ category: _.in(category) });
+      } else {
+        conditions.push({ category });
+      }
     }
     if (status) {
       conditions.push({ status });

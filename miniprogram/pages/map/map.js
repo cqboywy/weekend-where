@@ -1,5 +1,5 @@
 const { getAllCollections } = require('../../utils/cloud.js');
-const { CATEGORIES } = require('../../utils/constants.js');
+const { CATEGORIES, META_CATEGORIES } = require('../../utils/constants.js');
 const { getRouteDistance, getRouteDistances, getUserLocation } = require('../../utils/util.js');
 
 Page({
@@ -44,7 +44,14 @@ Page({
       }
     } catch (e) { /* keep default order */ }
 
-    this.setData({ categories: [{ key: '', label: '全部' }, ...sorted] });
+    this.setData({
+      categories: [
+        { key: '', label: '全部' },
+        { key: '__play__', label: '玩的' },
+        { key: '__food__', label: '吃的' },
+        ...sorted,
+      ],
+    });
   },
 
   async loadMarkers() {
@@ -159,7 +166,15 @@ Page({
   async updateMarkers() {
     const { allItems, selectedCategory, selectedTag, categories } = this.data;
     let filteredItems = allItems;
-    if (selectedCategory) { filteredItems = filteredItems.filter(item => item.category === selectedCategory); }
+    if (selectedCategory) {
+      // Meta-category (e.g. __food__): filter by member categories array
+      const metaInfo = META_CATEGORIES[selectedCategory];
+      if (metaInfo) {
+        filteredItems = filteredItems.filter(item => metaInfo.categories.includes(item.category));
+      } else {
+        filteredItems = filteredItems.filter(item => item.category === selectedCategory);
+      }
+    }
     if (selectedTag) { filteredItems = filteredItems.filter(item => item.tags && item.tags.includes(selectedTag)); }
 
     // Fetch user location once for distance display on callouts
