@@ -28,21 +28,16 @@ Page({
   onLoad() {
     this.setQuote();
     this.loadData();
-    // 每 3 分钟刷新一条新语录
-    this._quoteTimer = setInterval(() => this.setQuote(), 3 * 60 * 1000);
   },
   onShow() {
     this.loadData();
-    // 如果离开超过 3 分钟，回来也刷新
-    if (this._lastQuoteTime && Date.now() - this._lastQuoteTime > 3 * 60 * 1000) {
+    // 离开超过 2 分钟回来后刷新语录
+    if (this._lastQuoteTime && Date.now() - this._lastQuoteTime > 2 * 60 * 1000) {
       this.setQuote();
     }
   },
   onHide() {
     this._lastQuoteTime = Date.now();
-  },
-  onUnload() {
-    if (this._quoteTimer) { clearInterval(this._quoteTimer); this._quoteTimer = null; }
   },
 
   setQuote() {
