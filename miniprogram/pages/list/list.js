@@ -1,5 +1,5 @@
 const { getCollections, getAllCollections, deleteCollectionItem, updateCollectionItem, addToNextGo, removeFromNextGo } = require('../../utils/cloud.js');
-const { CATEGORIES, META_CATEGORIES } = require('../../utils/constants.js');
+const { CATEGORIES, getMetaCategories } = require('../../utils/constants.js');
 const { getRouteDistances, getUserLocation } = require('../../utils/util.js');
 
 Page({
@@ -100,11 +100,18 @@ Page({
         cats.sort((a, b) => (counts[b.key] || 0) - (counts[a.key] || 0));
       }
     } catch (e) { /* keep default order */ }
+    // Build dynamic meta categories from the user's category group assignments
+    this._realCats = cats;
+    const metaCats = getMetaCategories(cats);
+    // Ordered: 玩的 before 吃的; hide a meta category if it has no members
+    const metaEntries = ['__play__', '__food__']
+      .map(k => metaCats[k])
+      .filter(m => m && m.categories.length > 0)
+      .map(m => ({ key: m.key, label: m.label }));
     const full = [
       { key: '__nearby__', label: '附近' },
       { key: '__all__', label: '全部' },
-      { key: '__play__', label: '玩的' },
-      { key: '__food__', label: '吃的' },
+      ...metaEntries,
       ...cats,
     ];
     if (JSON.stringify(full.map(c => c.key)) !== JSON.stringify(this.data.categories.map(c => c.key))) {
@@ -158,7 +165,7 @@ Page({
     this.setData(setDataObj);
 
     // Resolve meta-category (e.g. __food__) to its array of child category keys
-    const metaInfo = META_CATEGORIES[key];
+    const metaInfo = getMetaCategories(this._realCats || [])[key];
     const categoryParam = key === '__all__' ? undefined : (metaInfo ? metaInfo.categories : key);
 
     const result = await getCollections({

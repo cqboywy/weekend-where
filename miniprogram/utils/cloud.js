@@ -305,6 +305,7 @@ async function seedDefaultCategories(defaults) {
       icon: cat.icon || 'tag',
       color: cat.color || '#B5A595',
       isDefault: true,
+      group: cat.group || '',
       order: i,
       userId,
       createdAt: now,
@@ -320,6 +321,40 @@ async function seedDefaultCategories(defaults) {
   } catch (err) {
     console.error('种子分类失败:', err);
     return { success: false, error: err };
+  }
+}
+
+/**
+ * Migrate existing default categories to add the `group` field if missing.
+ * Safe to call repeatedly — only updates categories where group is empty.
+ * @param {Array} defaults - the CATEGORIES array from constants.js
+ * @returns {Promise<{success: boolean, updated: number}>}
+ */
+async function migrateCategoryGroups(defaults) {
+  try {
+    const userId = await ensureOpenId();
+    const existing = await collection('categories')
+      .where({ userId, isDefault: true })
+      .get();
+    const groupMap = {};
+    defaults.forEach(c => { if (c.group) groupMap[c.key] = c.group; });
+
+    let updated = 0;
+    for (const cat of existing.data) {
+      if (!cat.group && groupMap[cat.key]) {
+        await collection('categories').doc(cat._id).update({
+          data: { group: groupMap[cat.key], updatedAt: new Date().toISOString() },
+        });
+        updated++;
+      }
+    }
+    if (updated > 0) {
+      console.log(`已为 ${updated} 个分类补充 group 字段`);
+    }
+    return { success: true, updated };
+  } catch (err) {
+    console.error('分类迁移失败:', err);
+    return { success: false, error: err, updated: 0 };
   }
 }
 
@@ -543,7 +578,7 @@ module.exports = {
   getCollectionDetail, updateCollectionItem, deleteCollectionItem,
   getCollectionStats, getTagStats,
   getCategories, addCategory, updateCategory, deleteCategory,
-  seedDefaultCategories, getCategoryItemCount,
+  seedDefaultCategories, migrateCategoryGroups, getCategoryItemCount,
   uploadImage,
   renameTagInCollections, removeTagFromAllCollections,
   addToNextGo, removeFromNextGo,

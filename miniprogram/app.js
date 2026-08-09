@@ -29,7 +29,7 @@ App({
 
     // Seed default categories (async, non-blocking) then load into globalData
     // NOTE: require cloud.js AFTER wx.cloud.init() — it calls wx.cloud.database() at module level
-    const { seedDefaultCategories, getCategories, saveUser } = require('./utils/cloud.js');
+    const { seedDefaultCategories, migrateCategoryGroups, getCategories, saveUser } = require('./utils/cloud.js');
 
     // Track every user who opens the app (fire-and-forget, non-blocking)
     this.getOpenIdPromise.then(openid => {
@@ -40,8 +40,10 @@ App({
       .then(() => seedDefaultCategories(CATEGORIES))
       .then(seedRes => {
         console.log(seedRes.seeded ? `已种子 ${seedRes.count} 个默认分类` : '分类数据已存在，跳过种子');
-        return getCategories();
+        // Migrate existing categories that are missing the group field
+        return migrateCategoryGroups(CATEGORIES);
       })
+      .then(() => getCategories())
       .then(res => {
         if (res.success) {
           this.globalData.categories = res.data;

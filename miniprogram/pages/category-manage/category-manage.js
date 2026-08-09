@@ -12,6 +12,7 @@ Page({
     editingId: null,
     formName: '',
     formColor: CATEGORY_COLORS[0],
+    formGroup: '',
     presetColors: CATEGORY_COLORS,
     saving: false,
   },
@@ -74,6 +75,7 @@ Page({
       editingId: null,
       formName: '',
       formColor: CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)],
+      formGroup: '',
     });
   },
 
@@ -85,6 +87,7 @@ Page({
       editingId: cat._id,
       formName: cat.label,
       formColor: cat.color,
+      formGroup: cat.group || '',
     });
   },
 
@@ -94,6 +97,10 @@ Page({
 
   onNameInput(e) {
     this.setData({ formName: e.detail.value });
+  },
+
+  onPickGroup(e) {
+    this.setData({ formGroup: e.currentTarget.dataset.group });
   },
 
   closeModal() {
@@ -126,7 +133,7 @@ Page({
 
     if (editingId) {
       // Update existing
-      const res = await updateCategory(editingId, { label: name, color: formColor });
+      const res = await updateCategory(editingId, { label: name, color: formColor, group: this.data.formGroup });
       if (res.success) {
         wx.showToast({ title: '已更新', icon: 'success' });
         this.closeModal();
@@ -144,6 +151,7 @@ Page({
         icon: 'tag',
         color: formColor,
         isDefault: false,
+        group: this.data.formGroup,
         order: maxOrder + 1,
       });
       if (res.success) {

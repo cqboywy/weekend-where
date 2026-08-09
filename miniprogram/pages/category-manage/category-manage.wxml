@@ -72,6 +72,16 @@
         <input class="modal-input" placeholder="输入分类名称（不超过10字）" value="{{formName}}" bindinput="onNameInput" maxlength="10" focus="{{true}}" />
       </view>
 
+      <!-- Group selector -->
+      <view class="modal-section">
+        <view class="modal-label">所属群组</view>
+        <view class="group-chips">
+          <view class="group-chip {{formGroup === '__food__' ? 'g-active' : ''}}" data-group="__food__" bindtap="onPickGroup">吃的</view>
+          <view class="group-chip {{formGroup === '__play__' ? 'g-active' : ''}}" data-group="__play__" bindtap="onPickGroup">玩的</view>
+          <view class="group-chip {{formGroup === '' ? 'g-active' : ''}}" data-group="" bindtap="onPickGroup">无</view>
+        </view>
+      </view>
+
       <!-- Color picker -->
       <view class="modal-section">
         <view class="modal-label">选择颜色</view>

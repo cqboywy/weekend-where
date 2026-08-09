@@ -1,19 +1,19 @@
 const CATEGORIES = [
-  { key: 'hotpot', label: '火锅', icon: 'tag', color: '#E8533F' },
-  { key: 'barbecue', label: '烧烤', icon: 'tag', color: '#F0854B' },
-  { key: 'chinese', label: '中餐', icon: 'tag', color: '#D9403A' },
-  { key: 'japanese', label: '日料', icon: 'tag', color: '#7BA587' },
-  { key: 'korean', label: '韩餐', icon: 'tag', color: '#E0707D' },
-  { key: 'western', label: '西餐', icon: 'tag', color: '#9B6E4A' },
-  { key: 'cafe', label: '咖啡', icon: 'tag', color: '#B08870' },
-  { key: 'dessert', label: '甜品', icon: 'tag', color: '#E8A0AD' },
-  { key: 'street', label: '小吃', icon: 'tag', color: '#EAA838' },
-  { key: 'bar', label: '酒吧', icon: 'tag', color: '#726080' },
-  { key: 'park', label: '公园', icon: 'tag', color: '#6EA07A' },
-  { key: 'museum', label: '博物馆', icon: 'tag', color: '#95A3B5' },
-  { key: 'shopping', label: '逛街', icon: 'tag', color: '#E28870' },
-  { key: 'sports', label: '运动', icon: 'tag', color: '#5D9DD5' },
-  { key: 'entertainment', label: '娱乐', icon: 'tag', color: '#A075C0' },
+  { key: 'hotpot', label: '火锅', icon: 'tag', color: '#E8533F', group: '__food__' },
+  { key: 'barbecue', label: '烧烤', icon: 'tag', color: '#F0854B', group: '__food__' },
+  { key: 'chinese', label: '中餐', icon: 'tag', color: '#D9403A', group: '__food__' },
+  { key: 'japanese', label: '日料', icon: 'tag', color: '#7BA587', group: '__food__' },
+  { key: 'korean', label: '韩餐', icon: 'tag', color: '#E0707D', group: '__food__' },
+  { key: 'western', label: '西餐', icon: 'tag', color: '#9B6E4A', group: '__food__' },
+  { key: 'cafe', label: '咖啡', icon: 'tag', color: '#B08870', group: '__food__' },
+  { key: 'dessert', label: '甜品', icon: 'tag', color: '#E8A0AD', group: '__food__' },
+  { key: 'street', label: '小吃', icon: 'tag', color: '#EAA838', group: '__food__' },
+  { key: 'bar', label: '酒吧', icon: 'tag', color: '#726080', group: '__food__' },
+  { key: 'park', label: '公园', icon: 'tag', color: '#6EA07A', group: '__play__' },
+  { key: 'museum', label: '博物馆', icon: 'tag', color: '#95A3B5', group: '__play__' },
+  { key: 'shopping', label: '逛街', icon: 'tag', color: '#E28870', group: '__play__' },
+  { key: 'sports', label: '运动', icon: 'tag', color: '#5D9DD5', group: '__play__' },
+  { key: 'entertainment', label: '娱乐', icon: 'tag', color: '#A075C0', group: '__play__' },
   { key: 'other', label: '其他', icon: 'tag', color: '#B5A595' },
 ];
 
@@ -25,12 +25,30 @@ const CATEGORY_COLORS = [
   '#B5A595', '#6EB5C0', '#D4A070', '#8899AA', '#C09B6E',
 ];
 
-// Meta-categories aggregate multiple specific categories into browsing groups.
-// Used on list & map pages to provide coarser filters ("吃的" / "玩的").
-const META_CATEGORIES = {
-  __food__: { key: '__food__', label: '吃的', categories: ['hotpot', 'barbecue', 'chinese', 'japanese', 'korean', 'western', 'cafe', 'dessert', 'street', 'bar'] },
-  __play__: { key: '__play__', label: '玩的', categories: ['park', 'museum', 'shopping', 'sports', 'entertainment'] },
+// Meta-category definitions. The member category list is computed dynamically
+// from each category's `group` field via getMetaCategories().
+const META_CATEGORY_DEFS = {
+  __food__: { key: '__food__', label: '吃的' },
+  __play__: { key: '__play__', label: '玩的' },
 };
+
+/**
+ * Build dynamic meta-categories from the current user categories.
+ * Categories with group === '__food__' / '__play__' are auto-collected.
+ * @param {Array} categories - array of { key, label, group?, ... }
+ * @returns {Object} e.g. { __food__: { key, label, categories: [...] }, ... }
+ */
+function getMetaCategories(categories) {
+  const result = {};
+  Object.values(META_CATEGORY_DEFS).forEach(def => {
+    result[def.key] = {
+      key: def.key,
+      label: def.label,
+      categories: (categories || []).filter(c => c.group === def.key).map(c => c.key),
+    };
+  });
+  return result;
+}
 
 const STATUS = [
   { key: 'want_to_go', label: '想去' },
@@ -119,4 +137,4 @@ function generateCategoryCover(color) {
 // 管理员 openid — 用于标识小程序所有者，显示用户管理入口
 const ADMIN_OPENID = 'ohspT101_LRsJg3hAdxlsJfDFDTE';
 
-module.exports = { CATEGORIES, META_CATEGORIES, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex, TENCENT_MAP_KEY, ADMIN_OPENID };
+module.exports = { CATEGORIES, META_CATEGORY_DEFS, getMetaCategories, STATUS, COLORS, CATEGORY_COLORS, generateCategoryCover, darkenHex, TENCENT_MAP_KEY, ADMIN_OPENID };

@@ -1,5 +1,5 @@
 const { getAllCollections } = require('../../utils/cloud.js');
-const { CATEGORIES, META_CATEGORIES } = require('../../utils/constants.js');
+const { CATEGORIES, getMetaCategories } = require('../../utils/constants.js');
 const { getRouteDistance, getRouteDistances, getUserLocation } = require('../../utils/util.js');
 
 Page({
@@ -43,12 +43,18 @@ Page({
         sorted.sort((a, b) => (counts[b.key] || 0) - (counts[a.key] || 0));
       }
     } catch (e) { /* keep default order */ }
+    // Build dynamic meta categories from the user's category group assignments
+    this._realCats = sorted;
+    const metaCats = getMetaCategories(sorted);
+    const metaEntries = ['__play__', '__food__']
+      .map(k => metaCats[k])
+      .filter(m => m && m.categories.length > 0)
+      .map(m => ({ key: m.key, label: m.label }));
 
     this.setData({
       categories: [
         { key: '', label: '全部' },
-        { key: '__play__', label: '玩的' },
-        { key: '__food__', label: '吃的' },
+        ...metaEntries,
         ...sorted,
       ],
     });
@@ -168,7 +174,7 @@ Page({
     let filteredItems = allItems;
     if (selectedCategory) {
       // Meta-category (e.g. __food__): filter by member categories array
-      const metaInfo = META_CATEGORIES[selectedCategory];
+      const metaInfo = getMetaCategories(this._realCats || [])[selectedCategory];
       if (metaInfo) {
         filteredItems = filteredItems.filter(item => metaInfo.categories.includes(item.category));
       } else {

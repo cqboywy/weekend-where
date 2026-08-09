@@ -98,6 +98,21 @@
 .color-cell.selected { transform: scale(1.15); box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.18); }
 .color-check { display: flex; align-items: center; justify-content: center; width: 36rpx; height: 36rpx; background: rgba(0,0,0,0.2); border-radius: 50%; }
 
+/* Group selector */
+.group-chips { display: flex; gap: 16rpx; }
+.group-chip {
+  flex: 1; text-align: center; font-size: var(--text-sm); font-weight: 500;
+  padding: 16rpx 24rpx; border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-border); color: var(--color-muted);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.group-chip:active { transform: scale(0.95); }
+.group-chip.g-active {
+  background: var(--color-accent); color: #fff;
+  border-color: var(--color-accent); font-weight: 700;
+  box-shadow: var(--shadow-button);
+}
+
 /* Modal actions */
 .modal-actions { display: flex; gap: 12rpx; padding: 16rpx 0 0; margin-bottom: constant(safe-area-inset-bottom); margin-bottom: env(safe-area-inset-bottom); }
 .modal-cancel { flex: 1; background: transparent; color: var(--color-muted); border-radius: var(--radius-full); font-size: var(--text-base); font-weight: 500; border: 1.5px solid var(--color-border); }
