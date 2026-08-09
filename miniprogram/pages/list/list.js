@@ -37,7 +37,7 @@ Page({
     this.loadCategoryData('__all__', true);
   },
 
-  onShow() {
+  async onShow() {
     this.initCategories();
     const app = getApp();
 
@@ -69,9 +69,11 @@ Page({
     if (app.globalData.listShowAll) {
       this._showTriggeredLoad = true;
       delete app.globalData.listShowAll;
+      // 等待分类加载完再刷新，避免和 initCategories 互相覆盖
+      await this.initCategories();
       const idx = this.data.categories.findIndex(c => c.key === '__all__');
       this.setData({ activeCategory: '__all__', activeStatus: '', keyword: '', searchValue: '', showSearch: false, swiperIndex: Math.max(0, idx) });
-      this.reloadAll();
+      this.loadCategoryData('__all__', true);
       return;
     }
     if (app.globalData.listNeedsRefresh) {
