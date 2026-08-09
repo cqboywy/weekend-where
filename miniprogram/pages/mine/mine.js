@@ -41,6 +41,7 @@ Page({
       app.globalData.statusFilter = status;
     } else {
       delete app.globalData.statusFilter;
+      app.globalData.listShowAll = true;
     }
     wx.switchTab({ url: '/pages/list/list' });
   },

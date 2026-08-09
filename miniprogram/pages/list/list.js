@@ -66,6 +66,14 @@ Page({
       delete app.globalData.statusFilter;
       this.reloadAll();
     }
+    if (app.globalData.listShowAll) {
+      this._showTriggeredLoad = true;
+      delete app.globalData.listShowAll;
+      const idx = this.data.categories.findIndex(c => c.key === '__all__');
+      this.setData({ activeCategory: '__all__', activeStatus: '', keyword: '', searchValue: '', showSearch: false, swiperIndex: Math.max(0, idx) });
+      this.reloadAll();
+      return;
+    }
     if (app.globalData.listNeedsRefresh) {
       delete app.globalData.listNeedsRefresh;
       this.reloadAll();
