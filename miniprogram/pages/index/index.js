@@ -1,6 +1,6 @@
 const { getCollections, getCollectionStats, removeFromNextGo } = require('../../utils/cloud.js');
 const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
-const { getGreeting, classifyWmoCode } = require('../../utils/weather-greeting.js');
+const { getRandomQuote } = require('../../utils/quotes.js');
 
 const CHINESE_NUMS = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'];
 const CHINESE_DAYS = ['日', '一', '二', '三', '四', '五', '六'];
@@ -31,66 +31,25 @@ Page({
     recentItems: [],
     nextGoItems: [],
     loading: true,
-    greeting: '',
+    heroQuote: '',
+    heroSource: '',
     currentDate: '',
-    weatherDetail: '',
     // Pagination
     recentHasMore: true,
     recentLoadingMore: false,
   },
 
-  onLoad() { this.setGreeting(); this.loadData(); },
+  onLoad() { this.setQuote(); this.loadData(); },
   onShow() { this.loadData(); },
 
-  setGreeting() {
+  setQuote() {
     const now = new Date();
-    const hour = now.getHours();
-
-    // 先设纯时间短语，天气拿到后更新
-    const fallbackGreeting = getGreeting(hour, null);
-    const dateStr = formatChineseDate(now);
-    this.setData({ greeting: fallbackGreeting, currentDate: dateStr });
-
-    // 异步获取天气
-    this.fetchWeatherAndUpdate(hour);
-  },
-
-  async fetchWeatherAndUpdate(hour) {
-    const app = getApp();
-
-    // 检查缓存（30 分钟 TTL）
-    if (app.globalData._weatherCache) {
-      const { weatherType, ts, temp } = app.globalData._weatherCache;
-      if (Date.now() - ts < 30 * 60 * 1000) {
-        this.setData({ greeting: getGreeting(hour, weatherType), weatherDetail: temp != null ? temp + '°C' : '' });
-        return;
-      }
-    }
-
-    try {
-      const locRes = await new Promise((resolve, reject) => {
-        wx.getLocation({ type: 'wgs84', success: resolve, fail: reject });
-      });
-
-      // Open-Meteo 免费天气 API（WMO 天气码，无需 Key）
-      const url = `https://api.open-meteo.com/v1/forecast?latitude=${locRes.latitude}&longitude=${locRes.longitude}&current_weather=true`;
-      const res = await new Promise((resolve, reject) => {
-        wx.request({ url, method: 'GET', success: resolve, fail: reject });
-      });
-
-      if (res.statusCode === 200 && res.data && res.data.current_weather) {
-        const cw = res.data.current_weather;
-        const weatherType = classifyWmoCode(cw.weathercode);
-        const temp = Math.round(cw.temperature);
-        app.globalData._weatherCache = { weatherType, temp, ts: Date.now() };
-        this.setData({
-          greeting: getGreeting(hour, weatherType),
-          weatherDetail: temp + '°C',
-        });
-      }
-    } catch (err) {
-      console.log('天气获取失败:', err && err.errMsg || err);
-    }
+    const quote = getRandomQuote();
+    this.setData({
+      heroQuote: quote.text,
+      heroSource: quote.source,
+      currentDate: formatChineseDate(now),
+    });
   },
 
   async loadData() {

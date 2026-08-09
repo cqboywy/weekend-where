@@ -16,24 +16,22 @@
   padding: 6rpx 0;
   border-bottom: 1.5px solid var(--color-primary);
 }
-.hero-headline {
-  display: flex;
-  align-items: baseline;
-  gap: 10rpx;
-}
-.hero-title {
+.hero-quote {
   font-family: var(--font-heading);
-  font-size: 96rpx;
-  font-weight: 900;
+  font-size: 52rpx;
+  font-weight: 700;
   color: var(--color-text);
-  line-height: var(--leading-tight);
+  line-height: 1.5;
+  margin-top: 12rpx;
+  max-width: 600rpx;
 }
-.hero-temp {
-  font-family: var(--font-heading);
-  font-size: var(--text-base);
-  color: var(--color-accent);
-  font-weight: 400;
-  letter-spacing: 1rpx;
+.hero-source {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+  text-align: right;
+  margin-top: 16rpx;
+  font-style: italic;
 }
 .hero-date {
   font-family: var(--font-body);
