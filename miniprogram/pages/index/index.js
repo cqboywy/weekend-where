@@ -2,27 +2,13 @@ const { getCollections, getCollectionStats, removeFromNextGo } = require('../../
 const { CATEGORIES, generateCategoryCover } = require('../../utils/constants.js');
 const { getRandomQuote } = require('../../utils/quotes.js');
 
-const CHINESE_NUMS = ['', '一', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'];
 const CHINESE_DAYS = ['日', '一', '二', '三', '四', '五', '六'];
 
-function formatChineseDate(date) {
-  const y = date.getFullYear();
+function formatDate(date) {
   const m = date.getMonth() + 1;
   const d = date.getDate();
   const w = date.getDay();
-
-  const yearStr = String(y).split('').map(ch => '〇一二三四五六七八九'[Number(ch)]).join('');
-  const monthStr = CHINESE_NUMS[m];
-  let dayStr;
-  if (d <= 10) dayStr = CHINESE_NUMS[d];
-  else if (d < 20) dayStr = '十' + CHINESE_NUMS[d - 10];
-  else if (d === 20) dayStr = '二十';
-  else if (d < 30) dayStr = '二十' + CHINESE_NUMS[d - 20];
-  else if (d === 30) dayStr = '三十';
-  else dayStr = '三十一';
-  const weekStr = '星期' + CHINESE_DAYS[w];
-
-  return `${yearStr}年${monthStr}月${dayStr}日 · ${weekStr}`;
+  return `${m} / ${d} · 周${CHINESE_DAYS[w]}`;
 }
 
 Page({
@@ -48,7 +34,7 @@ Page({
     this.setData({
       heroQuote: quote.text,
       heroSource: quote.source,
-      currentDate: formatChineseDate(now),
+      currentDate: formatDate(now),
     });
   },
 
